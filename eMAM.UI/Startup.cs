@@ -1,5 +1,6 @@
 ﻿using eMAM.Data;
 using eMAM.Data.Models;
+using eMAM.Data.Utills;
 using eMAM.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -24,7 +25,7 @@ namespace eMAM.UI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseNpgsql(Configuration.GetConnectionString($"Server=localhost;Port=5432;Database=myDataBase;User Id=postgres;Password={Constants.posgrePassword};")));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
