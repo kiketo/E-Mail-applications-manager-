@@ -37,6 +37,8 @@ namespace eMAM.Data.Models
         //TODO: to be encrypted
         public string CustomerPhoneNumber { get; set; }
 
+        public bool MissingApplication { get; set; }
+
         public DateTime InitialRegistrationInSystemOn { get; set; }
 
         public DateTime SetInCurrentStatusOn { get; set; }
