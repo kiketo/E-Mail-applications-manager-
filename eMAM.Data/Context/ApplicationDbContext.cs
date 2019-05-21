@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace eMAM.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext : IdentityDbContext<User>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -12,7 +12,7 @@ namespace eMAM.Data
 
         }
 
-        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        public DbSet<User> ApplicationUsers { get; set; }
 
         public DbSet<Email> Emails { get; set; }
 

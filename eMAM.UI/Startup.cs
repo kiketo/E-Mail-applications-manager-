@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-
+using Microsoft.Owin.Security.OAuth;
 
 namespace eMAM.UI
 {
@@ -27,9 +27,11 @@ namespace eMAM.UI
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(Configuration.GetConnectionString($"Server=localhost;Port=5432;Database=myDataBase;User Id=postgres;Password={Constants.posgrePassword};")));
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+            services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+            
 
             // Add application services.
             services.AddTransient<IEmailSender, EmailSender>();
