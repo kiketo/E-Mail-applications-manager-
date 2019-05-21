@@ -1,5 +1,6 @@
 ﻿using eMAM.Data.Models;
-using eMAM.Services;
+using eMAM.Service;
+using eMAM.Service.Contracts;
 using eMAM.UI.Extensions;
 using eMAM.UI.Models.AccountViewModels;
 using Microsoft.AspNetCore.Authentication;

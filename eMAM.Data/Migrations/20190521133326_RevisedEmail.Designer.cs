@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using eMAM.Data;
@@ -10,9 +11,10 @@ using eMAM.Data;
 namespace eMAM.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190521133326_RevisedEmail")]
+    partial class RevisedEmail
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -138,8 +140,6 @@ namespace eMAM.Data.Migrations
 
                     b.Property<string>("Body");
 
-                    b.Property<string>("ClosedById");
-
                     b.Property<int?>("CustomerEGN");
 
                     b.Property<string>("CustomerPhoneNumber");
@@ -149,8 +149,6 @@ namespace eMAM.Data.Migrations
                     b.Property<string>("GmailIdNumber");
 
                     b.Property<DateTime>("InitialRegistrationInSystemOn");
-
-                    b.Property<string>("OpenedById");
 
                     b.Property<string>("SenderEmail");
 
@@ -164,13 +162,17 @@ namespace eMAM.Data.Migrations
 
                     b.Property<string>("Subject");
 
+                    b.Property<string>("UserClosedThisApplicationId");
+
+                    b.Property<string>("UserOpenedThisApplicationId");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("ClosedById");
-
-                    b.HasIndex("OpenedById");
-
                     b.HasIndex("StatusId");
+
+                    b.HasIndex("UserClosedThisApplicationId");
+
+                    b.HasIndex("UserOpenedThisApplicationId");
 
                     b.ToTable("Emails");
                 });
@@ -284,19 +286,18 @@ namespace eMAM.Data.Migrations
 
             modelBuilder.Entity("eMAM.Data.Models.Email", b =>
                 {
-                    b.HasOne("eMAM.Data.Models.User", "ClosedBy")
-                        .WithMany("ClosedEmails")
-                        .HasForeignKey("ClosedById")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("eMAM.Data.Models.User", "OpenedBy")
-                        .WithMany("OpenedEmails")
-                        .HasForeignKey("OpenedById");
-
                     b.HasOne("eMAM.Data.Models.Status", "Status")
-                        .WithMany("Emails")
+                        .WithMany()
                         .HasForeignKey("StatusId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("eMAM.Data.Models.User", "UserClosedThisApplication")
+                        .WithMany()
+                        .HasForeignKey("UserClosedThisApplicationId");
+
+                    b.HasOne("eMAM.Data.Models.User", "UserOpenedThisApplication")
+                        .WithMany()
+                        .HasForeignKey("UserOpenedThisApplicationId");
                 });
 #pragma warning restore 612, 618
         }
