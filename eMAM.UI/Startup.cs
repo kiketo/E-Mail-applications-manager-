@@ -2,6 +2,10 @@
 using eMAM.Data.Models;
 using eMAM.Data.Utills;
 using eMAM.Service;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Gmail.v1;
+using Google.Apis.Services;
+using Google.Apis.Util.Store;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -10,8 +14,9 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Owin.Security.OAuth;
+using System.IO;
 using System.Reflection;
+using System.Threading;
 
 namespace eMAM.UI
 {
@@ -69,6 +74,19 @@ namespace eMAM.UI
                 .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_2);
 
             services.AddRouting(options => options.LowercaseUrls = true);
+
+
+            //registering gmail's api
+            services.AddSingleton<GmailService>(service =>
+            {
+                var initializer = new BaseClientService.Initializer()
+                {
+                    HttpClientInitializer = GetGoogleCredentials(),
+                    ApplicationName = "TBI Project",
+                };
+
+                return new GmailService(initializer);
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -103,6 +121,26 @@ namespace eMAM.UI
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+
+        private UserCredential GetGoogleCredentials()
+        {
+            //string applicationName = "E-Mail applications manager";//"Gmail API .NET Quickstart";
+            string[] scopes = { GmailService.Scope.GmailReadonly };
+
+            using (var stream =
+                new FileStream("credentials.json", FileMode.Open, FileAccess.Read))
+            {
+                // The file token.json stores the user's access and refresh tokens, and is created
+                // automatically when the authorization flow completes for the first time.
+                string credPath = "token.json";
+                return GoogleWebAuthorizationBroker.AuthorizeAsync(
+                    GoogleClientSecrets.Load(stream).Secrets,
+                    scopes,
+                    "user",
+                    CancellationToken.None,
+                    new FileDataStore(credPath, true)).Result;
+            }
         }
     }
 }
