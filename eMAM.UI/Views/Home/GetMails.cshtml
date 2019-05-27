@@ -1,0 +1,24 @@
+﻿@model EmailViewModel
+
+
+<h3>All Mails</h3>
+
+<div class="row mt-5">
+    <div class="col-lg-6">
+        @if (Model != null)
+        {
+
+            if (!Model.SearchResults.Any())
+            {
+                <p class="alert alert-info">There are no mails yet</p>
+            }
+            else
+            {
+                foreach (var mail in Model.SearchResults)
+                {
+                    <partial name="_EmailPartial" model="mail" />
+                }
+            }
+        }
+    </div>
+</div>

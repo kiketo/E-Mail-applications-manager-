@@ -9,5 +9,7 @@ namespace eMAM.Data.Models
         public ICollection<Email> OpenedEmails { get; set; }
 
         public ICollection<Email> ClosedEmails { get; set; }
+
+        public bool Inactive { get; set; }
     }
 }

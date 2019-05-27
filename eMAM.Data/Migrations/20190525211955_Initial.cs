@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace eMAM.Data.Migrations
 {
-    public partial class Initail : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -40,11 +40,40 @@ namespace eMAM.Data.Migrations
                     TwoFactorEnabled = table.Column<bool>(nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
-                    AccessFailedCount = table.Column<int>(nullable: false)
+                    AccessFailedCount = table.Column<int>(nullable: false),
+                    Inactive = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Customers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    CustomerEGN = table.Column<int>(nullable: false),
+                    CustomerPhoneNumber = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Customers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Senders",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    SenderEmail = table.Column<string>(nullable: true),
+                    SenderName = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Senders", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -172,16 +201,71 @@ namespace eMAM.Data.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    GmailIdNumber = table.Column<string>(nullable: true),
                     StatusId = table.Column<int>(nullable: false),
-                    Body = table.Column<string>(nullable: true)
+                    Body = table.Column<string>(nullable: true),
+                    SenderId = table.Column<int>(nullable: false),
+                    DateReceived = table.Column<DateTime>(nullable: false),
+                    Subject = table.Column<string>(nullable: true),
+                    CustomerId = table.Column<int>(nullable: true),
+                    InitialRegistrationInSystemOn = table.Column<DateTime>(nullable: false),
+                    SetInCurrentStatusOn = table.Column<DateTime>(nullable: false),
+                    SetInTerminalStatusOn = table.Column<DateTime>(nullable: false),
+                    OpenedById = table.Column<string>(nullable: true),
+                    ClosedById = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Emails", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Emails_AspNetUsers_ClosedById",
+                        column: x => x.ClosedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Emails_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Emails_AspNetUsers_OpenedById",
+                        column: x => x.OpenedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Emails_Senders_SenderId",
+                        column: x => x.SenderId,
+                        principalTable: "Senders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_Emails_Statuses_StatusId",
                         column: x => x.StatusId,
                         principalTable: "Statuses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Attachments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                    FileName = table.Column<string>(nullable: true),
+                    FileSizeInMb = table.Column<double>(nullable: false),
+                    EmailId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Attachments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Attachments_Emails_EmailId",
+                        column: x => x.EmailId,
+                        principalTable: "Emails",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -224,6 +308,31 @@ namespace eMAM.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Attachments_EmailId",
+                table: "Attachments",
+                column: "EmailId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Emails_ClosedById",
+                table: "Emails",
+                column: "ClosedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Emails_CustomerId",
+                table: "Emails",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Emails_OpenedById",
+                table: "Emails",
+                column: "OpenedById");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Emails_SenderId",
+                table: "Emails",
+                column: "SenderId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Emails_StatusId",
                 table: "Emails",
                 column: "StatusId");
@@ -247,13 +356,22 @@ namespace eMAM.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Emails");
+                name: "Attachments");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "Emails");
+
+            migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Customers");
+
+            migrationBuilder.DropTable(
+                name: "Senders");
 
             migrationBuilder.DropTable(
                 name: "Statuses");
