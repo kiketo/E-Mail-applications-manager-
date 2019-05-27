@@ -52,8 +52,13 @@ namespace eMAM.UI
                 .AsImplementedInterfaces()
                 .WithSingletonLifetime());
 
+            //register MSSQL server
+            //services.AddDbContext<ApplicationDbContext>(options =>
+            //    options.UseSqlServer($"Server={Constants.serverName};Database=eMAM;Trusted_Connection=True;"));
+
+            //register PostGreSQL server
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseNpgsql($"Server=localhost;Port=5432;Database=myDataBase;UserId=postgres;Password={Constants.posgrePassword};"));
+                options.UseNpgsql($"Server=localhost;Port=5432;Database=eMAM;UserId=postgres;Password={Constants.posgrePassword};"));
 
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -77,7 +82,7 @@ namespace eMAM.UI
 
 
             //registering gmail's api
-            services.AddSingleton<GmailService>(service =>
+            services.AddScoped<GmailService>(service =>
             {
                 var initializer = new BaseClientService.Initializer()
                 {

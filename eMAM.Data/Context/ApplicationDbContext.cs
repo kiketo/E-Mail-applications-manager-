@@ -12,9 +12,15 @@ namespace eMAM.Data
 
         }
 
-        public DbSet<User> ApplicationUsers { get; set; }
+        //public DbSet<User> ApplicationUsers { get; set; }
+
+        public DbSet<Attachment> Attachments { get; set; }
+
+        public DbSet<Customer> Customers { get; set; }
 
         public DbSet<Email> Emails { get; set; }
+
+        public DbSet<Sender> Senders { get; set; }
 
         public DbSet<Status> Statuses { get; set; }
 

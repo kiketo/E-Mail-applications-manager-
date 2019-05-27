@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Contracts\IEmailSender.cs" />
+    <Compile Remove="Services\EmailSender.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Google.Apis.Gmail.v1" Version="1.40.0.1572" />
   </ItemGroup>
 

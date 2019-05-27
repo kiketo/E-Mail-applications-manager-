@@ -1,10 +1,12 @@
-﻿using System;
+﻿using eMAM.Data.Models;
+using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace eMAM.Data.Models
+namespace eMAM.UI.Models
 {
-    public class Email
+    public class EmailViewModel
     {
         public int Id { get; set; }
 
@@ -26,6 +28,8 @@ namespace eMAM.Data.Models
 
         public ICollection<Attachment> Attachments { get; set; }
 
+        public bool AreAttachments { get; set; }
+
         public int? CustomerId { get; set; }
         public Customer Customer { get; set; }
 
@@ -42,5 +46,7 @@ namespace eMAM.Data.Models
         public string ClosedById { get; set; }
 
         public User ClosedBy { get; set; }
+
+        public ICollection<EmailViewModel> SearchResults { get; set; } = new List<EmailViewModel>();
     }
 }
