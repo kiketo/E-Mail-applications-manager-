@@ -28,7 +28,7 @@ namespace eMAM.Service.Utills
                 await rolemanager.CreateAsync(new IdentityRole { Name = "Operator" });
                 await rolemanager.CreateAsync(new IdentityRole { Name = "Manager" });
 
-                var superAdminUser = new User { UserName = "SuperAdmin", Email = "super@admin.user" };
+                var superAdminUser = new User { UserName= "super@admin.user", Email = "super@admin.user" };
                 await userManager.CreateAsync(superAdminUser, "Admin123!");
                 await userManager.AddToRoleAsync(superAdminUser, "SuperAdmin");
             }

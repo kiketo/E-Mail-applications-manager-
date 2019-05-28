@@ -196,12 +196,12 @@ namespace eMAM.Service.Contracts
             return Convert.FromBase64String(result.ToString());
         }
 
-        public Task<List<Email>> ReadAllMailsFromDbAsync()
+        public IQueryable<Email> ReadAllMailsFromDb()
         {
             var allMails = this.context.Emails
                                        .Include(e => e.Attachments)
                                        .Include(e => e.Sender)
-                                       .ToListAsync();
+                                       .Include(e=>e.Status);
             return allMails;
         }
 

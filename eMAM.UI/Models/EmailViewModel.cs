@@ -48,5 +48,10 @@ namespace eMAM.UI.Models
         public User ClosedBy { get; set; }
 
         public ICollection<EmailViewModel> SearchResults { get; set; } = new List<EmailViewModel>();
+
+        public bool HasPreviousPage { get; set; }
+        public bool HasNextPage { get; set; }
+        public int PageIndex { get; set; }
+        public int TotalPages { get; set; }
     }
 }

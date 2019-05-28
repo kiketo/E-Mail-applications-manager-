@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using eMAM.Data.Models;
 using Google.Apis.Gmail.v1;
@@ -10,6 +11,6 @@ namespace eMAM.Service.Contracts
     {
         Task DownloadNewMailsWithoutBodyAsync();
 
-        Task<List<Email>> ReadAllMailsFromDbAsync();
+        IQueryable<Email> ReadAllMailsFromDb();
     }
 }

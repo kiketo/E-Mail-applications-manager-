@@ -1,0 +1,57 @@
+﻿@model EmailViewModel
+
+<h3>All Mails</h3>
+
+<table class="table-hover">
+    <thead class="thead-dark">
+        <tr>
+            <th>DB ID</th>
+            <th>Email DateTime received</th>
+            <th>Sender Name</th>
+            <th>Sender E-mail</th>
+            <th>Subject</th>
+            <th>Status</th>
+            <th>Icon indicating if there any attachments</th>
+            <th>List new emails</th>
+            <th>Email preview button – showing email preview onClick</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var mail in Model.SearchResults)
+        {
+            <tr>
+                <td>@mail.Id</td>
+                <td>@mail.DateReceived</td>
+                <td>@mail.Sender.SenderName</td>
+                <td>@mail.Sender.SenderEmail</td>
+                <td>@mail.Subject</td>
+                <td>@mail.Status.Text</td>
+                <td>
+                    @if (mail.AreAttachments)
+                    {<img src="~/images/attachment.jpg" height="42" width="42">}
+            </td>
+            <td>LIST new mails ???</td>
+            <td><img src="~/images/preview.png" height="42" width="42"></td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="ListMails"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="ListMails"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>
+
+
+

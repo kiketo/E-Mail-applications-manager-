@@ -53,12 +53,12 @@ namespace eMAM.UI
                 .WithSingletonLifetime());
 
             //register MSSQL server
-            //services.AddDbContext<ApplicationDbContext>(options =>
-            //    options.UseSqlServer($"Server={Constants.serverName};Database=eMAM;Trusted_Connection=True;"));
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer($"Server={Constants.serverName};Database=eMAM;Trusted_Connection=True;"));
 
             //register PostGreSQL server
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseNpgsql($"Server=localhost;Port=5432;Database=eMAM;UserId=postgres;Password={Constants.posgrePassword};"));
+            //services.AddDbContext<ApplicationDbContext>(options =>
+            //    options.UseNpgsql($"Server=localhost;Port=5432;Database=eMAM;UserId=postgres;Password={Constants.posgrePassword};"));
 
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -125,6 +125,7 @@ namespace eMAM.UI
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+
             });
         }
 

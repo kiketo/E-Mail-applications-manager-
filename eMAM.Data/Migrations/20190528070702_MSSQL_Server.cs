@@ -1,10 +1,10 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace eMAM.Data.Migrations
 {
-    public partial class Initial : Migration
+    public partial class MSSQL_Server : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -53,7 +53,7 @@ namespace eMAM.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     CustomerEGN = table.Column<int>(nullable: false),
                     CustomerPhoneNumber = table.Column<string>(nullable: true)
                 },
@@ -67,7 +67,7 @@ namespace eMAM.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     SenderEmail = table.Column<string>(nullable: true),
                     SenderName = table.Column<string>(nullable: true)
                 },
@@ -81,7 +81,7 @@ namespace eMAM.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Text = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -94,7 +94,7 @@ namespace eMAM.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     RoleId = table.Column<string>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -115,7 +115,7 @@ namespace eMAM.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     UserId = table.Column<string>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -200,7 +200,7 @@ namespace eMAM.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     GmailIdNumber = table.Column<string>(nullable: true),
                     StatusId = table.Column<int>(nullable: false),
                     Body = table.Column<string>(nullable: true),
@@ -208,6 +208,7 @@ namespace eMAM.Data.Migrations
                     DateReceived = table.Column<DateTime>(nullable: false),
                     Subject = table.Column<string>(nullable: true),
                     CustomerId = table.Column<int>(nullable: true),
+                    MissingApplication = table.Column<bool>(nullable: false),
                     InitialRegistrationInSystemOn = table.Column<DateTime>(nullable: false),
                     SetInCurrentStatusOn = table.Column<DateTime>(nullable: false),
                     SetInTerminalStatusOn = table.Column<DateTime>(nullable: false),
@@ -254,7 +255,7 @@ namespace eMAM.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn),
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     FileName = table.Column<string>(nullable: true),
                     FileSizeInMb = table.Column<double>(nullable: false),
                     EmailId = table.Column<int>(nullable: false)
@@ -279,7 +280,8 @@ namespace eMAM.Data.Migrations
                 name: "RoleNameIndex",
                 table: "AspNetRoles",
                 column: "NormalizedName",
-                unique: true);
+                unique: true,
+                filter: "[NormalizedName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserClaims_UserId",
@@ -305,7 +307,8 @@ namespace eMAM.Data.Migrations
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
-                unique: true);
+                unique: true,
+                filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Attachments_EmailId",
