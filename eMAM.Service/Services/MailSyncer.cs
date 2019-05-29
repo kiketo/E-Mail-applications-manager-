@@ -43,9 +43,9 @@ namespace eMAM.Service.Services
 
                 // save new messages to db
 
-                var service = scope.ServiceProvider.GetRequiredService<ScopedService>();
+                //var service = scope.ServiceProvider.GetRequiredService<ScopedService>();
 
-                this.logger.LogInformation("Scoped service id: " + service.Id);
+                //this.logger.LogInformation("Scoped service id: " + service.Id);
             }
         }
 
