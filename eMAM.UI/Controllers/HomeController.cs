@@ -9,7 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace eMAM.UI.Controllers
 {
@@ -31,6 +33,25 @@ namespace eMAM.UI.Controllers
         {
             return View();
         }
+
+
+
+        public IActionResult GoogleLogin (string code)
+        {
+            var sb = new StringBuilder()
+                .Append("https://accounts.google.com/o/oauth2/v2/auth?")
+                .Append("scope=https://www.googleapis.com/auth/gmail.readonly")
+                .Append("&access_type=offline")
+                .Append("&include_granted_scopes=true")
+                .Append("&response_type=code")
+                .Append("&redirect_uri=http://localhost:500/google-callback")
+                .Append("&client_id=667407283017-hjbtv4a5sjr3garaprkidqo36qs4u7o3.apps.googleusercontent.com");
+
+            //var url = HttpUtility.UrlEncode(sb.ToString());
+
+            return Redirect(sb.ToString());
+        }
+
 
         public async Task<IActionResult> GetMails()
         {

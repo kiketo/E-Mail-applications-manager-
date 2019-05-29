@@ -1,7 +1,7 @@
 ﻿using eMAM.Data;
 using eMAM.Data.Models;
 using eMAM.Data.Utills;
-using eMAM.Service;
+using eMAM.Service.Services;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Gmail.v1;
 using Google.Apis.Services;
@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -80,6 +79,8 @@ namespace eMAM.UI
 
             services.AddRouting(options => options.LowercaseUrls = true);
 
+
+            services.AddHostedService<MailSyncer>();
 
             //registering gmail's api
             services.AddScoped<GmailService>(service =>
