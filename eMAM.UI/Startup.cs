@@ -83,16 +83,16 @@ namespace eMAM.UI
             services.AddHostedService<MailSyncer>();
 
             //registering gmail's api
-            services.AddScoped<GmailService>(service =>
-            {
-                var initializer = new BaseClientService.Initializer()
-                {
-                    HttpClientInitializer = GetGoogleCredentials(),
-                    ApplicationName = "TBI Project",
-                };
+            //services.AddScoped<GmailService>(service =>
+            //{
+            //    var initializer = new BaseClientService.Initializer()
+            //    {
+            //        HttpClientInitializer = GetGoogleCredentials(),
+            //        ApplicationName = "TBI Project",
+            //    };
 
-                return new GmailService(initializer);
-            });
+            //    return new GmailService(initializer);
+            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

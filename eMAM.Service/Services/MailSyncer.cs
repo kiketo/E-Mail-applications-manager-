@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using eMAM.Service.Contracts;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
@@ -26,7 +27,7 @@ namespace eMAM.Service.Services
             this.logger.LogInformation("Timed Background Service is starting.");
 
             this.timer = new Timer(GetNewEmailsFromGmail, null, TimeSpan.Zero,
-                TimeSpan.FromSeconds(2));
+                TimeSpan.FromSeconds(60));
 
             return Task.CompletedTask;
         }
@@ -43,7 +44,8 @@ namespace eMAM.Service.Services
 
                 // save new messages to db
 
-                //var service = scope.ServiceProvider.GetRequiredService<ScopedService>();
+                var service = scope.ServiceProvider.GetRequiredService<IGmailApiService>();
+                service.DownloadNewMailsWithoutBodyAsync();
 
                 //this.logger.LogInformation("Scoped service id: " + service.Id);
             }

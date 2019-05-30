@@ -11,6 +11,8 @@ namespace eMAM.Service.Contracts
     {
         Task DownloadNewMailsWithoutBodyAsync();
 
+        Task DownloadBodyToMail(string messageId);
+
         IQueryable<Email> ReadAllMailsFromDb();
     }
 }

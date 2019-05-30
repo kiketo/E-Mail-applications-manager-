@@ -150,7 +150,6 @@ namespace eMAM.Service.Contracts
                 default:
                     break;
             }
-
         }
 
         private async Task ParseMailWithAttachments(Message message)
