@@ -28,6 +28,8 @@ namespace eMAM.Service.Contracts
             this.service = service ?? throw new ArgumentNullException(nameof(service));
         }
 
+
+
         public async Task RenewAccessTokenAsync()
         {
             var refreshToken = this.context.GmailUserData

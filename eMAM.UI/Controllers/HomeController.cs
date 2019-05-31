@@ -38,8 +38,6 @@ namespace eMAM.UI.Controllers
             return View();
         }
 
-
-
         public IActionResult GoogleLogin()
         {
             var sb = new StringBuilder()
