@@ -1,11 +1,14 @@
 ﻿using eMAM.Data;
 using eMAM.Data.Models;
+using eMAM.Service.DTO;
 using Google.Apis.Gmail.v1;
 using Google.Apis.Gmail.v1.Data;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,13 +17,49 @@ namespace eMAM.Service.Contracts
     public class GmailApiService : IGmailApiService
     {
         private readonly ApplicationDbContext context;
+        private readonly IGmailUserDataService gmailUserDataService;
         private readonly GmailService service;
         private readonly string userId = "me";
 
-        public GmailApiService(ApplicationDbContext context, GmailService service)
+        public GmailApiService(ApplicationDbContext context, IGmailUserDataService gmailUserDataService, GmailService service)
         {
             this.context = context ?? throw new ArgumentNullException(nameof(context));
+            this.gmailUserDataService = gmailUserDataService ?? throw new ArgumentNullException(nameof(gmailUserDataService));
             this.service = service ?? throw new ArgumentNullException(nameof(service));
+        }
+
+        public async Task RenewAccessTokenAsync()
+        {
+            var refreshToken = this.context.GmailUserData
+                .FirstOrDefault()
+                .RefreshToken;
+
+            var client = new HttpClient();
+            var content = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string,string>("client_id","667407283017-hjbtv4a5sjr3garaprkidqo36qs4u7o3.apps.googleusercontent.com"),
+                new KeyValuePair<string,string>("client_secret","cH5tErPh_uqDZDmp1F1aDNIs"),
+                new KeyValuePair<string,string>("refresh_token",refreshToken),
+                new KeyValuePair<string,string>("grant_type","refresh_token"),
+            });
+
+            var res = await client.PostAsync("https://oauth2.googleapis.com/token", content);
+
+            if (!res.IsSuccessStatusCode)
+            {
+               throw new ArgumentException("Access token did not refresh correctly!");
+            }
+            else
+            {
+                var userDataDTO = JsonConvert.DeserializeObject<GmailUserDataDTO>(await res.Content.ReadAsStringAsync());
+                var userData = new Data.Models.GmailUserData
+                {
+                    AccessToken = userDataDTO.AccessToken,
+                    ExpiresAt = DateTime.Now.AddSeconds(userDataDTO.ExpiresInSec)
+                };
+
+                await this.gmailUserDataService.UpdateAsync(userData);
+            }
         }
 
         public async Task DownloadNewMailsWithoutBodyAsync()

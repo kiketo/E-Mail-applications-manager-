@@ -1,5 +1,6 @@
 ﻿using eMAM.Data.Models;
 using eMAM.Service.Contracts;
+using eMAM.Service.DTO;
 using eMAM.UI.Mappers;
 using eMAM.UI.Models;
 using eMAM.UI.Utills;
@@ -21,12 +22,14 @@ namespace eMAM.UI.Controllers
         private readonly IGmailApiService gmailApiService;
         private readonly GmailService service;
         private IViewModelMapper<Email, EmailViewModel> emailViewModelMapper;
+        private readonly IGmailUserDataService gmailUserDataService;
 
-        public HomeController(IGmailApiService gmailApiService, GmailService service, IViewModelMapper<Email, EmailViewModel> emailViewModelMapper)
+        public HomeController(IGmailApiService gmailApiService, GmailService service, IViewModelMapper<Email, EmailViewModel> emailViewModelMapper, IGmailUserDataService gmailUserDataService)
         {
             this.gmailApiService = gmailApiService ?? throw new ArgumentNullException(nameof(gmailApiService));
             this.service = service ?? throw new ArgumentNullException(nameof(service));
             this.emailViewModelMapper = emailViewModelMapper ?? throw new ArgumentNullException(nameof(emailViewModelMapper));
+            this.gmailUserDataService = gmailUserDataService ?? throw new ArgumentNullException(nameof(gmailUserDataService));
         }
 
         [Authorize]
@@ -37,7 +40,7 @@ namespace eMAM.UI.Controllers
 
 
 
-        public IActionResult GoogleLogin(string code)
+        public IActionResult GoogleLogin()
         {
             var sb = new StringBuilder()
                 .Append("https://accounts.google.com/o/oauth2/v2/auth?")
@@ -74,13 +77,21 @@ namespace eMAM.UI.Controllers
             }
             else
             {
-                var userData = JsonConvert.DeserializeObject<UserData>(await res.Content.ReadAsStringAsync());
+                var userDataDTO = JsonConvert.DeserializeObject<GmailUserDataDTO>(await res.Content.ReadAsStringAsync());
+                var userData = new Data.Models.GmailUserData
+                {
+                    AccessToken = userDataDTO.AccessToken,
+                    RefreshToken = userDataDTO.RefreshToken,
+                    ExpiresAt = DateTime.Now.AddSeconds(userDataDTO.ExpiresInSec)
+                };
+
+                await this.gmailUserDataService.CreateAsync(userData);
+
                 return Json(await TryReadGmail(client, userData));
             }
-
         }
 
-        public async Task<bool> TryReadGmail (HttpClient client, UserData userData)
+        public async Task<bool> TryReadGmail (HttpClient client, Data.Models.GmailUserData userData)
         {
             client.DefaultRequestHeaders.Add("Authorization", "Bearer " + userData.AccessToken);
 
@@ -91,21 +102,12 @@ namespace eMAM.UI.Controllers
             return res.IsSuccessStatusCode;
         }
 
-
-        public class UserData
+        public async Task<IActionResult> RenewAccesToken()
         {
-
-            [JsonProperty("access_token")]
-            public string AccessToken { get; set; }
-
-            [JsonProperty("refresh_token")]
-            public string RefreshToken { get; set; }
-
-            [JsonProperty("expires_in")]
-            public string ExpiresInSec { get; set; }
+            await this.gmailApiService.RenewAccessTokenAsync();
+            var res = this.gmailUserDataService.Get();
+            return Json(res.ExpiresAt);
         }
-
-
 
         public async Task<IActionResult> GetMails()
         {
@@ -143,7 +145,28 @@ namespace eMAM.UI.Controllers
             return View(model);
         }
 
+        public async Task<IActionResult> DownloadMailsAsJson()
+        {
+            var accessToken = this.gmailUserDataService.Get().AccessToken;
+            var client = new HttpClient();
+            var header = new StringBuilder()
+                .Append("https://www.googleapis.com/gmail/v1/users/me/messages?access_token=")
+                .Append(accessToken);
+            var res=await client.GetAsync(header.ToString());
 
+
+
+
+
+
+
+
+
+
+            return Json(res.IsSuccessStatusCode);
+
+
+        }
 
 
 

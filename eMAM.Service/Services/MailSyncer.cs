@@ -3,8 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,14 +10,14 @@ namespace eMAM.Service.Services
 {
     public class MailSyncer : IHostedService
     {
-        private readonly ILogger logger;
+        private readonly ILogger<MailSyncer> logger;
         private readonly IServiceProvider serviceProvider;
         private Timer timer;
 
         public MailSyncer(ILogger<MailSyncer> logger, IServiceProvider serviceProvider)
         {
-            this.logger = logger;
-            this.serviceProvider = serviceProvider;
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -36,16 +34,25 @@ namespace eMAM.Service.Services
         {
             using (var scope = this.serviceProvider.CreateScope())
             {
-                // check access_token expiration
+                var gmailUserService = scope.ServiceProvider.GetRequiredService<IGmailUserDataService>();
 
-                // renew with refresh token if necessary
+
+                var gmailApiService = scope.ServiceProvider.GetRequiredService<IGmailApiService>();
+
+                gmailApiService.DownloadNewMailsWithoutBodyAsync().GetAwaiter().GetResult(); //TODO not awaited async???
+
+                //if ((userData.ExpiresAt - DateTime.Now).TotalMinutes < 5)
+                //{
+                //    var newToken = await gmailApiService.RenewAccessTokenAsync();
+                //    gmailUserDataService.UpdateAsync(newToken);
+                //}
+
 
                 // call gmail with valid token
 
                 // save new messages to db
 
-                var service = scope.ServiceProvider.GetRequiredService<IGmailApiService>();
-                service.DownloadNewMailsWithoutBodyAsync();
+                //service.RefreshTokenExpiration();
 
                 //this.logger.LogInformation("Scoped service id: " + service.Id);
             }
@@ -60,6 +67,6 @@ namespace eMAM.Service.Services
             return Task.CompletedTask;
         }
 
-        
+
     }
 }

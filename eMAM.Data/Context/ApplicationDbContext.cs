@@ -24,6 +24,8 @@ namespace eMAM.Data
 
         public DbSet<Status> Statuses { get; set; }
 
+        public DbSet<GmailUserData> GmailUserData { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

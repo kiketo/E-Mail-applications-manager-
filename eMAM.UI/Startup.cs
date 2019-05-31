@@ -1,7 +1,9 @@
 ﻿using eMAM.Data;
 using eMAM.Data.Models;
 using eMAM.Data.Utills;
+using eMAM.Service.Contracts;
 using eMAM.Service.Services;
+using eMAM.UI.Utills;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Gmail.v1;
 using Google.Apis.Services;
@@ -45,6 +47,7 @@ namespace eMAM.UI
                 .AsImplementedInterfaces()
                 .WithScopedLifetime());
 
+
             //registers all mappers
             services.Scan(scan => scan.FromCallingAssembly()
                 .AddClasses(classes => classes.Where(type => type.Name.EndsWith("Mapper")))
@@ -62,6 +65,8 @@ namespace eMAM.UI
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddGmailService();
 
             //TODO
             //services.Configure<RazorViewEngineOptions>(options =>
@@ -130,24 +135,24 @@ namespace eMAM.UI
             });
         }
 
-        private UserCredential GetGoogleCredentials()
-        {
-            //string applicationName = "E-Mail applications manager";//"Gmail API .NET Quickstart";
-            string[] scopes = { GmailService.Scope.GmailReadonly };
+        //private UserCredential GetGoogleCredentials()
+        //{
+        //    //string applicationName = "E-Mail applications manager";//"Gmail API .NET Quickstart";
+        //    string[] scopes = { GmailService.Scope.GmailReadonly };
 
-            using (var stream =
-                new FileStream("credentials.json", FileMode.Open, FileAccess.Read))
-            {
-                // The file token.json stores the user's access and refresh tokens, and is created
-                // automatically when the authorization flow completes for the first time.
-                string credPath = "token.json";
-                return GoogleWebAuthorizationBroker.AuthorizeAsync(
-                    GoogleClientSecrets.Load(stream).Secrets,
-                    scopes,
-                    "user",
-                    CancellationToken.None,
-                    new FileDataStore(credPath, true)).Result;
-            }
-        }
+        //    using (var stream =
+        //        new FileStream("credentials1.json", FileMode.Open, FileAccess.Read))
+        //    {
+        //        // The file token.json stores the user's access and refresh tokens, and is created
+        //        // automatically when the authorization flow completes for the first time.
+        //        string credPath = "token.json";
+        //        return GoogleWebAuthorizationBroker.AuthorizeAsync(
+        //            GoogleClientSecrets.Load(stream).Secrets,
+        //            scopes,
+        //            "user",
+        //            CancellationToken.None,
+        //            new FileDataStore(credPath, true)).Result;
+        //    }
+        //}
     }
 }

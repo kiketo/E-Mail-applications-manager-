@@ -14,5 +14,7 @@ namespace eMAM.Service.Contracts
         Task DownloadBodyToMail(string messageId);
 
         IQueryable<Email> ReadAllMailsFromDb();
+
+        Task RenewAccessTokenAsync();
     }
 }
