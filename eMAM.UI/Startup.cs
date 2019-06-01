@@ -1,6 +1,5 @@
 ﻿using eMAM.Data;
 using eMAM.Data.Models;
-using eMAM.Data.Utills;
 using eMAM.Service.Services;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Gmail.v1;
@@ -51,9 +50,10 @@ namespace eMAM.UI
                 .AsImplementedInterfaces()
                 .WithSingletonLifetime());
 
-            //register MSSQL server
+            //register PG server
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer($"Server={Constants.serverName};Database=eMAM;Trusted_Connection=True;"));
+    options.UseNpgsql(
+        Configuration.GetConnectionString("DefaultConnection")));
 
             //register PostGreSQL server
             //services.AddDbContext<ApplicationDbContext>(options =>

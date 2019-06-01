@@ -29,7 +29,7 @@ namespace eMAM.UI.Controllers
             this.emailViewModelMapper = emailViewModelMapper ?? throw new ArgumentNullException(nameof(emailViewModelMapper));
         }
 
-        [Authorize]
+        //[Authorize]
         public IActionResult Index()
         {
             return View();
