@@ -25,7 +25,7 @@ namespace eMAM.Service.Services
             this.logger.LogInformation("Timed Background Service is starting.");
 
             this.timer = new Timer(GetNewEmailsFromGmail, null, TimeSpan.Zero,
-                TimeSpan.FromSeconds(60));
+                TimeSpan.FromSeconds(300));
 
             return Task.CompletedTask;
         }
@@ -37,9 +37,9 @@ namespace eMAM.Service.Services
                 var gmailUserService = scope.ServiceProvider.GetRequiredService<IGmailUserDataService>();
 
 
-                var gmailApiService = scope.ServiceProvider.GetRequiredService<IGmailApiService>();
+                //var gmailApiService = scope.ServiceProvider.GetRequiredService<IGmailApiService>();
 
-                gmailApiService.DownloadNewMailsWithoutBodyAsync().GetAwaiter().GetResult(); //TODO not awaited async???
+                //gmailApiService.DownloadNewMailsWithoutBodyAsync().GetAwaiter().GetResult(); 
 
                 //if ((userData.ExpiresAt - DateTime.Now).TotalMinutes < 5)
                 //{

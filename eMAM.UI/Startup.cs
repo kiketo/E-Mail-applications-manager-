@@ -1,13 +1,8 @@
 ﻿using eMAM.Data;
 using eMAM.Data.Models;
 using eMAM.Data.Utills;
-using eMAM.Service.Contracts;
 using eMAM.Service.Services;
 using eMAM.UI.Utills;
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Gmail.v1;
-using Google.Apis.Services;
-using Google.Apis.Util.Store;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -15,9 +10,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System.IO;
+using System;
 using System.Reflection;
-using System.Threading;
+using Newtonsoft.Json.Serialization;
 
 namespace eMAM.UI
 {
@@ -54,6 +49,10 @@ namespace eMAM.UI
                 .AsImplementedInterfaces()
                 .WithSingletonLifetime());
 
+            //services.AddDataProtection()
+            //    .PersistKeysToAzureBlobStorage(new Uri("<blobUriWithSasToken>"))
+            //    .ProtectKeysWithAzureKeyVault("<keyIdentifier>", "<clientId>", "<clientSecret>");
+
             //register MSSQL server
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer($"Server={Constants.serverName};Database=eMAM;Trusted_Connection=True;"));
@@ -66,7 +65,7 @@ namespace eMAM.UI
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddGmailService();
+            //services.AddGmailService();
 
             //TODO
             //services.Configure<RazorViewEngineOptions>(options =>
@@ -80,7 +79,11 @@ namespace eMAM.UI
             //services.AddTransient<IEmailSender, EmailSender>();
 
             services.AddMvc()
-                .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_2);
+                .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_2)
+                .AddJsonOptions(options=>options.SerializerSettings.ContractResolver=new DefaultContractResolver());
+
+            //Add Kendo UI service to theservice container
+            services.AddKendo();
 
             services.AddRouting(options => options.LowercaseUrls = true);
 

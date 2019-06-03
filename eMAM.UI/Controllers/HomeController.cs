@@ -19,15 +19,15 @@ namespace eMAM.UI.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IGmailApiService gmailApiService;
-        private readonly GmailService service;
+        //private readonly IGmailApiService gmailApiService;
+        //private readonly GmailService service;
         private IViewModelMapper<Email, EmailViewModel> emailViewModelMapper;
         private readonly IGmailUserDataService gmailUserDataService;
 
-        public HomeController(IGmailApiService gmailApiService, GmailService service, IViewModelMapper<Email, EmailViewModel> emailViewModelMapper, IGmailUserDataService gmailUserDataService)
+        public HomeController(IViewModelMapper<Email, EmailViewModel> emailViewModelMapper, IGmailUserDataService gmailUserDataService)
         {
-            this.gmailApiService = gmailApiService ?? throw new ArgumentNullException(nameof(gmailApiService));
-            this.service = service ?? throw new ArgumentNullException(nameof(service));
+            //this.gmailApiService = gmailApiService ?? throw new ArgumentNullException(nameof(gmailApiService));
+           // this.service = service ?? throw new ArgumentNullException(nameof(service));
             this.emailViewModelMapper = emailViewModelMapper ?? throw new ArgumentNullException(nameof(emailViewModelMapper));
             this.gmailUserDataService = gmailUserDataService ?? throw new ArgumentNullException(nameof(gmailUserDataService));
         }
@@ -100,48 +100,48 @@ namespace eMAM.UI.Controllers
             return res.IsSuccessStatusCode;
         }
 
-        public async Task<IActionResult> RenewAccesToken()
-        {
-            await this.gmailApiService.RenewAccessTokenAsync();
-            var res = this.gmailUserDataService.Get();
-            return Json(res.ExpiresAt);
-        }
+        //public async Task<IActionResult> RenewAccesToken()
+        //{
+        //    await this.gmailApiService.RenewAccessTokenAsync();
+        //    var res = this.gmailUserDataService.Get();
+        //    return Json(res.ExpiresAt);
+        //}
 
-        public async Task<IActionResult> GetMails()
-        {
-            await this.gmailApiService.DownloadNewMailsWithoutBodyAsync();
+        //public async Task<IActionResult> GetMails()
+        //{
+        //    await this.gmailApiService.DownloadNewMailsWithoutBodyAsync();
 
-            //EmailViewModel model = new EmailViewModel();     
+        //    //EmailViewModel model = new EmailViewModel();     
 
-            return View();
-        }
+        //    return View();
+        //}
 
-        public async Task<IActionResult> ListMails(int? pageNumber)
-        {
+        //public async Task<IActionResult> ListMails(int? pageNumber)
+        //{
 
-            var mails = this.gmailApiService.ReadAllMailsFromDb();
+        //    var mails = this.gmailApiService.ReadAllMailsFromDb();
 
 
-            var pageSize = 10;
+        //    var pageSize = 10;
 
-            var page = await PaginatedList<Email>.CreateAsync(mails, pageNumber ?? 1, pageSize);
+        //    var page = await PaginatedList<Email>.CreateAsync(mails, pageNumber ?? 1, pageSize);
 
-            EmailViewModel model = new EmailViewModel
-            {
-                HasNextPage = page.HasNextPage,
-                HasPreviousPage = page.HasPreviousPage,
-                PageIndex = page.PageIndex,
-                TotalPages = page.TotalPages
-            };
+        //    EmailViewModel model = new EmailViewModel
+        //    {
+        //        HasNextPage = page.HasNextPage,
+        //        HasPreviousPage = page.HasPreviousPage,
+        //        PageIndex = page.PageIndex,
+        //        TotalPages = page.TotalPages
+        //    };
 
-            foreach (var mail in page)
-            {
-                var element = this.emailViewModelMapper.MapFrom(mail);
-                model.SearchResults.Add(element);
-            }
+        //    foreach (var mail in page)
+        //    {
+        //        var element = this.emailViewModelMapper.MapFrom(mail);
+        //        model.SearchResults.Add(element);
+        //    }
 
-            return View(model);
-        }
+        //    return View(model);
+        //}
 
         public async Task<IActionResult> DownloadMailsAsJson()
         {
