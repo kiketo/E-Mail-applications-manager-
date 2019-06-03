@@ -32,7 +32,7 @@ namespace eMAM.UI.Utills
                     var tokenResponse = new TokenResponse()
                     {
                         AccessToken = userData.AccessToken, // не го бърка
-                        //RefreshToken = userData.RefreshToken // трябва да е валиден
+                        RefreshToken = userData.RefreshToken // трябва да е валиден
                     };
 
                     return new GmailService(new BaseClientService.Initializer()

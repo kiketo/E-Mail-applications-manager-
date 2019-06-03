@@ -34,25 +34,20 @@ namespace eMAM.Service.Services
         {
             using (var scope = this.serviceProvider.CreateScope())
             {
-                var gmailUserService = scope.ServiceProvider.GetRequiredService<IGmailUserDataService>();
+                var gmailUserDataService = scope.ServiceProvider.GetRequiredService<IGmailUserDataService>();
 
+                var gmailApiService = scope.ServiceProvider.GetRequiredService<IGmailApiService>();
 
-                //var gmailApiService = scope.ServiceProvider.GetRequiredService<IGmailApiService>();
+                var userData = gmailUserDataService.Get();
 
-                //gmailApiService.DownloadNewMailsWithoutBodyAsync().GetAwaiter().GetResult(); 
+                if ((userData.ExpiresAt - DateTime.Now).TotalMinutes < 0)
+                {
+                    var newToken = gmailApiService.RenewAccessTokenAsync().GetAwaiter().GetResult();
+                    gmailUserDataService.UpdateAsync(newToken);
+                }
 
-                //if ((userData.ExpiresAt - DateTime.Now).TotalMinutes < 5)
-                //{
-                //    var newToken = await gmailApiService.RenewAccessTokenAsync();
-                //    gmailUserDataService.UpdateAsync(newToken);
-                //}
+                gmailApiService.DownloadNewMailsWithoutBodyAsync().GetAwaiter().GetResult(); 
 
-
-                // call gmail with valid token
-
-                // save new messages to db
-
-                //service.RefreshTokenExpiration();
 
                 //this.logger.LogInformation("Scoped service id: " + service.Id);
             }

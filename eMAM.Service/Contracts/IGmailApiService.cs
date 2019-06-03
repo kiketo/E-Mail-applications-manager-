@@ -15,6 +15,6 @@ namespace eMAM.Service.Contracts
 
         IQueryable<Email> ReadAllMailsFromDb();
 
-        Task RenewAccessTokenAsync();
+        Task<GmailUserData> RenewAccessTokenAsync();
     }
 }

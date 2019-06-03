@@ -65,7 +65,7 @@ namespace eMAM.UI
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            //services.AddGmailService();
+            services.AddGmailService();
 
             //TODO
             //services.Configure<RazorViewEngineOptions>(options =>
@@ -127,9 +127,9 @@ namespace eMAM.UI
 
             app.UseMvc(routes =>
             {
-                //routes.MapRoute(
-                //  name: "areas",
-                //  template: "{area:exists}/{controller=Admin}/{action=Dashboard}/{id?}");
+                routes.MapRoute(
+                  name: "areas",
+                  template: "{area:exists}/{controller=Admin}/{action=Dashboard}/{id?}");
 
                 routes.MapRoute(
                     name: "default",
