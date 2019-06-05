@@ -28,12 +28,18 @@
                 <td>@mail.Status.Text</td>
                 <td>
                     @if (mail.AreAttachments)
-                    {<img src="~/images/attachment.jpg" height="42" width="42">}
-            </td>
-            <td>LIST new mails ???</td>
-            <td><img src="~/images/preview.png" height="42" width="42"></td>
-        </tr>
-    }
+                    {<img src="~/images/attachment.png" height="42" width="42">}
+                </td>
+                <td>LIST new mails ???</td>
+                <td>
+                    <form asp-controller="Home" asp-action="PreviewMail" asp-route-id="@mail.GmailIdNumber" method="get">
+                        <button type="submit" class="btn btn-primary">
+                            <img src="~/images/preview.png" height="30" width="30">
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 
@@ -42,12 +48,12 @@
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 }
 
-<a asp-action="ListMails"
+<a asp-action="ListAllMails"
    asp-route-pageNumber="@(Model.PageIndex - 1)"
    class="btn btn-default @prevDisabled">
     Previous
 </a>
-<a asp-action="ListMails"
+<a asp-action="ListAllMails"
    asp-route-pageNumber="@(Model.PageIndex + 1)"
    class="btn btn-default @nextDisabled">
     Next

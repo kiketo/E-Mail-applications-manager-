@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using eMAM.Service.Utills;
+﻿using eMAM.Service.Utills;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 

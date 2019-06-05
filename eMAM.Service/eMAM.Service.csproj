@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Contracts\IEmailSender.cs" />
-    <Compile Remove="Services\EmailSender.cs" />
+    <Compile Remove="DbServices\EmailSender.cs" />
+    <Compile Remove="Utills\AccessTokenRefresher.cs" />
   </ItemGroup>
 
   <ItemGroup>

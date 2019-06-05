@@ -1,8 +1,7 @@
 ﻿using eMAM.Data;
 using eMAM.Data.Models;
 using eMAM.Data.Utills;
-using eMAM.Service.Services;
-using eMAM.UI.Utills;
+using eMAM.Service.Utills;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -10,9 +9,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Reflection;
 using Newtonsoft.Json.Serialization;
+using System.Reflection;
 
 namespace eMAM.UI
 {
@@ -65,8 +63,6 @@ namespace eMAM.UI
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddGmailService();
-
             //TODO
             //services.Configure<RazorViewEngineOptions>(options =>
             //{
@@ -80,27 +76,14 @@ namespace eMAM.UI
 
             services.AddMvc()
                 .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_2)
-                .AddJsonOptions(options=>options.SerializerSettings.ContractResolver=new DefaultContractResolver());
+                .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
 
-            //Add Kendo UI service to theservice container
+            //Add Kendo UI service to the service container
             services.AddKendo();
 
             services.AddRouting(options => options.LowercaseUrls = true);
 
-
             services.AddHostedService<MailSyncer>();
-
-            //registering gmail's api
-            //services.AddScoped<GmailService>(service =>
-            //{
-            //    var initializer = new BaseClientService.Initializer()
-            //    {
-            //        HttpClientInitializer = GetGoogleCredentials(),
-            //        ApplicationName = "TBI Project",
-            //    };
-
-            //    return new GmailService(initializer);
-            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -137,25 +120,5 @@ namespace eMAM.UI
 
             });
         }
-
-        //private UserCredential GetGoogleCredentials()
-        //{
-        //    //string applicationName = "E-Mail applications manager";//"Gmail API .NET Quickstart";
-        //    string[] scopes = { GmailService.Scope.GmailReadonly };
-
-        //    using (var stream =
-        //        new FileStream("credentials1.json", FileMode.Open, FileAccess.Read))
-        //    {
-        //        // The file token.json stores the user's access and refresh tokens, and is created
-        //        // automatically when the authorization flow completes for the first time.
-        //        string credPath = "token.json";
-        //        return GoogleWebAuthorizationBroker.AuthorizeAsync(
-        //            GoogleClientSecrets.Load(stream).Secrets,
-        //            scopes,
-        //            "user",
-        //            CancellationToken.None,
-        //            new FileDataStore(credPath, true)).Result;
-        //    }
-        //}
     }
 }

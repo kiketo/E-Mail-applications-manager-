@@ -33,6 +33,7 @@ namespace eMAM.Service.Utills
                 await userManager.AddToRoleAsync(superAdminUser, "SuperAdmin");
             }
         }
+
         public static async Task SeedDatabaseWithStatus(IWebHost host)
         {
             using (var scope = host.Services.CreateScope())

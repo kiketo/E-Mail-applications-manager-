@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="token.json\**" />
+    <Content Remove="token.json\**" />
+    <EmbeddedResource Remove="token.json\**" />
+    <None Remove="token.json\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Extensions\EmailSenderExtensions.cs" />
   </ItemGroup>
 

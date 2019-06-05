@@ -5,8 +5,8 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using eMAM.Data.Models;
+using eMAM.Service.DbServices;
 using eMAM.Service.DTO;
-using eMAM.Service.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 //TODO to finalize
@@ -63,21 +63,21 @@ namespace eMAM.UI.Areas.SuperAdmin.Controllers
             else
             {
                 var userDataDTO = JsonConvert.DeserializeObject<GmailUserDataDTO>(await res.Content.ReadAsStringAsync());
-                var userData = new GmailUserData
-                {
-                    AccessToken = userDataDTO.AccessToken,
-                    RefreshToken = userDataDTO.RefreshToken,
-                    ExpiresAt = DateTime.Now.AddSeconds(userDataDTO.ExpiresInSec)
-                };
+                //var userData = new GmailUserData
+                //{
+                //    AccessToken = userDataDTO.AccessToken,
+                //    RefreshToken = userDataDTO.RefreshToken,
+                //    ExpiresAt = DateTime.Now.AddSeconds(userDataDTO.ExpiresInSec)
+                //};
 
-                await this.gmailUserDataService.CreateAsync(userData);
+                await this.gmailUserDataService.CreateAsync(userDataDTO);
 
-                return Json(await TryReadGmail(client, userData));
+                return Json(await TryReadGmail(client, userDataDTO));
             }
         }
-        public async Task<bool> TryReadGmail(HttpClient client, Data.Models.GmailUserData userData)
+        public async Task<bool> TryReadGmail(HttpClient client, GmailUserDataDTO userDataDTO)
         {
-            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + userData.AccessToken);
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + userDataDTO.AccessToken);
 
             var res = await client.GetAsync("https://www.googleapis.com/gmail/v1/users/me/messages");
 
