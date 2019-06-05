@@ -107,17 +107,17 @@ namespace eMAM.Service.Utills
                     }
 
                     List<Attachment> attachments = new List<Attachment>();
-                    if (firstMessage.Payload.MimeType == "multipart/mixed")
-                    {
-                        var partsWithAtt = firstMessage.Payload.Parts.Skip(1);
-                        foreach (var part in partsWithAtt)
-                        {
-                            Attachment newAttachment = attachmentService
-                                                    .AddAttachmentAsync(part.FileName, part.Body.SizeInBytes)
-                                                    .GetAwaiter().GetResult();
-                        }
-                    }
-                    emailService.AddEmailAsync(date,attachments,messageId,sender,status,subject).GetAwaiter().GetResult();
+                    //if (firstMessage.Payload.MimeType == "multipart/mixed")
+                    //{
+                    //    var partsWithAtt = firstMessage.Payload.Parts.Skip(1);
+                    //    foreach (var part in partsWithAtt)
+                    //    {
+                    //        Attachment newAttachment = attachmentService
+                    //                                .AddAttachmentAsync(part.FileName, part.Body.SizeInBytes)
+                    //                                .GetAwaiter().GetResult();
+                    //    }
+                    //}
+                    emailService.AddEmailAsync(date, attachments, messageId, sender,status,subject).GetAwaiter().GetResult();
 
                     gmailMessagesList.Messages.RemoveAt(0);
                     countNewMails--;

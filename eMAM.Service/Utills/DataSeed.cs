@@ -3,6 +3,7 @@ using eMAM.Data.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -77,6 +78,30 @@ namespace eMAM.Service.Utills
                 await dbContext.Statuses.AddAsync(rejected);
                 await dbContext.SaveChangesAsync();
             }
+
+        }
+        public static async Task SeedToken(IWebHost host)
+        {
+            using (var scope = host.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                if (dbContext.GmailUserData.Any())
+                {
+                    return;
+                }
+
+                var tokenData = new GmailUserData
+                {
+                    AccessToken = "ya29.GlwfB1dRZP7g9yaz5sYZF5CaGwZaWMBlv7p9GTd8fktr4UQkbP2YRMF_hJCba6e7_IuRbMq0pWmdBzhaBXo4RldV8PvcOs7wngP1De7oPw343R1833QBr0tf3prAlw",
+                    RefreshToken = "1/BHFfhoG1zZqGPqn8bNB8q6d79zs_MChxVPx2OYP_-m6wJSJ9_XzAXNTlGsqkv9xE",
+                    ExpiresAt = DateTime.Parse("2019-06-05 21:48:05.503351")
+                };
+
+               
+                await dbContext.GmailUserData.AddAsync(tokenData);
+                await dbContext.SaveChangesAsync();
+            }
+
         }
     }
 }

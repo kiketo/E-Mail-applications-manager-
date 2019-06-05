@@ -1,6 +1,5 @@
 ﻿using eMAM.Data;
 using eMAM.Data.Models;
-using eMAM.Data.Utills;
 using eMAM.Service.Utills;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -51,9 +50,10 @@ namespace eMAM.UI
             //    .PersistKeysToAzureBlobStorage(new Uri("<blobUriWithSasToken>"))
             //    .ProtectKeysWithAzureKeyVault("<keyIdentifier>", "<clientId>", "<clientSecret>");
 
-            //register MSSQL server
+            //register PG server
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer($"Server={Constants.serverName};Database=eMAM;Trusted_Connection=True;"));
+    options.UseNpgsql(
+        Configuration.GetConnectionString("DefaultConnection")));
 
             //register PostGreSQL server
             //services.AddDbContext<ApplicationDbContext>(options =>
@@ -79,7 +79,7 @@ namespace eMAM.UI
                 .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
 
             //Add Kendo UI service to the service container
-            services.AddKendo();
+          //  services.AddKendo();
 
             services.AddRouting(options => options.LowercaseUrls = true);
 
