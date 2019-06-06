@@ -1,12 +1,14 @@
 ﻿using eMAM.Data.Models;
 using eMAM.Service.DbServices.Contracts;
 using eMAM.Service.GmailServices.Contracts;
+using eMAM.Service.UserServices.Contracts;
 using eMAM.UI.Mappers;
 using eMAM.UI.Models;
 using eMAM.UI.Utills;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
@@ -18,13 +20,21 @@ namespace eMAM.UI.Controllers
         private readonly IGmailUserDataService gmailUserDataService;
         private readonly IEmailService emailService;
         private IViewModelMapper<Email, EmailViewModel> emailViewModelMapper;
+        private readonly IUserService userService;
 
-        public HomeController(IGmailApiService gmailApiService, IGmailUserDataService gmailUserDataService, IEmailService emailDbService, IViewModelMapper<Email, EmailViewModel> emailViewModelMapper)
+
+        public HomeController(
+            IGmailApiService gmailApiService, 
+            IGmailUserDataService gmailUserDataService, 
+            IEmailService emailDbService, 
+            IViewModelMapper<Email, EmailViewModel> emailViewModelMapper, 
+            IUserService userService)
         {
             this.gmailApiService = gmailApiService ?? throw new ArgumentNullException(nameof(gmailApiService));
             this.gmailUserDataService = gmailUserDataService ?? throw new ArgumentNullException(nameof(gmailUserDataService));
             this.emailService = emailDbService ?? throw new ArgumentNullException(nameof(emailDbService));
             this.emailViewModelMapper = emailViewModelMapper ?? throw new ArgumentNullException(nameof(emailViewModelMapper));
+            this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
         }
 
         [Authorize]
@@ -73,12 +83,19 @@ namespace eMAM.UI.Controllers
 
             return View();
         }
-
-        public IActionResult FindAdmin()
+       // [Authorize(Roles = "Operator")] //Create Areas
+        public async Task<IActionResult> FindManager()
         {
-            ViewData["Message"] = "Your contact page.";
+            var managers = new List<ManagerViewModel>();
+         //   managers.Add(new ManagerViewModel { UserName = "manager1", Email = "edsafd@fdsf.fsdf" });
+            foreach (var manager in await this.userService.GetManagersAsync())
+            {
+                managers.Add(new ManagerViewModel { UserName = manager.UserName, Email = manager.Email });
+            }
 
-            return View();
+            //ViewData["Message"] = "Your contact page.";
+
+            return View(managers);
         }
 
         public IActionResult Error()

@@ -11,7 +11,7 @@ namespace eMAM.Data.Models
         public double FileSizeInMb { get; set; }
 
       
-        public int? EmailId { get; set; }
+        public int EmailId { get; set; }
 
         public Email Email { get; set; }
     }
