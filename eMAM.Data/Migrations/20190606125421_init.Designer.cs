@@ -10,7 +10,7 @@ using eMAM.Data;
 namespace eMAM.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190605122058_init")]
+    [Migration("20190606125421_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
