@@ -18,9 +18,6 @@
     </thead>
     <tbody>
 
-
-
-
         @foreach (var mail in Model.SearchResults)
         {
             <tr>
@@ -38,26 +35,44 @@
                 <td>
 
                     <!-- Button to Open the Modal -->
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#mails-@mail.GmailIdNumber">
-                        <img src="~/images/preview.png" height="30" width="30">
-                    </button>
 
-                    <!-- The Modal -->
-                    <div class="container">
-                        <div class="modal fade" id="mails-@mail.GmailIdNumber" tabindex="-1" role="dialog" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
+                    <button id="" type="submit" class="btn btn-primary email-button" data-toggle="modal" data-target="#mails-@mail.GmailIdNumber">
+                            <img src="~/images/preview.png" height="30" width="30">
+                        </button>
+
+                        <!-- The Modal -->
+
+                        <div class="modal fade" id="mails-@mail.GmailIdNumber">
+                            <div class="modal-dialog modal-lg">
                                 <div class="modal-content">
 
                                     <!-- Modal Header -->
                                     <div class="modal-header">
                                         <h3 class="modal-title">@mail.Subject</h3>
-                                            <h4 class="modal-title">@mail.Sender.SenderName, @mail.Sender.SenderEmail</h4>
+                                        <h5 class="modal-title">@mail.Sender.SenderName, @mail.Sender.SenderEmail</h5>
                                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                                     </div>
 
                                     <!-- Modal body -->
                                     <div class="modal-body">
-                                        Modal body..
+                                        <h3>Sender (email and name / From: field): @mail.Sender.SenderEmail @mail.Sender.SenderName </h3>
+
+                                        <h3>Date received (date of email receiving within the mail server): @mail.DateReceived</h3>
+                                        <h3>Subject: @mail.Subject</h3>
+
+
+                                        <iframe srcdoc="@mail.Body" width="400" height="600"></iframe>
+
+
+
+                                        <h3>
+                                            • Count of attachments and total (sum) size of attachments (in kb/Mb)
+                                            • Customer unique ID / EGN – filled by bank employee / agent when change from New->Open status
+                                            • Customer contact phone – filled by bank employee / agent when change from New->Open status
+                                            • Date/Time of initial registration within the system (when the email was extracted from MS Exchange server and registered within the DB)
+                                            • Date/Time when the application was set in current status
+                                            • Date/Time when the application was set in terminal status (Closed or Invalid Application)
+                                        </h3>
                                     </div>
 
                                     <!-- Modal footer -->
@@ -68,7 +83,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+
                 </td>
             </tr>
         }
