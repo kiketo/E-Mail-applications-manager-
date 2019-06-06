@@ -8,6 +8,6 @@ namespace eMAM.Service.DbServices.Contracts
 {
     public interface IAttachmentService
     {
-        Task<Attachment> AddAttachmentAsync(string fileName, double fileSizeInB);
+        Task<Attachment> AddAttachmentAsync(Attachment attachment);
     }
 }
