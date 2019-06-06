@@ -16,19 +16,13 @@ namespace eMAM.Service.DbServices
         {
             this.context = context ?? throw new ArgumentNullException(nameof(context));
         }
-
-        public async Task<Attachment> AddAttachmentAsync(string fileName, double fileSizeInB)
+        //(attachment, newMail)
+        public async Task<Attachment> AddAttachmentAsync(Attachment attachment)
         {
-            Attachment newAttachment = new Attachment
-            {
-                FileName = fileName,
-                FileSizeInMb = fileSizeInB / (1024 * 1024)
-            };
-
-            await this.context.Attachments.AddAsync(newAttachment);
+            await this.context.Attachments.AddAsync(attachment);
             await this.context.SaveChangesAsync();
 
-            return newAttachment;
+            return attachment;
         }
     }
 }
