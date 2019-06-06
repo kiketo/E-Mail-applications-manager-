@@ -13,6 +13,7 @@ namespace eMAM.Data.Models
       
         public int EmailId { get; set; }
 
+
         public Email Email { get; set; }
     }
 }
