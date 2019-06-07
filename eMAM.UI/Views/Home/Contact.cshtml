@@ -1,4 +1,5 @@
-﻿@{
+﻿@model List<ManagerViewModel>
+@{
     ViewData["Title"] = "Contact";
 }
 <h2>@ViewData["Title"]</h2>
@@ -15,3 +16,10 @@
     <strong>Support:</strong> <a href="mailto:Support@example.com">Support@example.com</a><br />
     <strong>Marketing:</strong> <a href="mailto:Marketing@example.com">Marketing@example.com</a>
 </address>
+
+@foreach (var managerInfo in @Model)
+{
+    <p>@managerInfo.UserName</p>
+    <p>@managerInfo.Email</p>
+
+}

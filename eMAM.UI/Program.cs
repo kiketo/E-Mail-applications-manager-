@@ -9,13 +9,15 @@ namespace eMAM.UI
         public static void Main(string[] args)
         {
             var host = BuildWebHost(args);
-            DataSeed.SeedDatabaseWithSuperAdminAsync(host).Wait();
-            DataSeed.SeedDatabaseWithStatus(host).Wait();
+            //DataSeed.SeedDatabaseWithSuperAdminAsync(host).Wait();
+            //DataSeed.SeedDatabaseWithStatus(host).Wait();
+            //DataSeed.SeedToken(host).Wait();
             host.Run();
         }
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
+                .UseIISIntegration()
                 .Build();
     }
 }
