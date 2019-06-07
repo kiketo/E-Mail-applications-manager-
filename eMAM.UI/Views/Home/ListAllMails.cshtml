@@ -5,15 +5,14 @@
 <table class="table-hover">
     <thead class="thead-dark">
         <tr>
-            <th>DB ID</th>
-            <th>Email DateTime received</th>
-            <th>Sender Name</th>
-            <th>Sender E-mail</th>
+            <th>ID</th>
+            <th>Date/Time</th>
+            <th>Sender</th>
             <th>Subject</th>
             <th>Status</th>
-            <th>Icon indicating if there any attachments</th>
+            <th> </th>
             <th>List new emails</th>
-            <th>Email preview button – showing email preview onClick</th>
+            <th> </th>
         </tr>
     </thead>
     <tbody>
@@ -23,8 +22,7 @@
             <tr>
                 <td>@mail.Id</td>
                 <td>@mail.DateReceived</td>
-                <td>@mail.Sender.SenderName</td>
-                <td>@mail.Sender.SenderEmail</td>
+                <td>@mail.Sender.SenderName &lt@(mail.Sender.SenderEmail)&gt</td>
                 <td>@mail.Subject</td>
                 <td>@mail.Status.Text</td>
                 <td>
@@ -37,51 +35,67 @@
                     <!-- Button to Open the Modal -->
 
                     <button type="button" class="btn btn-primary email-button" data-toggle="modal" data-target="#mails-@mail.GmailIdNumber" data-url="/home/previewmail">
-                            <img src="~/images/preview.png" height="30" width="30">
-                        </button>
+                        <img src="~/images/preview.png" height="30" width="30">
+                    </button>
 
-                        <!-- The Modal -->
+                    <!-- The Modal -->
 
-                        <div class="modal fade" id="mails-@mail.GmailIdNumber">
-                            <div class="modal-dialog modal-lg">
-                                <div class="modal-content">
+                    <div class="modal fade" id="mails-@mail.GmailIdNumber">
+                        <div class="modal-dialog modal-lg" style="width:100%">
+                            <div class="modal-content">
 
-                                    <!-- Modal Header -->
-                                    <div class="modal-header">
-                                        <h5 class="modal-title">@mail.Sender.SenderName, @mail.Sender.SenderEmail</h5>
-                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    </div>
-
-                                    <!-- Modal body -->
-                                    <div class="modal-body">
-                                        <h3>Sender (email and name / From: field): @mail.Sender.SenderEmail @mail.Sender.SenderName </h3>
-
-                                        <h3>Date received (date of email receiving within the mail server): @mail.DateReceived</h3>
-                                        <h3>Subject: @mail.Subject</h3>
-
-
-                                        <iframe id="mailBody" @*srcdoc="mailBody"*@ width="400" height="600"></iframe>
-
-
-
-                                        <h3>
-                                            • Count of attachments and total (sum) size of attachments (in kb/Mb)
-                                            • Customer unique ID / EGN – filled by bank employee / agent when change from New->Open status
-                                            • Customer contact phone – filled by bank employee / agent when change from New->Open status
-                                            • Date/Time of initial registration within the system (when the email was extracted from MS Exchange server and registered within the DB)
-                                            • Date/Time when the application was set in current status
-                                            • Date/Time when the application was set in terminal status (Closed or Invalid Application)
-                                        </h3>
-                                    </div>
-
-                                    <!-- Modal footer -->
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                                    </div>
-
+                                <!-- Modal Header -->
+                                <div class="modal-header">
+                                    <h6 class="modal-title">@mail.Sender.SenderName, @mail.Sender.SenderEmail</h6>
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
                                 </div>
+
+                                <!-- Modal body -->
+                                <div class="modal-body">
+
+                                    <div class="row">
+                                        <div class="col-sm-9" style="background-color:lavender;">
+                                            <p><h7>Subject: <r style="font-weight:bold">@mail.Subject</r></h7></p>
+                                            <p><h7>Date/Time received in the mail: <r style="font-weight:bold">@mail.DateReceived</r></h7></p>
+                                            <p>
+                                                <h7>
+                                                    Date/Time of initial registration within the system:
+                                                    <r style="font-weight:bold">@mail.InitialRegistrationInSystemOn</r>
+                                                </h7>
+                                            </p>
+                                            <p>
+                                                <h7>
+                                                    <r style="font-weight:bold">@mail.Attachments.Count</r> attachment/s, total size: 
+                                                    <r style="font-weight:bold">@mail.Attachments.Sum(x => x.FileSizeInMb).ToString("0.00")</r> MB
+                                                </h7>
+                                            </p>
+                                            <p><h7>Subject: <r style="font-weight:bold">@mail.Subject</r></h7></p>
+                                            <div class="mail-body" style="width: 100%; height:300px; overflow-y:scroll;">
+                                                <img src="/images/ajax-loader.gif" class="loading-indicator" style="height:150px" />
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-3" style="background-color:lavender;">
+                                            <div style="">
+                                                <p></p>
+                                                <form asp-controller="home" asp-action="">
+                                                    <button type="submit" style="width:160px" class="btn btn-success validation-button">Valid Application</button>
+                                                </form>
+                                                <p></p>
+                                                <p></p>
+                                                <button style="width:160px" class="btn btn-danger">Not Valid Aplication</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Modal footer -->
+                                @*<div class="modal-footer">
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                    </div>*@
+
                             </div>
                         </div>
+                    </div>
 
                 </td>
             </tr>

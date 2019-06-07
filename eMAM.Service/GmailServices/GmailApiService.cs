@@ -1,12 +1,8 @@
-﻿using eMAM.Data;
-using eMAM.Data.Models;
-using eMAM.Service.DTO;
+﻿using eMAM.Service.DTO;
 using eMAM.Service.GmailServices.Contracts;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -47,7 +43,7 @@ namespace eMAM.Service.GmailServices
             }
         }
 
-        public async Task<GmailMessagesListDTO> DownloadMailsListAsync (string AccessToken)
+        public async Task<GmailMessagesListDTO> DownloadMailsListAsync(string AccessToken)
         {
             var client = new HttpClient();
             client.DefaultRequestHeaders.Add("Authorization", "Bearer " + AccessToken);
@@ -60,7 +56,7 @@ namespace eMAM.Service.GmailServices
             return gmailMessagesList;
         }
 
-        public async Task<GmailMessageDTO> DownloadMail (string messageId, string accessToken)
+        public async Task<GmailMessageDTO> DownloadMail(string messageId, string accessToken)
         {
             var client = new HttpClient();
             client.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
@@ -191,7 +187,8 @@ namespace eMAM.Service.GmailServices
             {
                 //plain text, no attachments
                 case "text/plain":
-                   message= ParsePlainTextMail(message);
+                case "text/html":
+                    message = ParsePlainTextMail(message);
                     break;
 
                 //html, no attachments
@@ -204,6 +201,10 @@ namespace eMAM.Service.GmailServices
                     message = ParseMailWithAttachments(message);
                     break;
 
+                //html text, no attachments
+                //case "text/html":
+                //    message = ParseMailWithAttachments(message);
+                //    break;
                 default:
                     break;
             }
@@ -212,9 +213,17 @@ namespace eMAM.Service.GmailServices
 
         private GmailMessageDTO ParseMailWithAttachments(GmailMessageDTO message)
         {
-            var mailData = message.Payload.Parts[0].Parts[1].Body.Data ?? message.Payload.Parts[0].Parts[0].Body.Data;
-            message.BodyAsString = Encoding.UTF8.GetString(FromBase64ForUrlString(mailData));
+            string mailData;
+            if (message.Payload.Parts[0].Parts != null)
+            {
+                mailData = message.Payload.Parts[0].Parts[1].Body.Data;
+            }
+            else
+            {
+                mailData = message.Payload.Parts[0].Body.Data;
+            }
 
+            message.BodyAsString = Encoding.UTF8.GetString(FromBase64ForUrlString(mailData));
             return message;
         }
 

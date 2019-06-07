@@ -70,12 +70,24 @@ namespace eMAM.UI.Controllers
         {
             var userData = await this.gmailUserDataService.GetAsync();
             var mailDTO = await this.gmailApiService.DownloadBodyOfMailAsync(messageId, userData.AccessToken);
-            var mail = await this.emailService.GetEmailByGmailIdAsync(messageId);
+            //var mail = await this.emailService.GetEmailByGmailIdAsync(messageId);
             var body = mailDTO.BodyAsString;
             //var model = this.emailViewModelMapper.MapFrom(mail);
             var res = Json(body);
 
             return Json(body);
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> ValidateMail(string messageId)
+        {
+            var userData = await this.gmailUserDataService.GetAsync();
+            var mailDTO = await this.gmailApiService.DownloadBodyOfMailAsync(messageId, userData.AccessToken);
+            var mail = await this.emailService.GetEmailByGmailIdAsync(messageId);
+            //mail.Body = mailDTO.BodyAsString;
+            await emailService.AddBodyToMailAsync(mail, mailDTO.BodyAsString);
+            return Ok();
         }
 
         public IActionResult About()

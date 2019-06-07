@@ -116,4 +116,13 @@ body {
         margin-right: .1rem;
     }
 
+/* Loading indicator styles
+-------------------------------------------------- */
+.loading-indicator {
+    display: block;
+    margin: 0 auto;
+}
+
+
+
 
