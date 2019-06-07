@@ -36,7 +36,7 @@
 
                     <!-- Button to Open the Modal -->
 
-                    <button id="" type="submit" class="btn btn-primary email-button" data-toggle="modal" data-target="#mails-@mail.GmailIdNumber">
+                    <button type="button" class="btn btn-primary email-button" data-toggle="modal" data-target="#mails-@mail.GmailIdNumber" data-url="/home/previewmail">
                             <img src="~/images/preview.png" height="30" width="30">
                         </button>
 
@@ -48,7 +48,6 @@
 
                                     <!-- Modal Header -->
                                     <div class="modal-header">
-                                        <h3 class="modal-title">@mail.Subject</h3>
                                         <h5 class="modal-title">@mail.Sender.SenderName, @mail.Sender.SenderEmail</h5>
                                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                                     </div>
@@ -61,7 +60,7 @@
                                         <h3>Subject: @mail.Subject</h3>
 
 
-                                        <iframe srcdoc="@mail.Body" width="400" height="600"></iframe>
+                                        <iframe id="mailBody" @*srcdoc="mailBody"*@ width="400" height="600"></iframe>
 
 
 

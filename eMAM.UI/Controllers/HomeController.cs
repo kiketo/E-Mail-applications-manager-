@@ -56,15 +56,26 @@ namespace eMAM.UI.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> PreviewMail(string id)
+        //[Authorize]
+        //[HttpGet]
+        //public  IActionResult PreviewMail()
+        //{
+        //    return View();
+        //}
+
+        //[ValidateAntiForgeryToken]
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> PreviewMail(string messageId)
         {
             var userData = await this.gmailUserDataService.GetAsync();
-           var mailDTO= await this.gmailApiService.DownloadBodyOfMailAsync(id, userData.AccessToken);
-            var mail = await this.emailService.GetEmailByGmailIdAsync(id);
-            mail.Body = mailDTO.BodyAsString;
-            var model = this.emailViewModelMapper.MapFrom(mail);
+            var mailDTO = await this.gmailApiService.DownloadBodyOfMailAsync(messageId, userData.AccessToken);
+            var mail = await this.emailService.GetEmailByGmailIdAsync(messageId);
+            var body = mailDTO.BodyAsString;
+            //var model = this.emailViewModelMapper.MapFrom(mail);
+            var res = Json(body);
 
-            return View(model);
+            return Json(body);
         }
 
         public IActionResult About()
