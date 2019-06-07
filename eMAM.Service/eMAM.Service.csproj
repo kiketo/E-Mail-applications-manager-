@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\eMAM.Data\eMAM.Data.csproj" />
+    <ProjectReference Include="..\eMAM.Logs\eMAM.Logs.csproj" />
   </ItemGroup>
 
 </Project>
