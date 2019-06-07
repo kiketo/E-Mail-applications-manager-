@@ -952,3 +952,517 @@ ORDER BY t0."Id"
 2019-06-07 19:37:08,090 [14] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 GET https://localhost:5001/lib/kendo-ui/js/kendo.aspnetmvc.min.js  
 2019-06-07 19:37:08,101 [14] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 18.56ms 404 
 2019-06-07 19:37:22,874 [10] INFO  eMAM.Service.Utills.MailSyncer - Timed Background Service is stopping.
+[Header] 2019-06-07 19:57:56,778 [1] INFO  eMAM.Service.Utills.MailSyncer - Timed Background Service is starting.
+2019-06-07 19:57:57,997 [6] INFO  Microsoft.EntityFrameworkCore.Infrastructure - Entity Framework Core 2.2.4-servicing-10062 initialized 'ApplicationDbContext' using provider 'Npgsql.EntityFrameworkCore.PostgreSQL' with options: None
+2019-06-07 19:57:58,046 [6] WARN  Microsoft.EntityFrameworkCore.Query - Query: '(from GmailUserData <generated>_1 in DbSet<GmailUserData> select [<generated>_1]).FirstOrDefault()' uses First/FirstOrDefault/Last/LastOrDefault operation without OrderBy and filter which may lead to unpredictable results.
+2019-06-07 19:58:00,648 [5] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (48ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT g."Id", g."AccessToken", g."ExpiresAt", g."RefreshToken"
+FROM "GmailUserData" AS g
+LIMIT 1
+2019-06-07 19:58:00,845 [5] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (36ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT g."Id", g."AccessToken", g."ExpiresAt", g."RefreshToken"
+FROM "GmailUserData" AS g
+LIMIT 1
+2019-06-07 19:58:01,849 [5] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (63ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)::INT
+FROM "Emails" AS e
+2019-06-07 19:58:01,936 [5] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (41ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT s."Id", s."Text"
+FROM "Statuses" AS s
+WHERE s."Text" = 'Not Reviewed'
+LIMIT 1
+2019-06-07 19:58:05,757 [7] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 GET https://localhost:5001/  
+2019-06-07 19:58:05,975 [7] INFO  Microsoft.AspNetCore.Routing.EndpointMiddleware - Executing endpoint 'eMAM.UI.Controllers.HomeController.Index (eMAM.UI)'
+2019-06-07 19:58:05,995 [7] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller eMAM.UI.Controllers.HomeController (eMAM.UI).
+2019-06-07 19:58:06,024 [7] INFO  Microsoft.AspNetCore.Authorization.DefaultAuthorizationService - Authorization was successful.
+2019-06-07 19:58:06,045 [7] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executing action method eMAM.UI.Controllers.HomeController.Index (eMAM.UI) - Validation state: Valid
+2019-06-07 19:58:06,055 [7] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executed action method eMAM.UI.Controllers.HomeController.Index (eMAM.UI), returned result Microsoft.AspNetCore.Mvc.ViewResult in 1.0572ms.
+2019-06-07 19:58:06,111 [7] INFO  Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor - Executing ViewResult, running view Index.
+2019-06-07 19:58:06,371 [7] INFO  Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor - Executed ViewResult - view Index executed in 294.5769ms.
+2019-06-07 19:58:06,379 [7] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executed action eMAM.UI.Controllers.HomeController.Index (eMAM.UI) in 370.9291ms
+2019-06-07 19:58:06,394 [7] INFO  Microsoft.AspNetCore.Routing.EndpointMiddleware - Executed endpoint 'eMAM.UI.Controllers.HomeController.Index (eMAM.UI)'
+2019-06-07 19:58:06,422 [7] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 671.6445ms 200 text/html; charset=utf-8
+2019-06-07 19:58:06,496 [6] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 GET https://localhost:5001/lib/kendo-ui/styles/kendo.nova.min.css  
+2019-06-07 19:58:06,499 [14] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 GET https://localhost:5001/lib/kendo-ui/styles/kendo.common-nova.min.css  
+2019-06-07 19:58:06,640 [6] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 133.259ms 404 
+2019-06-07 19:58:06,644 [14] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 147.4367ms 404 
+2019-06-07 19:58:06,712 [14] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 GET https://localhost:5001/lib/kendo-ui/js/kendo.all.min.js  
+2019-06-07 19:58:06,739 [7] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 GET https://localhost:5001/lib/kendo-ui/js/kendo.aspnetmvc.min.js  
+2019-06-07 19:58:06,750 [14] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 24.1843ms 404 
+2019-06-07 19:58:06,780 [7] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 45.6508ms 404 
+2019-06-07 19:58:06,808 [6] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 GET https://localhost:5001/js/site.js?v=CWn3B2eBK0orxHGBkAmJsAvAszO6ZjL5cK9CPGOtW08  
+2019-06-07 19:58:06,838 [7] INFO  Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware - Sending file. Request path: '/js/site.js'. Physical path: 'C:\Users\dudut\Desktop\eMAMProject6-5\e-mail-applications-manager\eMAM.UI\wwwroot\js\site.js'
+2019-06-07 19:58:06,848 [7] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 43.5111ms 200 application/javascript
+2019-06-07 19:58:07,110 [7] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 GET https://localhost:5001/  
+2019-06-07 19:58:07,159 [7] INFO  Microsoft.AspNetCore.Routing.EndpointMiddleware - Executing endpoint 'eMAM.UI.Controllers.HomeController.Index (eMAM.UI)'
+2019-06-07 19:58:07,182 [7] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller eMAM.UI.Controllers.HomeController (eMAM.UI).
+2019-06-07 19:58:07,226 [7] INFO  Microsoft.AspNetCore.Authorization.DefaultAuthorizationService - Authorization was successful.
+2019-06-07 19:58:07,246 [7] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executing action method eMAM.UI.Controllers.HomeController.Index (eMAM.UI) - Validation state: Valid
+2019-06-07 19:58:07,258 [7] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executed action method eMAM.UI.Controllers.HomeController.Index (eMAM.UI), returned result Microsoft.AspNetCore.Mvc.ViewResult in 0.177ms.
+2019-06-07 19:58:07,272 [7] INFO  Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor - Executing ViewResult, running view Index.
+2019-06-07 19:58:07,297 [7] INFO  Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor - Executed ViewResult - view Index executed in 15.927ms.
+2019-06-07 19:58:07,312 [7] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executed action eMAM.UI.Controllers.HomeController.Index (eMAM.UI) in 96.272ms
+2019-06-07 19:58:07,329 [7] INFO  Microsoft.AspNetCore.Routing.EndpointMiddleware - Executed endpoint 'eMAM.UI.Controllers.HomeController.Index (eMAM.UI)'
+2019-06-07 19:58:07,344 [7] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 233.1039ms 200 text/html; charset=utf-8
+2019-06-07 19:58:07,526 [9] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 GET https://localhost:5001/lib/kendo-ui/js/kendo.all.min.js  
+2019-06-07 19:58:07,557 [9] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 23.5465ms 404 
+2019-06-07 19:58:07,580 [9] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 GET https://localhost:5001/lib/kendo-ui/js/kendo.aspnetmvc.min.js  
+2019-06-07 19:58:07,597 [9] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 17.065ms 404 
+2019-06-07 19:58:09,105 [7] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 GET https://localhost:5001/home/listallmails  
+2019-06-07 19:58:09,112 [7] INFO  Microsoft.AspNetCore.Routing.EndpointMiddleware - Executing endpoint 'eMAM.UI.Controllers.HomeController.ListAllMails (eMAM.UI)'
+2019-06-07 19:58:09,159 [7] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Route matched with {action = "ListAllMails", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ListAllMails(System.Nullable`1[System.Int32]) on controller eMAM.UI.Controllers.HomeController (eMAM.UI).
+2019-06-07 19:58:09,183 [7] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executing action method eMAM.UI.Controllers.HomeController.ListAllMails (eMAM.UI) - Validation state: Valid
+2019-06-07 19:58:09,206 [7] INFO  Microsoft.EntityFrameworkCore.Infrastructure - Entity Framework Core 2.2.4-servicing-10062 initialized 'ApplicationDbContext' using provider 'Npgsql.EntityFrameworkCore.PostgreSQL' with options: None
+2019-06-07 19:58:09,225 [7] WARN  Microsoft.EntityFrameworkCore.Query - The Include operation for navigation '[e].Attachments' is unnecessary and was ignored because the navigation is not reachable in the final query results. See https://go.microsoft.com/fwlink/?linkid=850303 for more information.
+2019-06-07 19:58:09,241 [7] WARN  Microsoft.EntityFrameworkCore.Query - The Include operation for navigation '[e].Sender' is unnecessary and was ignored because the navigation is not reachable in the final query results. See https://go.microsoft.com/fwlink/?linkid=850303 for more information.
+2019-06-07 19:58:09,264 [7] WARN  Microsoft.EntityFrameworkCore.Query - The Include operation for navigation '[e].Status' is unnecessary and was ignored because the navigation is not reachable in the final query results. See https://go.microsoft.com/fwlink/?linkid=850303 for more information.
+2019-06-07 19:58:09,329 [4] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (37ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)::INT
+FROM "Emails" AS e
+2019-06-07 19:58:09,353 [4] WARN  Microsoft.EntityFrameworkCore.Query - Query: '(from Email e in DbSet<Email> select [e]).Skip(__p_0).Take(__p_1)' uses a row limiting operation (Skip/Take) without OrderBy which may lead to unpredictable results.
+2019-06-07 19:58:09,588 [4] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (60ms) [Parameters=[@__p_1='?' (DbType = Int32), @__p_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT e."Id", e."Body", e."ClosedById", e."CustomerId", e."DateReceived", e."GmailIdNumber", e."InitialRegistrationInSystemOn", e."MissingApplication", e."OpenedById", e."SenderId", e."SetInCurrentStatusOn", e."SetInTerminalStatusOn", e."StatusId", e."Subject", "e.Status"."Id", "e.Status"."Text", "e.Sender"."Id", "e.Sender"."SenderEmail", "e.Sender"."SenderName"
+FROM "Emails" AS e
+INNER JOIN "Statuses" AS "e.Status" ON e."StatusId" = "e.Status"."Id"
+INNER JOIN "Senders" AS "e.Sender" ON e."SenderId" = "e.Sender"."Id"
+ORDER BY e."Id"
+LIMIT @__p_1 OFFSET @__p_0
+2019-06-07 19:58:09,765 [4] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (69ms) [Parameters=[@__p_1='?' (DbType = Int32), @__p_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT "e.Attachments"."Id", "e.Attachments"."EmailId", "e.Attachments"."FileName", "e.Attachments"."FileSizeInMb"
+FROM "Attachments" AS "e.Attachments"
+INNER JOIN (
+    SELECT DISTINCT t.*
+    FROM (
+        SELECT e0."Id"
+        FROM "Emails" AS e0
+        INNER JOIN "Statuses" AS "e.Status0" ON e0."StatusId" = "e.Status0"."Id"
+        INNER JOIN "Senders" AS "e.Sender0" ON e0."SenderId" = "e.Sender0"."Id"
+        ORDER BY e0."Id"
+        LIMIT @__p_1 OFFSET @__p_0
+    ) AS t
+) AS t0 ON "e.Attachments"."EmailId" = t0."Id"
+ORDER BY t0."Id"
+2019-06-07 19:58:09,822 [4] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executed action method eMAM.UI.Controllers.HomeController.ListAllMails (eMAM.UI), returned result Microsoft.AspNetCore.Mvc.ViewResult in 629.782ms.
+2019-06-07 19:58:09,844 [4] INFO  Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor - Executing ViewResult, running view ListAllMails.
+2019-06-07 19:58:09,887 [4] INFO  Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor - Executed ViewResult - view ListAllMails executed in 49.9973ms.
+2019-06-07 19:58:09,913 [4] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executed action eMAM.UI.Controllers.HomeController.ListAllMails (eMAM.UI) in 743.2266ms
+2019-06-07 19:58:09,933 [4] INFO  Microsoft.AspNetCore.Routing.EndpointMiddleware - Executed endpoint 'eMAM.UI.Controllers.HomeController.ListAllMails (eMAM.UI)'
+2019-06-07 19:58:09,958 [4] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 846.3667ms 200 text/html; charset=utf-8
+2019-06-07 19:58:10,040 [6] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 GET https://localhost:5001/lib/kendo-ui/styles/kendo.common-nova.min.css  
+2019-06-07 19:58:10,054 [14] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 GET https://localhost:5001/lib/kendo-ui/styles/kendo.nova.min.css  
+2019-06-07 19:58:10,073 [9] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 GET https://localhost:5001/lib/kendo-ui/js/kendo.all.min.js  
+2019-06-07 19:58:10,095 [14] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 37.3423ms 404 
+2019-06-07 19:58:10,098 [7] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 GET https://localhost:5001/lib/kendo-ui/js/kendo.aspnetmvc.min.js  
+2019-06-07 19:58:10,110 [6] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 76.1644ms 404 
+2019-06-07 19:58:10,117 [9] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 47.1062ms 404 
+2019-06-07 19:58:10,146 [14] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 GET https://localhost:5001/images/ajax-loader.gif  
+2019-06-07 19:58:10,210 [7] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 83.6192ms 404 
+2019-06-07 19:58:10,266 [9] INFO  Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware - Sending file. Request path: '/images/ajax-loader.gif'. Physical path: 'C:\Users\dudut\Desktop\eMAMProject6-5\e-mail-applications-manager\eMAM.UI\wwwroot\images\ajax-loader.gif'
+2019-06-07 19:58:10,307 [9] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 163.9419ms 200 image/gif
+2019-06-07 19:58:11,198 [9] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 POST https://localhost:5001/home/previewmail application/x-www-form-urlencoded; charset=UTF-8 26
+2019-06-07 19:58:11,224 [9] INFO  Microsoft.AspNetCore.Routing.EndpointMiddleware - Executing endpoint 'eMAM.UI.Controllers.HomeController.PreviewMail (eMAM.UI)'
+2019-06-07 19:58:11,244 [9] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Route matched with {action = "PreviewMail", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] PreviewMail(System.String) on controller eMAM.UI.Controllers.HomeController (eMAM.UI).
+2019-06-07 19:58:11,265 [9] INFO  Microsoft.AspNetCore.Authorization.DefaultAuthorizationService - Authorization was successful.
+2019-06-07 19:58:11,326 [9] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executing action method eMAM.UI.Controllers.HomeController.PreviewMail (eMAM.UI) - Validation state: Valid
+2019-06-07 19:58:11,333 [9] INFO  Microsoft.EntityFrameworkCore.Infrastructure - Entity Framework Core 2.2.4-servicing-10062 initialized 'ApplicationDbContext' using provider 'Npgsql.EntityFrameworkCore.PostgreSQL' with options: None
+2019-06-07 19:58:11,423 [4] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (47ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT g."Id", g."AccessToken", g."ExpiresAt", g."RefreshToken"
+FROM "GmailUserData" AS g
+LIMIT 1
+2019-06-07 19:58:11,914 [6] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executed action method eMAM.UI.Controllers.HomeController.PreviewMail (eMAM.UI), returned result Microsoft.AspNetCore.Mvc.JsonResult in 583.1345ms.
+2019-06-07 19:58:11,927 [6] INFO  Microsoft.AspNetCore.Mvc.Formatters.Json.Internal.JsonResultExecutor - Executing JsonResult, writing value of type 'System.String'.
+2019-06-07 19:58:11,967 [6] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executed action eMAM.UI.Controllers.HomeController.PreviewMail (eMAM.UI) in 702.0335ms
+2019-06-07 19:58:11,973 [6] INFO  Microsoft.AspNetCore.Routing.EndpointMiddleware - Executed endpoint 'eMAM.UI.Controllers.HomeController.PreviewMail (eMAM.UI)'
+2019-06-07 19:58:11,981 [6] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 784.863ms 200 application/json; charset=utf-8
+2019-06-07 19:58:21,879 [6] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 POST https://localhost:5001/home/previewmail application/x-www-form-urlencoded; charset=UTF-8 26
+2019-06-07 19:58:21,894 [6] INFO  Microsoft.AspNetCore.Routing.EndpointMiddleware - Executing endpoint 'eMAM.UI.Controllers.HomeController.PreviewMail (eMAM.UI)'
+2019-06-07 19:58:21,908 [6] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Route matched with {action = "PreviewMail", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] PreviewMail(System.String) on controller eMAM.UI.Controllers.HomeController (eMAM.UI).
+2019-06-07 19:58:21,922 [6] INFO  Microsoft.AspNetCore.Authorization.DefaultAuthorizationService - Authorization was successful.
+2019-06-07 19:58:21,941 [6] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executing action method eMAM.UI.Controllers.HomeController.PreviewMail (eMAM.UI) - Validation state: Valid
+2019-06-07 19:58:21,956 [6] INFO  Microsoft.EntityFrameworkCore.Infrastructure - Entity Framework Core 2.2.4-servicing-10062 initialized 'ApplicationDbContext' using provider 'Npgsql.EntityFrameworkCore.PostgreSQL' with options: None
+2019-06-07 19:58:22,006 [14] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (44ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT g."Id", g."AccessToken", g."ExpiresAt", g."RefreshToken"
+FROM "GmailUserData" AS g
+LIMIT 1
+2019-06-07 19:58:22,419 [4] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executed action method eMAM.UI.Controllers.HomeController.PreviewMail (eMAM.UI), returned result Microsoft.AspNetCore.Mvc.JsonResult in 470.9695ms.
+2019-06-07 19:58:22,436 [4] INFO  Microsoft.AspNetCore.Mvc.Formatters.Json.Internal.JsonResultExecutor - Executing JsonResult, writing value of type 'System.String'.
+2019-06-07 19:58:22,458 [4] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executed action eMAM.UI.Controllers.HomeController.PreviewMail (eMAM.UI) in 537.1461ms
+2019-06-07 19:58:22,472 [4] INFO  Microsoft.AspNetCore.Routing.EndpointMiddleware - Executed endpoint 'eMAM.UI.Controllers.HomeController.PreviewMail (eMAM.UI)'
+2019-06-07 19:58:22,485 [4] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 600.2255ms 200 application/json; charset=utf-8
+[Header] 2019-06-07 20:13:47,949 [1] INFO  eMAM.Service.Utills.MailSyncer - Timed Background Service is starting.
+2019-06-07 20:13:49,563 [7] INFO  Microsoft.EntityFrameworkCore.Infrastructure - Entity Framework Core 2.2.4-servicing-10062 initialized 'ApplicationDbContext' using provider 'Npgsql.EntityFrameworkCore.PostgreSQL' with options: None
+2019-06-07 20:13:49,610 [7] WARN  Microsoft.EntityFrameworkCore.Query - Query: '(from GmailUserData <generated>_1 in DbSet<GmailUserData> select [<generated>_1]).FirstOrDefault()' uses First/FirstOrDefault/Last/LastOrDefault operation without OrderBy and filter which may lead to unpredictable results.
+2019-06-07 20:13:52,472 [4] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (57ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT g."Id", g."AccessToken", g."ExpiresAt", g."RefreshToken"
+FROM "GmailUserData" AS g
+LIMIT 1
+2019-06-07 20:13:52,635 [5] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (38ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT g."Id", g."AccessToken", g."ExpiresAt", g."RefreshToken"
+FROM "GmailUserData" AS g
+LIMIT 1
+2019-06-07 20:13:53,354 [4] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (37ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT g."Id", g."AccessToken", g."ExpiresAt", g."RefreshToken"
+FROM "GmailUserData" AS g
+LIMIT 1
+2019-06-07 20:13:53,539 [4] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (60ms) [Parameters=[@p2='?' (DbType = Int32), @p0='?', @p1='?' (DbType = DateTime)], CommandType='Text', CommandTimeout='30']
+UPDATE "GmailUserData" SET "AccessToken" = @p0, "ExpiresAt" = @p1
+WHERE "Id" = @p2;
+2019-06-07 20:13:54,013 [12] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (59ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)::INT
+FROM "Emails" AS e
+2019-06-07 20:13:54,122 [12] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (41ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT s."Id", s."Text"
+FROM "Statuses" AS s
+WHERE s."Text" = 'Not Reviewed'
+LIMIT 1
+2019-06-07 20:13:57,629 [6] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 GET https://localhost:5001/  
+2019-06-07 20:13:57,751 [6] INFO  Microsoft.EntityFrameworkCore.Infrastructure - Entity Framework Core 2.2.4-servicing-10062 initialized 'ApplicationDbContext' using provider 'Npgsql.EntityFrameworkCore.PostgreSQL' with options: None
+2019-06-07 20:13:57,947 [12] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (148ms) [Parameters=[@__get_Item_0='?'], CommandType='Text', CommandTimeout='30']
+SELECT e."Id", e."AccessFailedCount", e."ConcurrencyStamp", e."Email", e."EmailConfirmed", e."Inactive", e."LockoutEnabled", e."LockoutEnd", e."NormalizedEmail", e."NormalizedUserName", e."PasswordHash", e."PhoneNumber", e."PhoneNumberConfirmed", e."SecurityStamp", e."TwoFactorEnabled", e."UserName"
+FROM "AspNetUsers" AS e
+WHERE e."Id" = @__get_Item_0
+LIMIT 1
+2019-06-07 20:13:58,313 [12] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (104ms) [Parameters=[@__user_Id_0='?'], CommandType='Text', CommandTimeout='30']
+SELECT uc."Id", uc."ClaimType", uc."ClaimValue", uc."UserId"
+FROM "AspNetUserClaims" AS uc
+WHERE uc."UserId" = @__user_Id_0
+2019-06-07 20:13:58,572 [12] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (185ms) [Parameters=[@__userId_0='?'], CommandType='Text', CommandTimeout='30']
+SELECT role."Name"
+FROM "AspNetUserRoles" AS "userRole"
+INNER JOIN "AspNetRoles" AS role ON "userRole"."RoleId" = role."Id"
+WHERE "userRole"."UserId" = @__userId_0
+2019-06-07 20:13:58,670 [12] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (38ms) [Parameters=[@__normalizedName_0='?' (Size = 256)], CommandType='Text', CommandTimeout='30']
+SELECT r."Id", r."ConcurrencyStamp", r."Name", r."NormalizedName"
+FROM "AspNetRoles" AS r
+WHERE r."NormalizedName" = @__normalizedName_0
+LIMIT 1
+2019-06-07 20:13:58,799 [12] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (73ms) [Parameters=[@__role_Id_0='?'], CommandType='Text', CommandTimeout='30']
+SELECT rc."ClaimType", rc."ClaimValue"
+FROM "AspNetRoleClaims" AS rc
+WHERE rc."RoleId" = @__role_Id_0
+2019-06-07 20:13:58,933 [12] INFO  Microsoft.AspNetCore.Routing.EndpointMiddleware - Executing endpoint 'eMAM.UI.Controllers.HomeController.Index (eMAM.UI)'
+2019-06-07 20:13:58,970 [12] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller eMAM.UI.Controllers.HomeController (eMAM.UI).
+2019-06-07 20:13:59,023 [12] INFO  Microsoft.AspNetCore.Authorization.DefaultAuthorizationService - Authorization was successful.
+2019-06-07 20:13:59,061 [12] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executing action method eMAM.UI.Controllers.HomeController.Index (eMAM.UI) - Validation state: Valid
+2019-06-07 20:13:59,072 [12] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executed action method eMAM.UI.Controllers.HomeController.Index (eMAM.UI), returned result Microsoft.AspNetCore.Mvc.ViewResult in 1.0944ms.
+2019-06-07 20:13:59,129 [12] INFO  Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor - Executing ViewResult, running view Index.
+2019-06-07 20:13:59,448 [12] INFO  Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor - Executed ViewResult - view Index executed in 337.7071ms.
+2019-06-07 20:13:59,464 [12] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executed action eMAM.UI.Controllers.HomeController.Index (eMAM.UI) in 475.5579ms
+2019-06-07 20:13:59,478 [12] INFO  Microsoft.AspNetCore.Routing.EndpointMiddleware - Executed endpoint 'eMAM.UI.Controllers.HomeController.Index (eMAM.UI)'
+2019-06-07 20:13:59,513 [12] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 1883.753ms 200 text/html; charset=utf-8
+2019-06-07 20:13:59,664 [9] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 GET https://localhost:5001/js/site.js?v=CWn3B2eBK0orxHGBkAmJsAvAszO6ZjL5cK9CPGOtW08  
+2019-06-07 20:13:59,714 [9] INFO  Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware - The file /js/site.js was not modified
+2019-06-07 20:13:59,750 [9] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 97.5691ms 304 application/javascript
+2019-06-07 20:14:01,048 [9] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 GET https://localhost:5001/home/listallmails  
+2019-06-07 20:14:01,096 [9] INFO  Microsoft.AspNetCore.Routing.EndpointMiddleware - Executing endpoint 'eMAM.UI.Controllers.HomeController.ListAllMails (eMAM.UI)'
+2019-06-07 20:14:01,184 [9] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Route matched with {action = "ListAllMails", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ListAllMails(System.Nullable`1[System.Int32]) on controller eMAM.UI.Controllers.HomeController (eMAM.UI).
+2019-06-07 20:14:01,227 [9] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executing action method eMAM.UI.Controllers.HomeController.ListAllMails (eMAM.UI) - Validation state: Valid
+2019-06-07 20:14:01,246 [9] INFO  Microsoft.EntityFrameworkCore.Infrastructure - Entity Framework Core 2.2.4-servicing-10062 initialized 'ApplicationDbContext' using provider 'Npgsql.EntityFrameworkCore.PostgreSQL' with options: None
+2019-06-07 20:14:01,267 [9] WARN  Microsoft.EntityFrameworkCore.Query - The Include operation for navigation '[e].Attachments' is unnecessary and was ignored because the navigation is not reachable in the final query results. See https://go.microsoft.com/fwlink/?linkid=850303 for more information.
+2019-06-07 20:14:01,277 [9] WARN  Microsoft.EntityFrameworkCore.Query - The Include operation for navigation '[e].Sender' is unnecessary and was ignored because the navigation is not reachable in the final query results. See https://go.microsoft.com/fwlink/?linkid=850303 for more information.
+2019-06-07 20:14:01,284 [9] WARN  Microsoft.EntityFrameworkCore.Query - The Include operation for navigation '[e].Status' is unnecessary and was ignored because the navigation is not reachable in the final query results. See https://go.microsoft.com/fwlink/?linkid=850303 for more information.
+2019-06-07 20:14:01,344 [4] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (38ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)::INT
+FROM "Emails" AS e
+2019-06-07 20:14:01,378 [4] WARN  Microsoft.EntityFrameworkCore.Query - Query: '(from Email e in DbSet<Email> select [e]).Skip(__p_0).Take(__p_1)' uses a row limiting operation (Skip/Take) without OrderBy which may lead to unpredictable results.
+2019-06-07 20:14:01,596 [4] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (42ms) [Parameters=[@__p_1='?' (DbType = Int32), @__p_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT e."Id", e."Body", e."ClosedById", e."CustomerId", e."DateReceived", e."GmailIdNumber", e."InitialRegistrationInSystemOn", e."MissingApplication", e."OpenedById", e."SenderId", e."SetInCurrentStatusOn", e."SetInTerminalStatusOn", e."StatusId", e."Subject", "e.Status"."Id", "e.Status"."Text", "e.Sender"."Id", "e.Sender"."SenderEmail", "e.Sender"."SenderName"
+FROM "Emails" AS e
+INNER JOIN "Statuses" AS "e.Status" ON e."StatusId" = "e.Status"."Id"
+INNER JOIN "Senders" AS "e.Sender" ON e."SenderId" = "e.Sender"."Id"
+ORDER BY e."Id"
+LIMIT @__p_1 OFFSET @__p_0
+2019-06-07 20:14:01,819 [4] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (44ms) [Parameters=[@__p_1='?' (DbType = Int32), @__p_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT "e.Attachments"."Id", "e.Attachments"."EmailId", "e.Attachments"."FileName", "e.Attachments"."FileSizeInMb"
+FROM "Attachments" AS "e.Attachments"
+INNER JOIN (
+    SELECT DISTINCT t.*
+    FROM (
+        SELECT e0."Id"
+        FROM "Emails" AS e0
+        INNER JOIN "Statuses" AS "e.Status0" ON e0."StatusId" = "e.Status0"."Id"
+        INNER JOIN "Senders" AS "e.Sender0" ON e0."SenderId" = "e.Sender0"."Id"
+        ORDER BY e0."Id"
+        LIMIT @__p_1 OFFSET @__p_0
+    ) AS t
+) AS t0 ON "e.Attachments"."EmailId" = t0."Id"
+ORDER BY t0."Id"
+2019-06-07 20:14:01,915 [4] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executed action method eMAM.UI.Controllers.HomeController.ListAllMails (eMAM.UI), returned result Microsoft.AspNetCore.Mvc.ViewResult in 682.8924ms.
+2019-06-07 20:14:01,936 [4] INFO  Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor - Executing ViewResult, running view ListAllMails.
+2019-06-07 20:14:01,995 [4] INFO  Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor - Executed ViewResult - view ListAllMails executed in 52.7032ms.
+2019-06-07 20:14:02,017 [4] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executed action eMAM.UI.Controllers.HomeController.ListAllMails (eMAM.UI) in 818.9192ms
+2019-06-07 20:14:02,041 [4] INFO  Microsoft.AspNetCore.Routing.EndpointMiddleware - Executed endpoint 'eMAM.UI.Controllers.HomeController.ListAllMails (eMAM.UI)'
+2019-06-07 20:14:02,062 [4] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 1009.8641ms 200 text/html; charset=utf-8
+2019-06-07 20:14:02,143 [6] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 GET https://localhost:5001/images/ajax-loader.gif  
+2019-06-07 20:14:02,154 [6] INFO  Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware - The file /images/ajax-loader.gif was not modified
+2019-06-07 20:14:02,174 [6] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 24.2692ms 304 image/gif
+2019-06-07 20:14:03,383 [6] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 POST https://localhost:5001/home/previewmail application/x-www-form-urlencoded; charset=UTF-8 26
+2019-06-07 20:14:03,400 [6] INFO  Microsoft.AspNetCore.Routing.EndpointMiddleware - Executing endpoint 'eMAM.UI.Controllers.HomeController.PreviewMail (eMAM.UI)'
+2019-06-07 20:14:03,427 [6] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Route matched with {action = "PreviewMail", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] PreviewMail(System.String) on controller eMAM.UI.Controllers.HomeController (eMAM.UI).
+2019-06-07 20:14:03,451 [6] INFO  Microsoft.AspNetCore.Authorization.DefaultAuthorizationService - Authorization was successful.
+2019-06-07 20:14:03,565 [6] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executing action method eMAM.UI.Controllers.HomeController.PreviewMail (eMAM.UI) - Validation state: Valid
+2019-06-07 20:14:03,598 [6] INFO  Microsoft.EntityFrameworkCore.Infrastructure - Entity Framework Core 2.2.4-servicing-10062 initialized 'ApplicationDbContext' using provider 'Npgsql.EntityFrameworkCore.PostgreSQL' with options: None
+2019-06-07 20:14:03,648 [4] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (38ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT g."Id", g."AccessToken", g."ExpiresAt", g."RefreshToken"
+FROM "GmailUserData" AS g
+LIMIT 1
+2019-06-07 20:14:04,053 [4] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executed action method eMAM.UI.Controllers.HomeController.PreviewMail (eMAM.UI), returned result Microsoft.AspNetCore.Mvc.JsonResult in 471.4943ms.
+2019-06-07 20:14:04,063 [4] INFO  Microsoft.AspNetCore.Mvc.Formatters.Json.Internal.JsonResultExecutor - Executing JsonResult, writing value of type 'System.String'.
+2019-06-07 20:14:04,114 [4] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executed action eMAM.UI.Controllers.HomeController.PreviewMail (eMAM.UI) in 664.0144ms
+2019-06-07 20:14:04,128 [4] INFO  Microsoft.AspNetCore.Routing.EndpointMiddleware - Executed endpoint 'eMAM.UI.Controllers.HomeController.PreviewMail (eMAM.UI)'
+2019-06-07 20:14:04,142 [4] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 753.7905ms 200 application/json; charset=utf-8
+2019-06-07 20:14:11,807 [10] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 GET https://localhost:5001/home/listallmails  
+2019-06-07 20:14:11,879 [10] INFO  Microsoft.AspNetCore.Routing.EndpointMiddleware - Executing endpoint 'eMAM.UI.Controllers.HomeController.ListAllMails (eMAM.UI)'
+2019-06-07 20:14:11,930 [10] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Route matched with {action = "ListAllMails", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ListAllMails(System.Nullable`1[System.Int32]) on controller eMAM.UI.Controllers.HomeController (eMAM.UI).
+2019-06-07 20:14:11,996 [10] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executing action method eMAM.UI.Controllers.HomeController.ListAllMails (eMAM.UI) - Validation state: Valid
+2019-06-07 20:14:12,076 [10] INFO  Microsoft.EntityFrameworkCore.Infrastructure - Entity Framework Core 2.2.4-servicing-10062 initialized 'ApplicationDbContext' using provider 'Npgsql.EntityFrameworkCore.PostgreSQL' with options: None
+2019-06-07 20:14:12,221 [12] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (45ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)::INT
+FROM "Emails" AS e
+2019-06-07 20:14:12,268 [12] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (39ms) [Parameters=[@__p_1='?' (DbType = Int32), @__p_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT e."Id", e."Body", e."ClosedById", e."CustomerId", e."DateReceived", e."GmailIdNumber", e."InitialRegistrationInSystemOn", e."MissingApplication", e."OpenedById", e."SenderId", e."SetInCurrentStatusOn", e."SetInTerminalStatusOn", e."StatusId", e."Subject", "e.Status"."Id", "e.Status"."Text", "e.Sender"."Id", "e.Sender"."SenderEmail", "e.Sender"."SenderName"
+FROM "Emails" AS e
+INNER JOIN "Statuses" AS "e.Status" ON e."StatusId" = "e.Status"."Id"
+INNER JOIN "Senders" AS "e.Sender" ON e."SenderId" = "e.Sender"."Id"
+ORDER BY e."Id"
+LIMIT @__p_1 OFFSET @__p_0
+2019-06-07 20:14:12,330 [12] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (39ms) [Parameters=[@__p_1='?' (DbType = Int32), @__p_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT "e.Attachments"."Id", "e.Attachments"."EmailId", "e.Attachments"."FileName", "e.Attachments"."FileSizeInMb"
+FROM "Attachments" AS "e.Attachments"
+INNER JOIN (
+    SELECT DISTINCT t.*
+    FROM (
+        SELECT e0."Id"
+        FROM "Emails" AS e0
+        INNER JOIN "Statuses" AS "e.Status0" ON e0."StatusId" = "e.Status0"."Id"
+        INNER JOIN "Senders" AS "e.Sender0" ON e0."SenderId" = "e.Sender0"."Id"
+        ORDER BY e0."Id"
+        LIMIT @__p_1 OFFSET @__p_0
+    ) AS t
+) AS t0 ON "e.Attachments"."EmailId" = t0."Id"
+ORDER BY t0."Id"
+2019-06-07 20:14:12,355 [12] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executed action method eMAM.UI.Controllers.HomeController.ListAllMails (eMAM.UI), returned result Microsoft.AspNetCore.Mvc.ViewResult in 337.5325ms.
+2019-06-07 20:14:12,363 [12] INFO  Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor - Executing ViewResult, running view ListAllMails.
+2019-06-07 20:14:12,383 [12] INFO  Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor - Executed ViewResult - view ListAllMails executed in 16.6767ms.
+2019-06-07 20:14:12,392 [12] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executed action eMAM.UI.Controllers.HomeController.ListAllMails (eMAM.UI) in 414.5939ms
+2019-06-07 20:14:12,404 [12] INFO  Microsoft.AspNetCore.Routing.EndpointMiddleware - Executed endpoint 'eMAM.UI.Controllers.HomeController.ListAllMails (eMAM.UI)'
+2019-06-07 20:14:12,412 [12] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 626.0082ms 200 text/html; charset=utf-8
+2019-06-07 20:14:12,542 [14] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 GET https://localhost:5001/favicon.ico  
+2019-06-07 20:14:12,566 [14] INFO  Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware - Sending file. Request path: '/favicon.ico'. Physical path: 'C:\Users\dudut\Desktop\eMAMProject6-5\e-mail-applications-manager\eMAM.UI\wwwroot\favicon.ico'
+2019-06-07 20:14:12,577 [14] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 35.2017ms 200 image/x-icon
+2019-06-07 20:14:13,256 [14] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 GET https://localhost:5001/home/listallmails  
+2019-06-07 20:14:13,274 [14] INFO  Microsoft.AspNetCore.Routing.EndpointMiddleware - Executing endpoint 'eMAM.UI.Controllers.HomeController.ListAllMails (eMAM.UI)'
+2019-06-07 20:14:13,296 [14] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Route matched with {action = "ListAllMails", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ListAllMails(System.Nullable`1[System.Int32]) on controller eMAM.UI.Controllers.HomeController (eMAM.UI).
+2019-06-07 20:14:13,328 [14] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executing action method eMAM.UI.Controllers.HomeController.ListAllMails (eMAM.UI) - Validation state: Valid
+2019-06-07 20:14:13,342 [14] INFO  Microsoft.EntityFrameworkCore.Infrastructure - Entity Framework Core 2.2.4-servicing-10062 initialized 'ApplicationDbContext' using provider 'Npgsql.EntityFrameworkCore.PostgreSQL' with options: None
+2019-06-07 20:14:13,390 [5] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (39ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)::INT
+FROM "Emails" AS e
+2019-06-07 20:14:13,439 [5] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (40ms) [Parameters=[@__p_1='?' (DbType = Int32), @__p_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT e."Id", e."Body", e."ClosedById", e."CustomerId", e."DateReceived", e."GmailIdNumber", e."InitialRegistrationInSystemOn", e."MissingApplication", e."OpenedById", e."SenderId", e."SetInCurrentStatusOn", e."SetInTerminalStatusOn", e."StatusId", e."Subject", "e.Status"."Id", "e.Status"."Text", "e.Sender"."Id", "e.Sender"."SenderEmail", "e.Sender"."SenderName"
+FROM "Emails" AS e
+INNER JOIN "Statuses" AS "e.Status" ON e."StatusId" = "e.Status"."Id"
+INNER JOIN "Senders" AS "e.Sender" ON e."SenderId" = "e.Sender"."Id"
+ORDER BY e."Id"
+LIMIT @__p_1 OFFSET @__p_0
+2019-06-07 20:14:13,490 [5] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (39ms) [Parameters=[@__p_1='?' (DbType = Int32), @__p_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT "e.Attachments"."Id", "e.Attachments"."EmailId", "e.Attachments"."FileName", "e.Attachments"."FileSizeInMb"
+FROM "Attachments" AS "e.Attachments"
+INNER JOIN (
+    SELECT DISTINCT t.*
+    FROM (
+        SELECT e0."Id"
+        FROM "Emails" AS e0
+        INNER JOIN "Statuses" AS "e.Status0" ON e0."StatusId" = "e.Status0"."Id"
+        INNER JOIN "Senders" AS "e.Sender0" ON e0."SenderId" = "e.Sender0"."Id"
+        ORDER BY e0."Id"
+        LIMIT @__p_1 OFFSET @__p_0
+    ) AS t
+) AS t0 ON "e.Attachments"."EmailId" = t0."Id"
+ORDER BY t0."Id"
+2019-06-07 20:14:13,510 [5] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executed action method eMAM.UI.Controllers.HomeController.ListAllMails (eMAM.UI), returned result Microsoft.AspNetCore.Mvc.ViewResult in 169.4749ms.
+2019-06-07 20:14:13,524 [5] INFO  Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor - Executing ViewResult, running view ListAllMails.
+2019-06-07 20:14:13,549 [5] INFO  Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor - Executed ViewResult - view ListAllMails executed in 24.5466ms.
+2019-06-07 20:14:13,562 [5] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executed action eMAM.UI.Controllers.HomeController.ListAllMails (eMAM.UI) in 241.2968ms
+2019-06-07 20:14:13,574 [5] INFO  Microsoft.AspNetCore.Routing.EndpointMiddleware - Executed endpoint 'eMAM.UI.Controllers.HomeController.ListAllMails (eMAM.UI)'
+2019-06-07 20:14:13,582 [5] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 324.9083ms 200 text/html; charset=utf-8
+2019-06-07 20:14:13,699 [14] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 GET https://localhost:5001/favicon.ico  
+2019-06-07 20:14:13,748 [14] INFO  Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware - Sending file. Request path: '/favicon.ico'. Physical path: 'C:\Users\dudut\Desktop\eMAMProject6-5\e-mail-applications-manager\eMAM.UI\wwwroot\favicon.ico'
+2019-06-07 20:14:13,760 [14] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 59.9131ms 200 image/x-icon
+2019-06-07 20:14:13,838 [10] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 GET https://localhost:5001/home/listallmails  
+2019-06-07 20:14:13,846 [10] INFO  Microsoft.AspNetCore.Routing.EndpointMiddleware - Executing endpoint 'eMAM.UI.Controllers.HomeController.ListAllMails (eMAM.UI)'
+2019-06-07 20:14:13,860 [10] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Route matched with {action = "ListAllMails", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ListAllMails(System.Nullable`1[System.Int32]) on controller eMAM.UI.Controllers.HomeController (eMAM.UI).
+2019-06-07 20:14:13,877 [10] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executing action method eMAM.UI.Controllers.HomeController.ListAllMails (eMAM.UI) - Validation state: Valid
+2019-06-07 20:14:13,888 [10] INFO  Microsoft.EntityFrameworkCore.Infrastructure - Entity Framework Core 2.2.4-servicing-10062 initialized 'ApplicationDbContext' using provider 'Npgsql.EntityFrameworkCore.PostgreSQL' with options: None
+2019-06-07 20:14:13,942 [5] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (37ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)::INT
+FROM "Emails" AS e
+2019-06-07 20:14:14,001 [5] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (39ms) [Parameters=[@__p_1='?' (DbType = Int32), @__p_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT e."Id", e."Body", e."ClosedById", e."CustomerId", e."DateReceived", e."GmailIdNumber", e."InitialRegistrationInSystemOn", e."MissingApplication", e."OpenedById", e."SenderId", e."SetInCurrentStatusOn", e."SetInTerminalStatusOn", e."StatusId", e."Subject", "e.Status"."Id", "e.Status"."Text", "e.Sender"."Id", "e.Sender"."SenderEmail", "e.Sender"."SenderName"
+FROM "Emails" AS e
+INNER JOIN "Statuses" AS "e.Status" ON e."StatusId" = "e.Status"."Id"
+INNER JOIN "Senders" AS "e.Sender" ON e."SenderId" = "e.Sender"."Id"
+ORDER BY e."Id"
+LIMIT @__p_1 OFFSET @__p_0
+2019-06-07 20:14:14,064 [5] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (38ms) [Parameters=[@__p_1='?' (DbType = Int32), @__p_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT "e.Attachments"."Id", "e.Attachments"."EmailId", "e.Attachments"."FileName", "e.Attachments"."FileSizeInMb"
+FROM "Attachments" AS "e.Attachments"
+INNER JOIN (
+    SELECT DISTINCT t.*
+    FROM (
+        SELECT e0."Id"
+        FROM "Emails" AS e0
+        INNER JOIN "Statuses" AS "e.Status0" ON e0."StatusId" = "e.Status0"."Id"
+        INNER JOIN "Senders" AS "e.Sender0" ON e0."SenderId" = "e.Sender0"."Id"
+        ORDER BY e0."Id"
+        LIMIT @__p_1 OFFSET @__p_0
+    ) AS t
+) AS t0 ON "e.Attachments"."EmailId" = t0."Id"
+ORDER BY t0."Id"
+2019-06-07 20:14:14,093 [5] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executed action method eMAM.UI.Controllers.HomeController.ListAllMails (eMAM.UI), returned result Microsoft.AspNetCore.Mvc.ViewResult in 208.908ms.
+2019-06-07 20:14:14,099 [5] INFO  Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor - Executing ViewResult, running view ListAllMails.
+2019-06-07 20:14:14,119 [5] INFO  Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor - Executed ViewResult - view ListAllMails executed in 12.817ms.
+2019-06-07 20:14:14,132 [5] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executed action eMAM.UI.Controllers.HomeController.ListAllMails (eMAM.UI) in 258.122ms
+2019-06-07 20:14:14,148 [5] INFO  Microsoft.AspNetCore.Routing.EndpointMiddleware - Executed endpoint 'eMAM.UI.Controllers.HomeController.ListAllMails (eMAM.UI)'
+2019-06-07 20:14:14,176 [5] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 329.0504ms 200 text/html; charset=utf-8
+2019-06-07 20:14:14,292 [10] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 GET https://localhost:5001/favicon.ico  
+2019-06-07 20:14:14,312 [6] INFO  Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware - Sending file. Request path: '/favicon.ico'. Physical path: 'C:\Users\dudut\Desktop\eMAMProject6-5\e-mail-applications-manager\eMAM.UI\wwwroot\favicon.ico'
+2019-06-07 20:14:14,325 [6] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 38.438ms 200 image/x-icon
+2019-06-07 20:14:18,155 [6] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 GET https://localhost:5001/lib/bootstrap/dist/js/bootstrap.bundle.js.map  
+2019-06-07 20:14:18,190 [14] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 GET https://localhost:5001/lib/bootstrap/dist/css/bootstrap.css.map  
+2019-06-07 20:14:18,370 [18] INFO  Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware - Sending file. Request path: '/lib/bootstrap/dist/css/bootstrap.css.map'. Physical path: 'C:\Users\dudut\Desktop\eMAMProject6-5\e-mail-applications-manager\eMAM.UI\wwwroot\lib\bootstrap\dist\css\bootstrap.css.map'
+2019-06-07 20:14:18,380 [17] INFO  Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware - Sending file. Request path: '/lib/bootstrap/dist/js/bootstrap.bundle.js.map'. Physical path: 'C:\Users\dudut\Desktop\eMAMProject6-5\e-mail-applications-manager\eMAM.UI\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js.map'
+2019-06-07 20:14:18,403 [18] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 221.7703ms 200 text/plain
+2019-06-07 20:14:18,409 [17] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 251.9289ms 200 text/plain
+2019-06-07 20:14:28,384 [6] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 POST https://localhost:5001/home/previewmail application/x-www-form-urlencoded; charset=UTF-8 26
+2019-06-07 20:14:28,392 [6] INFO  Microsoft.AspNetCore.Routing.EndpointMiddleware - Executing endpoint 'eMAM.UI.Controllers.HomeController.PreviewMail (eMAM.UI)'
+2019-06-07 20:14:28,404 [6] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Route matched with {action = "PreviewMail", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] PreviewMail(System.String) on controller eMAM.UI.Controllers.HomeController (eMAM.UI).
+2019-06-07 20:14:28,423 [6] INFO  Microsoft.AspNetCore.Authorization.DefaultAuthorizationService - Authorization was successful.
+2019-06-07 20:14:28,440 [6] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executing action method eMAM.UI.Controllers.HomeController.PreviewMail (eMAM.UI) - Validation state: Valid
+2019-06-07 20:14:28,455 [6] INFO  Microsoft.EntityFrameworkCore.Infrastructure - Entity Framework Core 2.2.4-servicing-10062 initialized 'ApplicationDbContext' using provider 'Npgsql.EntityFrameworkCore.PostgreSQL' with options: None
+2019-06-07 20:14:28,506 [4] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (37ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT g."Id", g."AccessToken", g."ExpiresAt", g."RefreshToken"
+FROM "GmailUserData" AS g
+LIMIT 1
+2019-06-07 20:14:28,676 [5] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executed action method eMAM.UI.Controllers.HomeController.PreviewMail (eMAM.UI), returned result Microsoft.AspNetCore.Mvc.JsonResult in 228.9055ms.
+2019-06-07 20:14:28,694 [5] INFO  Microsoft.AspNetCore.Mvc.Formatters.Json.Internal.JsonResultExecutor - Executing JsonResult, writing value of type 'System.String'.
+2019-06-07 20:14:28,710 [5] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executed action eMAM.UI.Controllers.HomeController.PreviewMail (eMAM.UI) in 289.7709ms
+2019-06-07 20:14:28,728 [5] INFO  Microsoft.AspNetCore.Routing.EndpointMiddleware - Executed endpoint 'eMAM.UI.Controllers.HomeController.PreviewMail (eMAM.UI)'
+2019-06-07 20:14:28,750 [5] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 367.0225ms 200 application/json; charset=utf-8
+2019-06-07 20:14:31,323 [14] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 POST https://localhost:5001/home/previewmail application/x-www-form-urlencoded; charset=UTF-8 26
+2019-06-07 20:14:31,338 [14] INFO  Microsoft.AspNetCore.Routing.EndpointMiddleware - Executing endpoint 'eMAM.UI.Controllers.HomeController.PreviewMail (eMAM.UI)'
+2019-06-07 20:14:31,352 [14] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Route matched with {action = "PreviewMail", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] PreviewMail(System.String) on controller eMAM.UI.Controllers.HomeController (eMAM.UI).
+2019-06-07 20:14:31,378 [14] INFO  Microsoft.AspNetCore.Authorization.DefaultAuthorizationService - Authorization was successful.
+2019-06-07 20:14:31,394 [14] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executing action method eMAM.UI.Controllers.HomeController.PreviewMail (eMAM.UI) - Validation state: Valid
+2019-06-07 20:14:31,428 [14] INFO  Microsoft.EntityFrameworkCore.Infrastructure - Entity Framework Core 2.2.4-servicing-10062 initialized 'ApplicationDbContext' using provider 'Npgsql.EntityFrameworkCore.PostgreSQL' with options: None
+2019-06-07 20:14:31,502 [12] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (39ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT g."Id", g."AccessToken", g."ExpiresAt", g."RefreshToken"
+FROM "GmailUserData" AS g
+LIMIT 1
+2019-06-07 20:14:31,902 [12] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executed action method eMAM.UI.Controllers.HomeController.PreviewMail (eMAM.UI), returned result Microsoft.AspNetCore.Mvc.JsonResult in 478.6448ms.
+2019-06-07 20:14:31,908 [12] INFO  Microsoft.AspNetCore.Mvc.Formatters.Json.Internal.JsonResultExecutor - Executing JsonResult, writing value of type 'System.String'.
+2019-06-07 20:14:31,922 [12] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executed action eMAM.UI.Controllers.HomeController.PreviewMail (eMAM.UI) in 538.1624ms
+2019-06-07 20:14:31,934 [12] INFO  Microsoft.AspNetCore.Routing.EndpointMiddleware - Executed endpoint 'eMAM.UI.Controllers.HomeController.PreviewMail (eMAM.UI)'
+2019-06-07 20:14:31,944 [12] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 621.0302ms 200 application/json; charset=utf-8
+[Header] 2019-06-07 20:20:53,370 [1] INFO  eMAM.Service.Utills.MailSyncer - Timed Background Service is starting.
+2019-06-07 20:20:54,639 [6] INFO  Microsoft.EntityFrameworkCore.Infrastructure - Entity Framework Core 2.2.4-servicing-10062 initialized 'ApplicationDbContext' using provider 'Npgsql.EntityFrameworkCore.PostgreSQL' with options: None
+2019-06-07 20:20:54,686 [6] WARN  Microsoft.EntityFrameworkCore.Query - Query: '(from GmailUserData <generated>_1 in DbSet<GmailUserData> select [<generated>_1]).FirstOrDefault()' uses First/FirstOrDefault/Last/LastOrDefault operation without OrderBy and filter which may lead to unpredictable results.
+2019-06-07 20:20:56,929 [4] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (46ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT g."Id", g."AccessToken", g."ExpiresAt", g."RefreshToken"
+FROM "GmailUserData" AS g
+LIMIT 1
+2019-06-07 20:20:57,067 [4] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (37ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT g."Id", g."AccessToken", g."ExpiresAt", g."RefreshToken"
+FROM "GmailUserData" AS g
+LIMIT 1
+2019-06-07 20:20:57,956 [5] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (61ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)::INT
+FROM "Emails" AS e
+2019-06-07 20:20:58,044 [5] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (41ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT s."Id", s."Text"
+FROM "Statuses" AS s
+WHERE s."Text" = 'Not Reviewed'
+LIMIT 1
+2019-06-07 20:21:16,259 [6] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 GET https://localhost:5001/  
+2019-06-07 20:21:16,550 [6] INFO  Microsoft.AspNetCore.Routing.EndpointMiddleware - Executing endpoint 'eMAM.UI.Controllers.HomeController.Index (eMAM.UI)'
+2019-06-07 20:21:16,584 [6] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller eMAM.UI.Controllers.HomeController (eMAM.UI).
+2019-06-07 20:21:16,630 [6] INFO  Microsoft.AspNetCore.Authorization.DefaultAuthorizationService - Authorization was successful.
+2019-06-07 20:21:16,669 [6] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executing action method eMAM.UI.Controllers.HomeController.Index (eMAM.UI) - Validation state: Valid
+2019-06-07 20:21:16,687 [6] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executed action method eMAM.UI.Controllers.HomeController.Index (eMAM.UI), returned result Microsoft.AspNetCore.Mvc.ViewResult in 1.405ms.
+2019-06-07 20:21:16,767 [6] INFO  Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor - Executing ViewResult, running view Index.
+2019-06-07 20:21:17,175 [6] INFO  Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor - Executed ViewResult - view Index executed in 458.2693ms.
+2019-06-07 20:21:17,184 [6] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executed action eMAM.UI.Controllers.HomeController.Index (eMAM.UI) in 589.9402ms
+2019-06-07 20:21:17,195 [6] INFO  Microsoft.AspNetCore.Routing.EndpointMiddleware - Executed endpoint 'eMAM.UI.Controllers.HomeController.Index (eMAM.UI)'
+2019-06-07 20:21:17,229 [6] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 967.7422ms 200 text/html; charset=utf-8
+2019-06-07 20:21:17,256 [6] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 GET https://localhost:5001/  
+2019-06-07 20:21:17,275 [6] INFO  Microsoft.AspNetCore.Routing.EndpointMiddleware - Executing endpoint 'eMAM.UI.Controllers.HomeController.Index (eMAM.UI)'
+2019-06-07 20:21:17,321 [6] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Route matched with {action = "Index", controller = "Home"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.IActionResult Index() on controller eMAM.UI.Controllers.HomeController (eMAM.UI).
+2019-06-07 20:21:17,343 [6] INFO  Microsoft.AspNetCore.Authorization.DefaultAuthorizationService - Authorization was successful.
+2019-06-07 20:21:17,363 [6] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executing action method eMAM.UI.Controllers.HomeController.Index (eMAM.UI) - Validation state: Valid
+2019-06-07 20:21:17,378 [6] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executed action method eMAM.UI.Controllers.HomeController.Index (eMAM.UI), returned result Microsoft.AspNetCore.Mvc.ViewResult in 0.1672ms.
+2019-06-07 20:21:17,395 [6] INFO  Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor - Executing ViewResult, running view Index.
+2019-06-07 20:21:17,434 [6] INFO  Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor - Executed ViewResult - view Index executed in 31.4791ms.
+2019-06-07 20:21:17,475 [6] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executed action eMAM.UI.Controllers.HomeController.Index (eMAM.UI) in 124.4751ms
+2019-06-07 20:21:17,475 [15] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 GET https://localhost:5001/js/site.js?v=CWn3B2eBK0orxHGBkAmJsAvAszO6ZjL5cK9CPGOtW08  
+2019-06-07 20:21:17,507 [6] INFO  Microsoft.AspNetCore.Routing.EndpointMiddleware - Executed endpoint 'eMAM.UI.Controllers.HomeController.Index (eMAM.UI)'
+2019-06-07 20:21:17,530 [6] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 278.4996ms 200 text/html; charset=utf-8
+2019-06-07 20:21:17,556 [15] INFO  Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware - The file /js/site.js was not modified
+2019-06-07 20:21:17,641 [15] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 116.7333ms 304 application/javascript
+2019-06-07 20:21:18,816 [6] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 GET https://localhost:5001/home/listallmails  
+2019-06-07 20:21:18,832 [6] INFO  Microsoft.AspNetCore.Routing.EndpointMiddleware - Executing endpoint 'eMAM.UI.Controllers.HomeController.ListAllMails (eMAM.UI)'
+2019-06-07 20:21:18,879 [6] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Route matched with {action = "ListAllMails", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] ListAllMails(System.Nullable`1[System.Int32]) on controller eMAM.UI.Controllers.HomeController (eMAM.UI).
+2019-06-07 20:21:18,901 [6] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executing action method eMAM.UI.Controllers.HomeController.ListAllMails (eMAM.UI) - Validation state: Valid
+2019-06-07 20:21:18,919 [6] INFO  Microsoft.EntityFrameworkCore.Infrastructure - Entity Framework Core 2.2.4-servicing-10062 initialized 'ApplicationDbContext' using provider 'Npgsql.EntityFrameworkCore.PostgreSQL' with options: None
+2019-06-07 20:21:18,939 [6] WARN  Microsoft.EntityFrameworkCore.Query - The Include operation for navigation '[e].Attachments' is unnecessary and was ignored because the navigation is not reachable in the final query results. See https://go.microsoft.com/fwlink/?linkid=850303 for more information.
+2019-06-07 20:21:18,953 [6] WARN  Microsoft.EntityFrameworkCore.Query - The Include operation for navigation '[e].Sender' is unnecessary and was ignored because the navigation is not reachable in the final query results. See https://go.microsoft.com/fwlink/?linkid=850303 for more information.
+2019-06-07 20:21:18,961 [6] WARN  Microsoft.EntityFrameworkCore.Query - The Include operation for navigation '[e].Status' is unnecessary and was ignored because the navigation is not reachable in the final query results. See https://go.microsoft.com/fwlink/?linkid=850303 for more information.
+2019-06-07 20:21:19,037 [13] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (40ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT COUNT(*)::INT
+FROM "Emails" AS e
+2019-06-07 20:21:19,070 [13] WARN  Microsoft.EntityFrameworkCore.Query - Query: '(from Email e in DbSet<Email> select [e]).Skip(__p_0).Take(__p_1)' uses a row limiting operation (Skip/Take) without OrderBy which may lead to unpredictable results.
+2019-06-07 20:21:19,331 [13] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (64ms) [Parameters=[@__p_1='?' (DbType = Int32), @__p_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT e."Id", e."Body", e."ClosedById", e."CustomerId", e."DateReceived", e."GmailIdNumber", e."InitialRegistrationInSystemOn", e."MissingApplication", e."OpenedById", e."SenderId", e."SetInCurrentStatusOn", e."SetInTerminalStatusOn", e."StatusId", e."Subject", "e.Status"."Id", "e.Status"."Text", "e.Sender"."Id", "e.Sender"."SenderEmail", "e.Sender"."SenderName"
+FROM "Emails" AS e
+INNER JOIN "Statuses" AS "e.Status" ON e."StatusId" = "e.Status"."Id"
+INNER JOIN "Senders" AS "e.Sender" ON e."SenderId" = "e.Sender"."Id"
+ORDER BY e."Id"
+LIMIT @__p_1 OFFSET @__p_0
+2019-06-07 20:21:19,545 [13] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (77ms) [Parameters=[@__p_1='?' (DbType = Int32), @__p_0='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+SELECT "e.Attachments"."Id", "e.Attachments"."EmailId", "e.Attachments"."FileName", "e.Attachments"."FileSizeInMb"
+FROM "Attachments" AS "e.Attachments"
+INNER JOIN (
+    SELECT DISTINCT t.*
+    FROM (
+        SELECT e0."Id"
+        FROM "Emails" AS e0
+        INNER JOIN "Statuses" AS "e.Status0" ON e0."StatusId" = "e.Status0"."Id"
+        INNER JOIN "Senders" AS "e.Sender0" ON e0."SenderId" = "e.Sender0"."Id"
+        ORDER BY e0."Id"
+        LIMIT @__p_1 OFFSET @__p_0
+    ) AS t
+) AS t0 ON "e.Attachments"."EmailId" = t0."Id"
+ORDER BY t0."Id"
+2019-06-07 20:21:19,616 [13] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executed action method eMAM.UI.Controllers.HomeController.ListAllMails (eMAM.UI), returned result Microsoft.AspNetCore.Mvc.ViewResult in 707.9173ms.
+2019-06-07 20:21:19,644 [13] INFO  Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor - Executing ViewResult, running view ListAllMails.
+2019-06-07 20:21:19,683 [13] INFO  Microsoft.AspNetCore.Mvc.ViewFeatures.ViewResultExecutor - Executed ViewResult - view ListAllMails executed in 44.3192ms.
+2019-06-07 20:21:19,693 [13] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executed action eMAM.UI.Controllers.HomeController.ListAllMails (eMAM.UI) in 804.9155ms
+2019-06-07 20:21:19,713 [13] INFO  Microsoft.AspNetCore.Routing.EndpointMiddleware - Executed endpoint 'eMAM.UI.Controllers.HomeController.ListAllMails (eMAM.UI)'
+2019-06-07 20:21:19,736 [13] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 913.4461ms 200 text/html; charset=utf-8
+2019-06-07 20:21:19,829 [16] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 GET https://localhost:5001/images/ajax-loader.gif  
+2019-06-07 20:21:19,869 [16] INFO  Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware - The file /images/ajax-loader.gif was not modified
+2019-06-07 20:21:19,884 [16] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 58.7346ms 304 image/gif
+2019-06-07 20:21:20,678 [16] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request starting HTTP/1.1 POST https://localhost:5001/home/previewmail application/x-www-form-urlencoded; charset=UTF-8 26
+2019-06-07 20:21:20,701 [16] INFO  Microsoft.AspNetCore.Routing.EndpointMiddleware - Executing endpoint 'eMAM.UI.Controllers.HomeController.PreviewMail (eMAM.UI)'
+2019-06-07 20:21:20,725 [16] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Route matched with {action = "PreviewMail", controller = "Home"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] PreviewMail(System.String) on controller eMAM.UI.Controllers.HomeController (eMAM.UI).
+2019-06-07 20:21:20,743 [16] INFO  Microsoft.AspNetCore.Authorization.DefaultAuthorizationService - Authorization was successful.
+2019-06-07 20:21:20,811 [16] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executing action method eMAM.UI.Controllers.HomeController.PreviewMail (eMAM.UI) - Validation state: Valid
+2019-06-07 20:21:20,827 [16] INFO  Microsoft.EntityFrameworkCore.Infrastructure - Entity Framework Core 2.2.4-servicing-10062 initialized 'ApplicationDbContext' using provider 'Npgsql.EntityFrameworkCore.PostgreSQL' with options: None
+2019-06-07 20:21:20,885 [5] INFO  Microsoft.EntityFrameworkCore.Database.Command - Executed DbCommand (38ms) [Parameters=[], CommandType='Text', CommandTimeout='30']
+SELECT g."Id", g."AccessToken", g."ExpiresAt", g."RefreshToken"
+FROM "GmailUserData" AS g
+LIMIT 1
+2019-06-07 20:21:21,453 [6] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executed action method eMAM.UI.Controllers.HomeController.PreviewMail (eMAM.UI), returned result Microsoft.AspNetCore.Mvc.JsonResult in 628.6637ms.
+2019-06-07 20:21:21,461 [6] INFO  Microsoft.AspNetCore.Mvc.Formatters.Json.Internal.JsonResultExecutor - Executing JsonResult, writing value of type 'System.String'.
+2019-06-07 20:21:21,520 [6] INFO  Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker - Executed action eMAM.UI.Controllers.HomeController.PreviewMail (eMAM.UI) in 778.1161ms
+2019-06-07 20:21:21,528 [6] INFO  Microsoft.AspNetCore.Routing.EndpointMiddleware - Executed endpoint 'eMAM.UI.Controllers.HomeController.PreviewMail (eMAM.UI)'
+2019-06-07 20:21:21,539 [6] INFO  Microsoft.AspNetCore.Hosting.Internal.WebHost - Request finished in 860.367ms 200 application/json; charset=utf-8
