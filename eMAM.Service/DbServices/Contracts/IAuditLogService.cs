@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace eMAM.Service.DbServices.Contracts
 {
-    public interface IStatusService
+    public interface IAuditLogService
     {
-        Task<Status> GetInitialStatusAsync();
-
-        Task<Status> GetStatusAsync(string textStatus);
+        Task Log(string userName, string actionType, Status newStatus, Status oldStatus);
     }
 }
