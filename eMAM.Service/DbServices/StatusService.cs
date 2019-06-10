@@ -29,5 +29,12 @@ namespace eMAM.Service.DbServices
             var status = this.applicationDbContext.Statuses.FirstOrDefaultAsync(s => s.Text == statusName);
             return status;
         }
+        public async Task<Status> GetStatusAsync(string textStatus)
+        {
+            
+            return await this.applicationDbContext.Statuses
+                .FirstOrDefaultAsync(s => s.Text == textStatus);
+        }
+
     }
 }

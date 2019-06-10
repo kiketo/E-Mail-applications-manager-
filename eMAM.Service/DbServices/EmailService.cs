@@ -80,5 +80,17 @@ namespace eMAM.Service.DbServices
                                        .Include(e => e.Status);
             return allMails;
         }
+        public async Task<Email> GetEmailByIdAsync(int id)
+        {
+            return await this.context.Emails.FirstOrDefaultAsync(e => e.Id == id);
+        }
+
+        public async Task<Email> UpdateStatusAsync(Email newEmail, Status newStatus)
+        {
+            newEmail.Status = newStatus;
+            this.context.Attach(newEmail).State = EntityState.Modified;
+             await this.context.SaveChangesAsync();
+            return newEmail;
+        }
     }
 }

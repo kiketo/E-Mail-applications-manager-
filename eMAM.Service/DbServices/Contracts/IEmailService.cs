@@ -20,5 +20,9 @@ namespace eMAM.Service.DbServices.Contracts
         Task AddBodyToMailAsync(Email mail, string body, Status newStatus);
 
         IQueryable<Email> ReadAllMailsFromDb();
+
+        Task<Email> GetEmailByIdAsync(int id);
+
+        Task<Email> UpdateStatusAsync(Email newEmail, Status newStatus);
     }
 }

@@ -94,15 +94,14 @@ namespace eMAM.UI
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
 
-            string connectionString = Configuration["Logging:ConnectionString"];
             string logFilePath = Configuration["Logging:LogFilePath"];
 
             loggerFactory.AddLog4Net(new[]
             {
                 log4netConfiguration.CreateConsoleAppender(),
-                log4netConfiguration.CreateRollingFileAppender(logFilePath),
+                //log4netConfiguration.CreateRollingFileAppender(logFilePath),
                 log4netConfiguration.CreateTraceAppender(),
-                log4netConfiguration.CreateAdoNetAppender(connectionString)
+               
             });
 
            // DBInitializer.Initialize(context);

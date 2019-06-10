@@ -8,8 +8,10 @@ namespace eMAM.Service.UserServices.Contracts
 {
     public interface IUserService
     {
-        Task<List<User>> GetManagersAsync();
+        Task<IEnumerable<User>> GetManagersAsync();
 
         Task<User> GetUserByIdAsync(string id);
+
+        Task<IEnumerable<User>> GetAllUsersAsync();
     }
 }
