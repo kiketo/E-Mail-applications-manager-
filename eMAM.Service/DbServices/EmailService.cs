@@ -64,11 +64,16 @@ namespace eMAM.Service.DbServices
             return newEmail;
         }
 
-        public async Task AddBodyToMailAsync(Email mail, string body, Status newStatus)
+        public async Task ValidateEmail(Email mail, string body, Status newStatus, User user)
         {
             mail.Body = body;
             mail.Status = newStatus;
             mail.SetInCurrentStatusOn = DateTime.Now;
+            mail.WorkInProcess = false;
+            mail.WorkingBy = null;
+            mail.WorkingById = null;
+            mail.PreviewedBy = user;
+
             await this.context.SaveChangesAsync();
         }
 
@@ -80,6 +85,7 @@ namespace eMAM.Service.DbServices
                                        .Include(e => e.Status);
             return allMails;
         }
+
         public async Task<Email> GetEmailByIdAsync(int id)
         {
             return await this.context.Emails.FirstOrDefaultAsync(e => e.Id == id);
@@ -92,5 +98,16 @@ namespace eMAM.Service.DbServices
              await this.context.SaveChangesAsync();
             return newEmail;
         }
+
+        public async Task<Email> WorkInProcessAsync(User user, string messageId)
+        {
+            var mail = await this.GetEmailByGmailIdAsync(messageId);
+            mail.WorkInProcess = true;
+            mail.WorkingBy = user;
+            await this.context.SaveChangesAsync();
+
+            return mail;
+        }
+
     }
 }

@@ -42,6 +42,14 @@ namespace eMAM.Data
             modelBuilder.Entity<User>().HasMany(t => t.ClosedEmails)
                                        .WithOne(g => g.ClosedBy)
                                        .HasForeignKey(g => g.ClosedById).OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<User>().HasMany(e => e.PreviewedEmails)
+                                        .WithOne(e => e.PreviewedBy)
+                                        .HasForeignKey(e => e.PreviewedById);
+
+            modelBuilder.Entity<User>().HasMany(e => e.WorkInProcessEmails)
+                                      .WithOne(e => e.WorkingBy)
+                                      .HasForeignKey(e => e.WorkingById);
         }
     }
 }

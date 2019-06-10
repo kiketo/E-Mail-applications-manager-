@@ -44,5 +44,16 @@ namespace eMAM.Data.Models
         public string ClosedById { get; set; }
 
         public User ClosedBy { get; set; }
+
+        public bool WorkInProcess { get; set; }
+
+        public string WorkingById { get; set; }
+
+        public User WorkingBy { get; set; }
+
+        public string PreviewedById { get; set; }
+
+        public User PreviewedBy { get; set; }
+
     }
 }
