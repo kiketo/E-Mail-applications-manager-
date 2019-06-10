@@ -7,6 +7,7 @@ using eMAM.UI.Models;
 using eMAM.UI.Utills;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,6 +25,7 @@ namespace eMAM.UI.Controllers
         private readonly IUserService userService;
         private readonly IAuditLogService auditLogService;
         private readonly IStatusService statusService;
+        private readonly ILogger logger;
 
         public HomeController(
             IGmailApiService gmailApiService, 
@@ -32,7 +34,8 @@ namespace eMAM.UI.Controllers
             IViewModelMapper<Email, EmailViewModel> emailViewModelMapper, 
             IUserService userService,
             IAuditLogService auditLogService,
-            IStatusService statusService)
+            IStatusService statusService,
+            ILogger logger)
         {
             this.gmailApiService = gmailApiService ?? throw new ArgumentNullException(nameof(gmailApiService));
             this.gmailUserDataService = gmailUserDataService ?? throw new ArgumentNullException(nameof(gmailUserDataService));
@@ -41,6 +44,7 @@ namespace eMAM.UI.Controllers
             this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
             this.auditLogService = auditLogService ?? throw new ArgumentNullException(nameof(auditLogService));
             this.statusService = statusService ?? throw new ArgumentNullException(nameof(statusService));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         //[Authorize]
@@ -111,18 +115,21 @@ namespace eMAM.UI.Controllers
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
-
+            logger.LogInformation("I am in about");
             return View();
         }
-       // [Authorize(Roles = "Operator")] //Create Areas
-        public async Task<IActionResult> FindManager()
+       
+        [AllowAnonymous]
+        public async Task<IActionResult> ContactManager() //available to anyone Operators -> Manager Page, not logged or Managers -> Administrators contacts
         {
+            var user = Environment.UserName;
+            
             var managers = new List<ManagerViewModel>();
             foreach (var manager in await this.userService.GetManagersAsync())
             {
                 managers.Add(new ManagerViewModel { UserName = manager.UserName, Email = manager.Email });
             }
-
+            
 
             return View(managers);
         }
@@ -157,7 +164,7 @@ namespace eMAM.UI.Controllers
             string userName = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
             var newStatus = await this.statusService.GetStatusAsync("Open");
             var email = await this.emailService.GetEmailByIdAsync(id);
-            await auditLogService.Log(userName, "CHANGED STATUS", newStatus, email.Status);
+            await auditLogService.Log(userName, "CHANGED STATUS", newStatus, email.Status); // Audit logs => how to display action? One more type i db or strings
             email = await this.emailService.UpdateStatusAsync(email, newStatus);
             var model = this.emailViewModelMapper.MapFrom(email);
             return View(model);
