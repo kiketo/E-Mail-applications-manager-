@@ -30,12 +30,12 @@ namespace eMAM.UI.Controllers
         public HomeController(
             IGmailApiService gmailApiService, 
             IGmailUserDataService gmailUserDataService, 
-            IEmailService emailDbService, 
+            IEmailService emailService, 
             IViewModelMapper<Email, EmailViewModel> emailViewModelMapper, 
             IUserService userService,
             IAuditLogService auditLogService,
             IStatusService statusService,
-            ILogger logger)
+            ILogger<User> logger)
         {
             this.gmailApiService = gmailApiService ?? throw new ArgumentNullException(nameof(gmailApiService));
             this.gmailUserDataService = gmailUserDataService ?? throw new ArgumentNullException(nameof(gmailUserDataService));
