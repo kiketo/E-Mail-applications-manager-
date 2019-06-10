@@ -64,9 +64,11 @@ namespace eMAM.Service.DbServices
             return newEmail;
         }
 
-        public async Task AddBodyToMailAsync(Email mail, string body)
+        public async Task AddBodyToMailAsync(Email mail, string body, Status newStatus)
         {
             mail.Body = body;
+            mail.Status = newStatus;
+            mail.SetInCurrentStatusOn = DateTime.Now;
             await this.context.SaveChangesAsync();
         }
 

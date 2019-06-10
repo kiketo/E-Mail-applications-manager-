@@ -23,6 +23,12 @@ namespace eMAM.Service.DbServices
             var status = this.applicationDbContext.Statuses.FirstOrDefaultAsync(s => s.Text == "Not Reviewed");
             return status;
         }
+
+        public Task<Status> GetStatusByName(string statusName)
+        {
+            var status = this.applicationDbContext.Statuses.FirstOrDefaultAsync(s => s.Text == statusName);
+            return status;
+        }
         public async Task<Status> GetStatusAsync(string textStatus)
         {
             

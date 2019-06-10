@@ -39,12 +39,13 @@ namespace eMAM.UI.Controllers
         {
             this.gmailApiService = gmailApiService ?? throw new ArgumentNullException(nameof(gmailApiService));
             this.gmailUserDataService = gmailUserDataService ?? throw new ArgumentNullException(nameof(gmailUserDataService));
-            this.emailService = emailDbService ?? throw new ArgumentNullException(nameof(emailDbService));
+            this.emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
             this.emailViewModelMapper = emailViewModelMapper ?? throw new ArgumentNullException(nameof(emailViewModelMapper));
             this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
             this.auditLogService = auditLogService ?? throw new ArgumentNullException(nameof(auditLogService));
             this.statusService = statusService ?? throw new ArgumentNullException(nameof(statusService));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.statusService = statusService ?? throw new ArgumentNullException(nameof(statusService));
         }
 
         //[Authorize]
@@ -107,8 +108,9 @@ namespace eMAM.UI.Controllers
             var userData = await this.gmailUserDataService.GetAsync();
             var mailDTO = await this.gmailApiService.DownloadBodyOfMailAsync(messageId, userData.AccessToken);
             var mail = await this.emailService.GetEmailByGmailIdAsync(messageId);
-            //mail.Body = mailDTO.BodyAsString;
-            await emailService.AddBodyToMailAsync(mail, mailDTO.BodyAsString);
+            //mail.Body = mailDTO.BodyAsStringNew
+            var validStatus = await this.statusService.GetStatusByName("New");
+            await emailService.AddBodyToMailAsync(mail, mailDTO.BodyAsString, validStatus);
             return Ok();
         }
 

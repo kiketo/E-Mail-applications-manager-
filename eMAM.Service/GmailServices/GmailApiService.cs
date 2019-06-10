@@ -12,7 +12,7 @@ namespace eMAM.Service.GmailServices
     public class GmailApiService : IGmailApiService
     {
         //private readonly ApplicationDbContext context;
-        private readonly string userId = "me";
+        //private readonly string userId = "me";
 
         //public GmailApiService(ApplicationDbContext context)
         //{
