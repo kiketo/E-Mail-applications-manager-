@@ -1,0 +1,34 @@
+﻿@model List<ManagerViewModel>
+@{
+    ViewData["Title"] = "FindAdmin";
+}
+<h2>@ViewData["Title"]</h2>
+<h3>@ViewData["Message"]</h3>
+
+
+@if (User.IsInRole("Operator"))
+{
+    <p>Contact a Manager:</p>
+    @foreach (var managerInfo in @Model)
+    {
+        <address>
+            <strong>User:</strong>  @managerInfo.UserName<br />
+            <strong>Email:</strong> <a href="mailto:@managerInfo.Email">@managerInfo.Email</a>
+
+        </address>
+
+    }
+}
+else
+{
+    <p>Contact an Administrator:</p>
+    @foreach (var managerInfo in @Model)
+    {
+        <address>
+            <strong>User:</strong>  @managerInfo.UserName<br />
+            <strong>Email:</strong> <a href="mailto:@managerInfo.Email">@managerInfo.Email</a>
+
+        </address>
+
+    }
+}
