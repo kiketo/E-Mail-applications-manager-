@@ -21,20 +21,16 @@ namespace eMAM.UI.Controllers
         private readonly IEmailService emailService;
         private IViewModelMapper<Email, EmailViewModel> emailViewModelMapper;
         private readonly IUserService userService;
+        private readonly IStatusService statusService;
 
-
-        public HomeController(
-            IGmailApiService gmailApiService, 
-            IGmailUserDataService gmailUserDataService, 
-            IEmailService emailDbService, 
-            IViewModelMapper<Email, EmailViewModel> emailViewModelMapper, 
-            IUserService userService)
+        public HomeController(IGmailApiService gmailApiService, IGmailUserDataService gmailUserDataService, IEmailService emailService, IViewModelMapper<Email, EmailViewModel> emailViewModelMapper, IUserService userService, IStatusService statusService)
         {
             this.gmailApiService = gmailApiService ?? throw new ArgumentNullException(nameof(gmailApiService));
             this.gmailUserDataService = gmailUserDataService ?? throw new ArgumentNullException(nameof(gmailUserDataService));
-            this.emailService = emailDbService ?? throw new ArgumentNullException(nameof(emailDbService));
+            this.emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
             this.emailViewModelMapper = emailViewModelMapper ?? throw new ArgumentNullException(nameof(emailViewModelMapper));
             this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            this.statusService = statusService ?? throw new ArgumentNullException(nameof(statusService));
         }
 
         [Authorize]
@@ -95,8 +91,9 @@ namespace eMAM.UI.Controllers
             var userData = await this.gmailUserDataService.GetAsync();
             var mailDTO = await this.gmailApiService.DownloadBodyOfMailAsync(messageId, userData.AccessToken);
             var mail = await this.emailService.GetEmailByGmailIdAsync(messageId);
-            //mail.Body = mailDTO.BodyAsString;
-            await emailService.AddBodyToMailAsync(mail, mailDTO.BodyAsString);
+            //mail.Body = mailDTO.BodyAsStringNew
+            var validStatus = await this.statusService.GetStatusByName("New");
+            await emailService.AddBodyToMailAsync(mail, mailDTO.BodyAsString, validStatus);
             return Ok();
         }
 

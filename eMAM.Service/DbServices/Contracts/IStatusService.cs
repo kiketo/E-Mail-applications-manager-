@@ -9,5 +9,7 @@ namespace eMAM.Service.DbServices.Contracts
     public interface IStatusService
     {
         Task<Status> GetInitialStatusAsync();
+
+        Task<Status> GetStatusByName(string statusName);
     }
 }
