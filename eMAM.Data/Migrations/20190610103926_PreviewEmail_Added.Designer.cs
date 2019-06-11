@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using eMAM.Data;
@@ -9,9 +10,10 @@ using eMAM.Data;
 namespace eMAM.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190610103926_PreviewEmail_Added")]
+    partial class PreviewEmail_Added
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -219,8 +221,6 @@ namespace eMAM.Data.Migrations
 
                     b.Property<bool>("WorkInProcess");
 
-                    b.Property<string>("WorkingById");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ClosedById");
@@ -234,8 +234,6 @@ namespace eMAM.Data.Migrations
                     b.HasIndex("SenderId");
 
                     b.HasIndex("StatusId");
-
-                    b.HasIndex("WorkingById");
 
                     b.ToTable("Emails");
                 });
@@ -430,10 +428,6 @@ namespace eMAM.Data.Migrations
                         .WithMany("Emails")
                         .HasForeignKey("StatusId")
                         .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("eMAM.Data.Models.User", "WorkingBy")
-                        .WithMany("WorkInProcessEmails")
-                        .HasForeignKey("WorkingById");
                 });
 #pragma warning restore 612, 618
         }

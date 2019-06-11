@@ -17,13 +17,16 @@ namespace eMAM.Service.DbServices.Contracts
 
         Task<Email> AddEmailAsync(DateTime dateReceived, List<Attachment> attachments, string gmailIdNumber, Sender sender, Status status, string subject);
 
-        Task AddBodyToMailAsync(Email mail, string body, Status newStatus);
+        Task ValidateEmail(Email mail, string body, Status newStatus, User user);
 
         IQueryable<Email> ReadAllMailsFromDb();
 
         Task<Email> GetEmailByIdAsync(int id);
 
         Task<Email> UpdateStatusAsync(Email newEmail, Status newStatus);
+
+        Task<Email> WorkInProcessAsync(User user, string messageId);
+
 
         Task<string> GetEmailBodyAsync(string mailId);
 

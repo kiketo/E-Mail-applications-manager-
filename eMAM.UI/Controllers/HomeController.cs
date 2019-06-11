@@ -6,6 +6,7 @@ using eMAM.UI.Mappers;
 using eMAM.UI.Models;
 using eMAM.UI.Utills;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -18,6 +19,7 @@ namespace eMAM.UI.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly UserManager<User> userManager;
         private readonly IGmailApiService gmailApiService;
         private readonly IGmailUserDataService gmailUserDataService;
         private readonly IEmailService emailService;
@@ -79,24 +81,16 @@ namespace eMAM.UI.Controllers
             return View(model);
         }
 
-        //[Authorize]
-        //[HttpGet]
-        //public  IActionResult PreviewMail()
-        //{
-        //    return View();
-        //}
-
         //[ValidateAntiForgeryToken]
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> PreviewMail(string messageId)
         {
+            var user = await this.userManager.GetUserAsync(User);
+            await this.emailService.WorkInProcessAsync(user, messageId);
             var userData = await this.gmailUserDataService.GetAsync();
             var mailDTO = await this.gmailApiService.DownloadBodyOfMailAsync(messageId, userData.AccessToken);
-            //var mail = await this.emailService.GetEmailByGmailIdAsync(messageId);
             var body = mailDTO.BodyAsString;
-            //var model = this.emailViewModelMapper.MapFrom(mail);
-            var res = Json(body);
 
             return Json(body);
         }
@@ -105,12 +99,12 @@ namespace eMAM.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> ValidateMail(string messageId)
         {
+            var user = await this.userManager.GetUserAsync(User);
             var userData = await this.gmailUserDataService.GetAsync();
             var mailDTO = await this.gmailApiService.DownloadBodyOfMailAsync(messageId, userData.AccessToken);
             var mail = await this.emailService.GetEmailByGmailIdAsync(messageId);
-            //mail.Body = mailDTO.BodyAsStringNew
             var validStatus = await this.statusService.GetStatusByName("New");
-            await emailService.AddBodyToMailAsync(mail, mailDTO.BodyAsString, validStatus);
+            await emailService.ValidateEmail(mail, mailDTO.BodyAsString, validStatus,user);
             return Ok();
         }
 

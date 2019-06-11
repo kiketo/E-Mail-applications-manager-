@@ -11,5 +11,9 @@ namespace eMAM.Data.Models
         public ICollection<Email> ClosedEmails { get; set; }
 
         public bool Inactive { get; set; }
+
+        public ICollection<Email> PreviewedEmails { get; set; }
+
+        public ICollection<Email> WorkInProcessEmails { get; set; }
     }
 }
