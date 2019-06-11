@@ -164,7 +164,7 @@ namespace eMAM.UI.Controllers
             var newStatus = await this.statusService.GetStatusAsync("Open");
             var email = await this.emailService.GetEmailByIdAsync(2);
             await auditLogService.Log(userName, "CHANGED STATUS", newStatus, email.Status); // Audit logs => how to display action? One more type i db or strings, user?
-            email = await this.emailService.UpdateStatusAsync(email, newStatus);
+            email = await this.emailService.UpdateAsync(email);
             var model = this.emailViewModelMapper.MapFrom(email);
 
 
@@ -187,8 +187,9 @@ namespace eMAM.UI.Controllers
         {
             var mail = await emailService.GetEmailByIdDBAsync(messageId);
             mail.Status = await this.statusService.GetStatusAsync("Open");
-            //mail.WorkInProccess()
-
+            mail.WorkInProcess = true;
+            await this.emailService.UpdateAsync(mail);
+            return Ok();
         }
         public IActionResult Error()
         {

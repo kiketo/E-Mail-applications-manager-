@@ -18,10 +18,10 @@ $('.emailButton')
 //validate e-mail
 $('.validation-button').click(function (ev) {
     var $this = $(this);
+    //debugger;
     var messageId = $this.attr('data-messageId');
     var url = $this.attr('data-url');
 
-     $.ajax({
     //$.post(url, { messageId: messageId }, function (res) {
     //    console.log('?')
     //    toastr.success("Mail Validated!");
@@ -37,12 +37,6 @@ $('.validation-button').click(function (ev) {
         error: function (res, as, okijjg) {
             toastr.error(err.responseText);
         }
-        success: function (res,as,okijjg) {
-             toastr.success("Mail Validated");
-
-         },
-         error: function (res, as, okijjg) {
-             toastr.error(err.responseText);}
     });
 });
 
@@ -73,10 +67,7 @@ $('.applicationEmail').click(function (ev) {
     var $this = $(this);
     var messageId = $this.attr('data-target');
     var messageRequestData = messageId.replace("#mails-", "");
-    console.log(messageId)
     var url = '/home/getbodydb';
-    console.log(url);
-
     $.ajax({
         type: "GET",
         url: url,

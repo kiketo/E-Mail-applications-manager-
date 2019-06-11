@@ -91,9 +91,9 @@ namespace eMAM.Service.DbServices
             return await this.context.Emails.FirstOrDefaultAsync(e => e.Id == id);
         }
 
-        public async Task<Email> UpdateStatusAsync(Email newEmail, Status newStatus)
+        public async Task<Email> UpdateAsync(Email newEmail)
         {
-            newEmail.Status = newStatus;
+            
             this.context.Attach(newEmail).State = EntityState.Modified;
              await this.context.SaveChangesAsync();
             return newEmail;

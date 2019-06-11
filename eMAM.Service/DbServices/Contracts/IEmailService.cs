@@ -23,7 +23,7 @@ namespace eMAM.Service.DbServices.Contracts
 
         Task<Email> GetEmailByIdAsync(int id);
 
-        Task<Email> UpdateStatusAsync(Email newEmail, Status newStatus);
+        Task<Email> UpdateAsync(Email newEmail);
 
         Task<Email> WorkInProcessAsync(User user, string messageId);
 
