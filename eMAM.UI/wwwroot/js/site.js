@@ -15,7 +15,7 @@ $('.emailButton')
     .ajaxStop(function () {
         $('#loading-indicator').hide();
     });
-//validate e-mail
+//validate e-mail & close
 $('.validation-button').click(function (ev) {
     var $this = $(this);
     var messageId = $this.attr('data-messageId');
@@ -27,13 +27,31 @@ $('.validation-button').click(function (ev) {
         data: { messageId: messageId },
         success: function (res,as,okijjg) {
              toastr.success("Mail Validated");
-
          },
          error: function (res, as, okijjg) {
              toastr.error(err.responseText);}
     });
 });
 
+//nto valid e-mail
+$('.notValid-button').click(function (ev) {
+    var $this = $(this);
+    var messageId = $this.attr('data-messageId');
+    var url = $this.attr('data-url');
 
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: { messageId: messageId },
+        success: function (res, as, okijjg) {
+            toastr.warning("Mail Not Valid");
+        },
+        error: function (res, as, okijjg) {
+            toastr.error(err.responseText);
+        }
+    });
+
+
+});
 
 

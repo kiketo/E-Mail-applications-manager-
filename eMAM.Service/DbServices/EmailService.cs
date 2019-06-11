@@ -5,12 +5,11 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace eMAM.Service.DbServices
 {
-    public class EmailService: IEmailService
+    public class EmailService : IEmailService
     {
         private readonly ApplicationDbContext context;
 
@@ -22,27 +21,27 @@ namespace eMAM.Service.DbServices
         public async Task<Email> GetEmailByGmailIdAsync(string id)
         {
             var mail = await this.context.Emails
-                        .Include(x=>x.Attachments)
-                        .Include(x=>x.Customer)
-                        .Include(x=>x.OpenedBy)
-                        .Include(x=>x.Sender)
-                        .Include(x=>x.Status)
+                        .Include(x => x.Attachments)
+                        .Include(x => x.Customer)
+                        .Include(x => x.OpenedBy)
+                        .Include(x => x.Sender)
+                        .Include(x => x.Status)
                         .FirstOrDefaultAsync(x => x.GmailIdNumber == id);
-            if (mail==null)
+            if (mail == null)
             {
                 throw new ArgumentException($"There is no mail with Gmail ID:{id}");
             }
             return mail;
         }
 
-        public  Task<int> GetDbEmailsCountAsync()
+        public Task<int> GetDbEmailsCountAsync()
         {
-            return  this.context.Emails.CountAsync();
+            return this.context.Emails.CountAsync();
         }
 
         public Task<bool> IsEmailInDbAsync(string messageId)
         {
-           return this.context.Emails.AnyAsync(e => e.GmailIdNumber == messageId);
+            return this.context.Emails.AnyAsync(e => e.GmailIdNumber == messageId);
         }
 
         public async Task<Email> AddEmailAsync(DateTime dateReceived, List<Attachment> attachments, string gmailIdNumber, Sender sender, Status status, string subject)
@@ -77,12 +76,24 @@ namespace eMAM.Service.DbServices
             await this.context.SaveChangesAsync();
         }
 
-        public IQueryable<Email> ReadAllMailsFromDb()
+        public IQueryable<Email> ReadAllMailsFromDb(bool isManager, User user)
         {
-            var allMails = this.context.Emails
+            IQueryable<Email> allMails;
+            if (isManager)
+            {
+                allMails = this.context.Emails
                                        .Include(e => e.Attachments)
                                        .Include(e => e.Sender)
                                        .Include(e => e.Status);
+            }
+            else
+            {
+                allMails = this.context.Emails
+                                           .Where(e => e.WorkInProcess == true && e.WorkingBy == user|| e.WorkInProcess == false)
+                                           .Include(e => e.Attachments)
+                                           .Include(e => e.Sender)
+                                           .Include(e => e.Status);
+            }
             return allMails;
         }
 
@@ -91,12 +102,12 @@ namespace eMAM.Service.DbServices
             return await this.context.Emails.FirstOrDefaultAsync(e => e.Id == id);
         }
 
-        public async Task<Email> UpdateStatusAsync(Email newEmail, Status newStatus)
+        public async Task UpdateAsync(Email newEmail)
         {
-            newEmail.Status = newStatus;
+            
             this.context.Attach(newEmail).State = EntityState.Modified;
-             await this.context.SaveChangesAsync();
-            return newEmail;
+            await this.context.SaveChangesAsync();
+           
         }
 
         public async Task<Email> WorkInProcessAsync(User user, string messageId)
@@ -109,5 +120,14 @@ namespace eMAM.Service.DbServices
             return mail;
         }
 
+        public async Task<Email> WorkNotInProcessAsync(string messageId)
+        {
+            var mail = await this.GetEmailByGmailIdAsync(messageId);
+            mail.WorkInProcess = false;
+            mail.WorkingBy = null;
+            await this.context.SaveChangesAsync();
+
+            return mail;
+        }
     }
 }

@@ -29,16 +29,9 @@ namespace eMAM.UI.Controllers
         private readonly IStatusService statusService;
         private readonly ILogger logger;
 
-        public HomeController(
-            IGmailApiService gmailApiService, 
-            IGmailUserDataService gmailUserDataService, 
-            IEmailService emailService, 
-            IViewModelMapper<Email, EmailViewModel> emailViewModelMapper, 
-            IUserService userService,
-            IAuditLogService auditLogService,
-            IStatusService statusService,
-            ILogger<User> logger)
+        public HomeController(UserManager<User> userManager, IGmailApiService gmailApiService, IGmailUserDataService gmailUserDataService, IEmailService emailService, IViewModelMapper<Email, EmailViewModel> emailViewModelMapper, IUserService userService, IAuditLogService auditLogService, IStatusService statusService, ILogger<User> logger)
         {
+            this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             this.gmailApiService = gmailApiService ?? throw new ArgumentNullException(nameof(gmailApiService));
             this.gmailUserDataService = gmailUserDataService ?? throw new ArgumentNullException(nameof(gmailUserDataService));
             this.emailService = emailService ?? throw new ArgumentNullException(nameof(emailService));
@@ -47,8 +40,9 @@ namespace eMAM.UI.Controllers
             this.auditLogService = auditLogService ?? throw new ArgumentNullException(nameof(auditLogService));
             this.statusService = statusService ?? throw new ArgumentNullException(nameof(statusService));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this.statusService = statusService ?? throw new ArgumentNullException(nameof(statusService));
         }
+
+
 
         //[Authorize]
         public IActionResult Index()
@@ -60,8 +54,10 @@ namespace eMAM.UI.Controllers
 
         public async Task<IActionResult> ListAllMails(int? pageNumber)
         {
-            var mails = this.emailService.ReadAllMailsFromDb();
             var pageSize = 10;
+            var user = await this.userManager.GetUserAsync(User);
+            var isManager = User.IsInRole("Manager");
+            var mails = this.emailService.ReadAllMailsFromDb(isManager, user);
             var page = await PaginatedList<Email>.CreateAsync(mails, pageNumber ?? 1, pageSize);
 
             EmailViewModel model = new EmailViewModel
@@ -104,7 +100,30 @@ namespace eMAM.UI.Controllers
             var mailDTO = await this.gmailApiService.DownloadBodyOfMailAsync(messageId, userData.AccessToken);
             var mail = await this.emailService.GetEmailByGmailIdAsync(messageId);
             var validStatus = await this.statusService.GetStatusByName("New");
-            await emailService.ValidateEmail(mail, mailDTO.BodyAsString, validStatus,user);
+            mail.Status = validStatus;
+            mail.Body = mailDTO.BodyAsString;
+            mail.WorkInProcess = false;
+            await emailService.UpdateAsync(mail);
+
+            //await emailService.ValidateEmail(mail, mailDTO.BodyAsString, validStatus,user);
+            //await emailService.WorkNotInProcessAsync(messageId);
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> NotValidMail(string messageId)
+        {
+            var user = await this.userManager.GetUserAsync(User);
+            //var userData = await this.gmailUserDataService.GetAsync();
+            //var mailDTO = await this.gmailApiService.DownloadBodyOfMailAsync(messageId, userData.AccessToken);
+            var mail = await this.emailService.GetEmailByGmailIdAsync(messageId);
+            var invalidStatus = await this.statusService.GetStatusByName("Invalid Application");
+            mail.Status = invalidStatus;
+            mail.WorkInProcess = false;
+            mail.WorkingBy = null;
+            await emailService.UpdateAsync(mail);
+            //await emailService.WorkNotInProcessAsync(messageId);
             return Ok();
         }
 
@@ -133,8 +152,10 @@ namespace eMAM.UI.Controllers
        // [Authorize(Roles = "Manager, Operator")]
         public async Task<IActionResult> ListStatusNew(int? pageNumber) // Accessible to all logged users and managers to see
         {
-            var mailStatusNewLst =  this.emailService.ReadAllMailsFromDb().Where(e=>e.Status.Text == "New");
             var pageSize = 10;
+            var isManager = User.IsInRole("Manager");
+            var user = await this.userManager.GetUserAsync(User);
+            var mailStatusNewLst = this.emailService.ReadAllMailsFromDb(isManager, user).Where(e=>e.Status.Text == "New");
             var page = await PaginatedList<Email>.CreateAsync(mailStatusNewLst, pageNumber ?? 1, pageSize);
 
             EmailViewModel model = new EmailViewModel
@@ -161,7 +182,7 @@ namespace eMAM.UI.Controllers
             var newStatus = await this.statusService.GetStatusAsync("Open");
             var email = await this.emailService.GetEmailByIdAsync(id);
             await auditLogService.Log(userName, "CHANGED STATUS", newStatus, email.Status); // Audit logs => how to display action? One more type i db or strings
-            email = await this.emailService.UpdateStatusAsync(email, newStatus);
+            await this.emailService.UpdateAsync(email);
             var model = this.emailViewModelMapper.MapFrom(email);
             return View(model);
         }

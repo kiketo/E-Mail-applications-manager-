@@ -31,7 +31,13 @@ namespace eMAM.UI.Mappers
             SetInTerminalStatusOn=entity.SetInTerminalStatusOn,
             Status=entity.Status,
             StatusId=entity.StatusId,
-            AreAttachments=entity.Attachments.Any()
+            AreAttachments=entity.Attachments.Any(),
+            PreviewedBy=entity.PreviewedBy,
+            PreviewedById=entity.PreviewedById,
+            WorkingBy=entity.WorkingBy,
+            WorkingById=entity.WorkingById,
+            WorkInProcess=entity.WorkInProcess
+            
         };
     }
 }

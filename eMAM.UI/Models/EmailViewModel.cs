@@ -53,5 +53,15 @@ namespace eMAM.UI.Models
         public bool HasNextPage { get; set; }
         public int PageIndex { get; set; }
         public int TotalPages { get; set; }
+
+        public bool WorkInProcess { get; set; }
+
+        public string WorkingById { get; set; }
+
+        public User WorkingBy { get; set; }
+
+        public string PreviewedById { get; set; }
+
+        public User PreviewedBy { get; set; }
     }
 }
