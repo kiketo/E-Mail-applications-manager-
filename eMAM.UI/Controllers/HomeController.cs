@@ -65,7 +65,8 @@ namespace eMAM.UI.Controllers
                 HasNextPage = page.HasNextPage,
                 HasPreviousPage = page.HasPreviousPage,
                 PageIndex = page.PageIndex,
-                TotalPages = page.TotalPages
+                TotalPages = page.TotalPages,
+                UserIsManager=isManager
             };
 
             foreach (var mail in page)
@@ -186,12 +187,8 @@ namespace eMAM.UI.Controllers
             var newStatus = await this.statusService.GetStatusAsync("Open");
             var email = await this.emailService.GetEmailByIdAsync(2);
             await auditLogService.Log(userName, "CHANGED STATUS", newStatus, email.Status); // Audit logs => how to display action? One more type i db or strings, user?
-            email = await this.emailService.UpdateAsync(email);
+            await this.emailService.UpdateAsync(email);
             var model = this.emailViewModelMapper.MapFrom(email);
-
-
-
-
             var validStatus = await this.statusService.GetStatusByName("New");
             return Ok();
         }
@@ -207,7 +204,7 @@ namespace eMAM.UI.Controllers
 
         public async Task<IActionResult> ChangeStatusToOpen(string messageId)
         {
-            var mail = await emailService.GetEmailByIdDBAsync(messageId);
+            var mail = await emailService.GetEmailByGmailIdAsync(messageId);
             mail.Status = await this.statusService.GetStatusAsync("Open");
             mail.WorkInProcess = true;
             await this.emailService.UpdateAsync(mail);

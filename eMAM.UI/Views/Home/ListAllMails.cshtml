@@ -19,7 +19,7 @@
 
         @foreach (var mail in Model.SearchResults)
         {
-            if (mail.Status.Text == "Not Reviewed")
+            if (mail.Status.Text == "Not Reviewed" || mail.Status.Text == "Invalid Application")
             {
                 <tr>
                     <td>@mail.Id</td>
@@ -35,10 +35,18 @@
                     <td>
 
                         <!-- Button to Open the Modal -->
-
-                        <button type="button" class="btn btn-primary email-button" data-toggle="modal" data-target="#mails-@mail.GmailIdNumber" data-url="/home/previewmail">
-                            <img src="~/images/preview.png" height="30" width="30">
-                        </button>
+                        @if (Model.UserIsManager)
+                        {
+                            <button type="button" class="btn btn-primary email-button" data-toggle="modal" data-target="#mails-@mail.GmailIdNumber" data-url="/home/previewmail">
+                                <img src="~/images/preview.png" height="30" width="30">
+                            </button>
+                        }
+                        else if (mail.Status.Text == "Not Reviewed")
+                        {
+                            <button type="button" class="btn btn-primary email-button" data-toggle="modal" data-target="#mails-@mail.GmailIdNumber" data-url="/home/previewmail">
+                                <img src="~/images/preview.png" height="30" width="30">
+                            </button>
+                        }
 
                         <!-- The Modal -->
 
@@ -55,44 +63,44 @@
                                     <!-- Modal body -->
                                     <div class="modal-body">
 
-                                    <div class="row">
-                                        <div class="col-sm-9" style="background-color:lavender;">
-                                            <p><h7>Subject: <r style="font-weight:bold">@mail.Subject</r></h7></p>
-                                            <p><h7>Date/Time received in the mail: <r style="font-weight:bold">@mail.DateReceived</r></h7></p>
-                                            <p>
-                                                <h7>
-                                                    Date/Time of initial registration within the system:
-                                                    <r style="font-weight:bold">@mail.InitialRegistrationInSystemOn</r>
-                                                </h7>
-                                            </p>
-                                            <p>
-                                                <h7>
-                                                    <r style="font-weight:bold">@mail.Attachments.Count</r> attachment/s, total size:
-                                                    <r style="font-weight:bold">@mail.Attachments.Sum(x => x.FileSizeInMb).ToString("0.00")</r> MB
-                                                </h7>
-                                            </p>
-                                            <p><h7>Subject: <r style="font-weight:bold">@mail.Subject</r></h7></p>
-                                            <div class="mail-body" style="width: 100%; height:300px; overflow-y:scroll;">
-                                                <img src="/images/ajax-loader.gif" class="loading-indicator" style="height:150px" />
+                                        <div class="row">
+                                            <div class="col-sm-9" style="background-color:lavender;">
+                                                <p><h7>Subject: <r style="font-weight:bold">@mail.Subject</r></h7></p>
+                                                <p><h7>Date/Time received in the mail: <r style="font-weight:bold">@mail.DateReceived</r></h7></p>
+                                                <p>
+                                                    <h7>
+                                                        Date/Time of initial registration within the system:
+                                                        <r style="font-weight:bold">@mail.InitialRegistrationInSystemOn</r>
+                                                    </h7>
+                                                </p>
+                                                <p>
+                                                    <h7>
+                                                        <r style="font-weight:bold">@mail.Attachments.Count</r> attachment/s, total size:
+                                                        <r style="font-weight:bold">@mail.Attachments.Sum(x => x.FileSizeInMb).ToString("0.00")</r> MB
+                                                    </h7>
+                                                </p>
+                                                <p><h7>Subject: <r style="font-weight:bold">@mail.Subject</r></h7></p>
+                                                <div class="mail-body" style="width: 100%; height:300px; overflow-y:scroll;">
+                                                    <img src="/images/ajax-loader.gif" class="loading-indicator" style="height:150px" />
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-sm-3" style="background-color:lavender;">
-                                            <div style="">
-                                                <p></p>
+                                            <div class="col-sm-3" style="background-color:lavender;">
+                                                <div style="">
+                                                    <p></p>
 
-                                                <button type="button" data-dismiss="modal" style="width:160px" class="btn btn-success validation-button" data-messageId="@mail.GmailIdNumber" data-url="/home/validatemail">Valid</button>
-                                                <p></p>
-                                                <p></p>
-                                                <button type="button" data-dismiss="modal" style="width:160px" class="btn btn-danger notValid-button" data-messageId="@mail.GmailIdNumber" data-url="/home/notvalidmail">Not Valid</button>
+                                                    <button type="button" data-dismiss="modal" style="width:160px" class="btn btn-success validation-button" data-messageId="@mail.GmailIdNumber" data-url="/home/validatemail">Valid</button>
+                                                    <p></p>
+                                                    <p></p>
+                                                    <button type="button" data-dismiss="modal" style="width:160px" class="btn btn-danger notValid-button" data-messageId="@mail.GmailIdNumber" data-url="/home/notvalidmail">Not Valid</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
 
                                     <!-- Modal footer -->
                                     @*<div class="modal-footer">
-                                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                                    </div>*@
+                                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                        </div>*@
 
                                 </div>
                             </div>
@@ -110,7 +118,7 @@
                     <td>@mail.Subject</td>
                     <td>@mail.Status.Text</td>
 
-                    
+
                     <td>
                         @if (mail.AreAttachments)
                         {<img src="~/images/attachment.png" height="42" width="42">}
@@ -118,8 +126,8 @@
                     <td>LIST new mails ???</td>
                     <td>
                         <!-- The Modal -->
-                        <div class="modal fade" id="mails-@mail.GmailIdNumber" >
-                            <div class="modal-dialog modal-xl" >
+                        <div class="modal fade" id="mails-@mail.GmailIdNumber">
+                            <div class="modal-dialog modal-xl">
                                 <div class="modal-content">
 
                                     <!-- Modal Header -->

@@ -104,30 +104,14 @@ namespace eMAM.Service.DbServices
 
         public async Task UpdateAsync(Email newEmail)
         {
-            
             this.context.Attach(newEmail).State = EntityState.Modified;
             await this.context.SaveChangesAsync();
-           
         }
+
         public async Task<string> GetEmailBodyAsync(string mailId)
         {
             var mail = await this.context.Emails.FirstOrDefaultAsync(e => e.GmailIdNumber == mailId);
             return mail.Body;
-        }
-        public async Task<Email> GetEmailByIdDBAsync(string id)
-        {
-            var mail = await this.context.Emails
-                        .Include(x=>x.Attachments)
-                        .Include(x=>x.Customer)
-                        .Include(x=>x.OpenedBy)
-                        .Include(x=>x.Sender)
-                        .Include(x=>x.Status)
-                        .FirstOrDefaultAsync(x => x.GmailIdNumber == id);
-            if (mail==null)
-            {
-                throw new ArgumentException($"There is no mail with Gmail ID:{id}");
-            }
-            return mail;
         }
 
         public async Task<Email> WorkInProcessAsync(User user, string messageId)

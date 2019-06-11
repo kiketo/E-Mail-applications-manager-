@@ -63,5 +63,7 @@ namespace eMAM.UI.Models
         public string PreviewedById { get; set; }
 
         public User PreviewedBy { get; set; }
+
+        public bool UserIsManager { get; set; }
     }
 }
