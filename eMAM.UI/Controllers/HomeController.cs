@@ -47,7 +47,7 @@ namespace eMAM.UI.Controllers
         //[Authorize]
         public IActionResult Index()
         {
-           
+
 
             return View();
         }
@@ -133,25 +133,26 @@ namespace eMAM.UI.Controllers
             logger.LogInformation("I am in about");
             return View();
         }
-       
+
         [AllowAnonymous]
         public async Task<IActionResult> ContactManager() //available to anyone Operators -> Manager Page, not logged or Managers -> Administrators contacts
         {
             var user = Environment.UserName;
-            
+
             var managers = new List<ManagerViewModel>();
             foreach (var manager in await this.userService.GetManagersAsync())
             {
                 managers.Add(new ManagerViewModel { UserName = manager.UserName, Email = manager.Email });
             }
-            
+
 
             return View(managers);
         }
 
-       // [Authorize(Roles = "Manager, Operator")]
+        // [Authorize(Roles = "Manager, Operator")]
         public async Task<IActionResult> ListStatusNew(int? pageNumber) // Accessible to all logged users and managers to see
         {
+  
             var pageSize = 10;
             var isManager = User.IsInRole("Manager");
             var user = await this.userManager.GetUserAsync(User);
@@ -175,19 +176,43 @@ namespace eMAM.UI.Controllers
             return Ok();
         }
 
-
-        public async Task<IActionResult> OpenApplication(int id) // Accessible to all logged users and managers to see New->Open
+        [HttpPost]
+        public async Task<IActionResult> OpenApplication(string messageId) // Accessible to all logged users and managers to see New->Open
         {
+            var mail = await this.emailService.GetEmailByGmailIdAsync(messageId);
+
+
             string userName = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
             var newStatus = await this.statusService.GetStatusAsync("Open");
-            var email = await this.emailService.GetEmailByIdAsync(id);
-            await auditLogService.Log(userName, "CHANGED STATUS", newStatus, email.Status); // Audit logs => how to display action? One more type i db or strings
-            await this.emailService.UpdateAsync(email);
+            var email = await this.emailService.GetEmailByIdAsync(2);
+            await auditLogService.Log(userName, "CHANGED STATUS", newStatus, email.Status); // Audit logs => how to display action? One more type i db or strings, user?
+            email = await this.emailService.UpdateAsync(email);
             var model = this.emailViewModelMapper.MapFrom(email);
-            return View(model);
+
+
+
+
+            var validStatus = await this.statusService.GetStatusByName("New");
+            return Ok();
         }
+        [HttpGet]
+        public async Task<IActionResult> GetBodyDB(string messageId)
+        {
+            var body = await this.emailService.GetEmailBodyAsync(messageId);
+            var res = Json(body);
 
+            return Json(body);
+        }
+        //status open, work in process
 
+        public async Task<IActionResult> ChangeStatusToOpen(string messageId)
+        {
+            var mail = await emailService.GetEmailByIdDBAsync(messageId);
+            mail.Status = await this.statusService.GetStatusAsync("Open");
+            mail.WorkInProcess = true;
+            await this.emailService.UpdateAsync(mail);
+            return Ok();
+        }
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
