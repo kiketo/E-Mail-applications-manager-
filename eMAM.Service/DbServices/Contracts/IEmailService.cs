@@ -24,5 +24,9 @@ namespace eMAM.Service.DbServices.Contracts
         Task<Email> GetEmailByIdAsync(int id);
 
         Task<Email> UpdateStatusAsync(Email newEmail, Status newStatus);
+
+        Task<string> GetEmailBodyAsync(string mailId);
+
+        Task<Email> GetEmailByIdDBAsync(string id);
     }
 }

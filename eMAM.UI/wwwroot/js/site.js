@@ -25,14 +25,16 @@ $('.validation-button').click(function (ev) {
     //    toastr.success("Mail Validated!");
     //})
 
-     $.ajax({
+    $.ajax({
         type: "POST",
         url: url,
         data: { messageId: messageId },
-        success: function (res,as,okijjg) {
-            toastr.success("Mail Validated");},
-         error: function (res, as, okijjg) {
-             toastr.error(err.responseText);}
+        success: function (res, as, okijjg) {
+            toastr.success("Mail Validated");
+        },
+        error: function (res, as, okijjg) {
+            toastr.error(err.responseText);
+        }
     });
 });
 
@@ -47,3 +49,46 @@ $('.validation-button').click(function (ev) {
 //});
 
 
+//show body of email in open
+//$('.applicationEmail').click(function (ev) {
+//    var $this = $(this);
+//    var messageId = $this.attr('data-target').replace("#mails-", "");
+//    var url = $this.attr('data-url');
+
+//    $.post(url, { messageId: messageId }, function (response) {
+//        $(messageId).find('.mail-bodyDB').html(response);
+//    });
+
+//    $.ajax({
+//        type: "GET",
+//        url: url,
+//        data: { messageId: messageRequestData },
+//        success: $.post(url, { emailId: messageRequestData }, function (response) {
+//            $(emailId).find('.mail-bodyDB').html(response)
+//        })
+//    });
+//});
+
+$('.applicationEmail').click(function (ev) {
+    var $this = $(this);
+    var messageId = $this.attr('data-target');
+    var messageRequestData = messageId.replace("#mails-", "");
+    console.log(messageId)
+    var url = '/home/getbodydb';
+    console.log(url);
+
+    $.ajax({
+        type: "GET",
+        url: url,
+        data: { messageId: messageRequestData },
+        success: function (response) {
+            $(messageId).find('.mail-bodyDB').html(response)
+        }
+    })
+
+});
+
+
+
+//class="applicationEmail" data-target="#mails-@mail.GmailIdNumber" data-url="/home/openapplication"
+//<div class="mail-bodyDB" style="width: 100%; height:300px; overflow-y:scroll;">

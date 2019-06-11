@@ -92,5 +92,25 @@ namespace eMAM.Service.DbServices
              await this.context.SaveChangesAsync();
             return newEmail;
         }
+        public async Task<string> GetEmailBodyAsync(string mailId)
+        {
+            var mail = await this.context.Emails.FirstOrDefaultAsync(e => e.GmailIdNumber == mailId);
+            return mail.Body;
+        }
+        public async Task<Email> GetEmailByIdDBAsync(string id)
+        {
+            var mail = await this.context.Emails
+                        .Include(x=>x.Attachments)
+                        .Include(x=>x.Customer)
+                        .Include(x=>x.OpenedBy)
+                        .Include(x=>x.Sender)
+                        .Include(x=>x.Status)
+                        .FirstOrDefaultAsync(x => x.GmailIdNumber == id);
+            if (mail==null)
+            {
+                throw new ArgumentException($"There is no mail with Gmail ID:{id}");
+            }
+            return mail;
+        }
     }
 }
