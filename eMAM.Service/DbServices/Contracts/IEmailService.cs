@@ -27,10 +27,10 @@ namespace eMAM.Service.DbServices.Contracts
 
         Task<Email> WorkInProcessAsync(User user, string messageId);
 
+        Task<Email> WorkNotInProcessAsync(string messageId);
 
         Task<string> GetEmailBodyAsync(string mailId);
 
-        Task<Email> GetEmailByIdDBAsync(string id);
-        Task<Email> WorkNotInProcessAsync(string messageId);
+        
     }
 }
