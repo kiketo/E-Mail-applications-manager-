@@ -181,8 +181,8 @@ namespace eMAM.UI.Controllers
 
             return Json(body);
         }
-        //status open, work in process
 
+        //status open, work in process
         public async Task<IActionResult> ChangeStatusToOpen(string messageId)
         {
             var mail = await emailService.GetEmailByIdDBAsync(messageId);
@@ -191,6 +191,9 @@ namespace eMAM.UI.Controllers
             await this.emailService.UpdateAsync(mail);
             return Ok();
         }
+
+
+
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
