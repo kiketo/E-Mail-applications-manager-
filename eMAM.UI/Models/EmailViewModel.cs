@@ -65,5 +65,7 @@ namespace eMAM.UI.Models
         public User PreviewedBy { get; set; }
 
         public bool UserIsManager { get; set; }
+
+        public string Muted { get; set; }
     }
 }

@@ -52,6 +52,8 @@ namespace eMAM.UI.Controllers
             return View();
         }
 
+        [AutoValidateAntiforgeryToken]
+        [Authorize]
         public async Task<IActionResult> ListAllMails(int? pageNumber)
         {
             var pageSize = 10;
@@ -59,6 +61,7 @@ namespace eMAM.UI.Controllers
             var isManager = User.IsInRole("Manager");
             var mails = this.emailService.ReadAllMailsFromDb(isManager, user);
             var page = await PaginatedList<Email>.CreateAsync(mails, pageNumber ?? 1, pageSize);
+            page.Reverse();
 
             EmailViewModel model = new EmailViewModel
             {
@@ -78,7 +81,34 @@ namespace eMAM.UI.Controllers
             return View(model);
         }
 
-        //[ValidateAntiForgeryToken]
+        public async Task<IActionResult> ListAllMailsNotValid(int? pageNumber)
+        {
+            var pageSize = 10;
+            var user = await this.userManager.GetUserAsync(User);
+            var isManager = User.IsInRole("Manager");
+            var mails = this.emailService.ReadAllMailsFromDb(isManager, user);
+            var page = await PaginatedList<Email>.CreateAsync(mails, pageNumber ?? 1, pageSize);
+
+            EmailViewModel model = new EmailViewModel
+            {
+                HasNextPage = page.HasNextPage,
+                HasPreviousPage = page.HasPreviousPage,
+                PageIndex = page.PageIndex,
+                TotalPages = page.TotalPages,
+                UserIsManager = isManager
+            };
+
+            foreach (var mail in page)
+            {
+                var element = this.emailViewModelMapper.MapFrom(mail);
+                model.SearchResults.Add(element);
+            }
+
+            return View(model);
+        }
+
+
+        [ValidateAntiForgeryToken]
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> PreviewMail(string messageId)
@@ -92,6 +122,7 @@ namespace eMAM.UI.Controllers
             return Json(body);
         }
 
+        [AutoValidateAntiforgeryToken]
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> ValidateMail(string messageId)
@@ -111,6 +142,7 @@ namespace eMAM.UI.Controllers
             return Ok();
         }
 
+        [AutoValidateAntiforgeryToken]
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> NotValidMail(string messageId)
@@ -121,6 +153,25 @@ namespace eMAM.UI.Controllers
             var mail = await this.emailService.GetEmailByGmailIdAsync(messageId);
             var invalidStatus = await this.statusService.GetStatusByName("Invalid Application");
             mail.Status = invalidStatus;
+            mail.WorkInProcess = false;
+            mail.WorkingBy = null;
+            mail.SetInTerminalStatusOn = DateTime.Now;
+            await emailService.UpdateAsync(mail);
+            //await emailService.WorkNotInProcessAsync(messageId);
+            return Ok();
+        }
+
+        [AutoValidateAntiforgeryToken]
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> NotPreviewed(string id)
+        {
+            var user = await this.userManager.GetUserAsync(User);
+            //var userData = await this.gmailUserDataService.GetAsync();
+            //var mailDTO = await this.gmailApiService.DownloadBodyOfMailAsync(messageId, userData.AccessToken);
+            var mail = await this.emailService.GetEmailByGmailIdAsync(id);
+            var notPreviewedStatus = await this.statusService.GetInitialStatusAsync();
+            mail.Status = notPreviewedStatus;
             mail.WorkInProcess = false;
             mail.WorkingBy = null;
             await emailService.UpdateAsync(mail);
