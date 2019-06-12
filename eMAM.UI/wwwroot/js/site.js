@@ -21,15 +21,16 @@ $('.validation-button').click(function (ev) {
     var messageId = $this.attr('data-messageId');
     var url = $this.attr('data-url');
 
-     $.ajax({
+    $.ajax({
         type: "POST",
         url: url,
         data: { messageId: messageId },
-        success: function (res,as,okijjg) {
-             toastr.success("Mail Validated");
-         },
-         error: function (res, as, okijjg) {
-             toastr.error(err.responseText);}
+        success: function (res, as, okijjg) {
+            toastr.success("Mail Validated");
+        },
+        error: function (res, as, okijjg) {
+            toastr.error(err.responseText);
+        }
     });
 });
 
@@ -50,7 +51,7 @@ $('.notValid-button').click(function (ev) {
             toastr.error(err.responseText);
         }
     });
-
+});
 //nto valid e-mail
 $('.notValid-button').click(function (ev) {
     var $this = $(this);
@@ -112,24 +113,21 @@ $('.openApplicationForm').validate({
         },
         Emails: {
             required: true
-            
+
         },
     },
     messages: {
         FirstName: {
             required: "First name is required",
-            minlength: jQuery.validator.format("At least {2} characters required!")
         },
         LastName: {
             required: "Last name is required",
-            minlength: jQuery.validator.format("At least {2} characters required!")
         },
         CustomerEGN: {
             required: "Identification number is required e.g EGN, Passport Number"
         },
         CustomerPhoneNumber: {
             required: false,
-            minlength: jQuery.validator.format("Enter valid pone number"),
             number: "Only digits are allowed"
         },
         Emails: {
@@ -140,5 +138,10 @@ $('.openApplicationForm').validate({
     onkeyup: false,
     onblur: true,
     focusCleanup: true
-    
+
+});
+//prevent modals from closing
+$(messageId).modal({
+    backdrop: 'static',
+    keyboard: false
 });

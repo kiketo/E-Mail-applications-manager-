@@ -84,7 +84,7 @@ namespace eMAM.UI.Controllers
         public async Task<IActionResult> PreviewMail(string messageId)
         {
             var user = await this.userManager.GetUserAsync(User);
-            await this.emailService.WorkInProcessAsync(user, messageId);
+          //  await this.emailService.WorkInProcessAsync(user, messageId);//TODO stops PREVIEW
             var userData = await this.gmailUserDataService.GetAsync();
             var mailDTO = await this.gmailApiService.DownloadBodyOfMailAsync(messageId, userData.AccessToken);
             var body = mailDTO.BodyAsString;
