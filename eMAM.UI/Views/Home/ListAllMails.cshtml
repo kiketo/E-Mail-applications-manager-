@@ -1,11 +1,18 @@
 ﻿@model EmailViewModel
 
-<h3>All Mails</h3>
+<h3 style="display:inline">All Mails</h3>
+<button class="list-only-notValid" style="display:inline; float:right">Show only "Not Valid"</button>
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+{
+    @Html.AntiForgeryToken()
+}
 
 <table class="table-hover">
     <thead class="thead-dark" style="background-color:cadetblue">
         <tr>
             <th>ID</th>
+            <th>GmailID</th>
             <th>Date/Time</th>
             <th>Sender</th>
             <th>Subject</th>
@@ -21,8 +28,13 @@
         {
             if (mail.Status.Text == "Not Reviewed" || mail.Status.Text == "Invalid Application")
             {
-                <tr>
+                @if (mail.Status.Text == "Invalid Application")
+                {
+                    mail.Muted = "class=text-muted";
+                }
+                <tr @mail.Muted>
                     <td>@mail.Id</td>
+                    <td>@mail.GmailIdNumber</td>
                     <td>@mail.DateReceived</td>
                     <td>@mail.Sender.SenderName &lt@(mail.Sender.SenderEmail)&gt</td>
                     <td>@mail.Subject</td>
@@ -37,7 +49,7 @@
                         <!-- Button to Open the Modal -->
                         @if (Model.UserIsManager)
                         {
-                            <button type="button" class="btn btn-primary email-button" data-toggle="modal" data-target="#mails-@mail.GmailIdNumber" data-url="/home/previewmail">
+                            <button type="button" style="background-color:cadetblue" class="email-button" data-toggle="modal" data-target="#mails-@mail.GmailIdNumber" data-url="/home/previewmail">
                                 <img src="~/images/preview.png" height="30" width="30">
                             </button>
                         }
@@ -50,14 +62,14 @@
 
                         <!-- The Modal -->
 
-                        <div class="modal fade" id="mails-@mail.GmailIdNumber">
+                        <div class="modal fade bootstrap-modal" id="mails-@mail.GmailIdNumber" data-backdrop="static" data-keyboard="false">
                             <div class="modal-dialog modal-lg" style="width:100%">
                                 <div class="modal-content">
 
                                     <!-- Modal Header -->
                                     <div class="modal-header">
                                         <h6 class="modal-title">@mail.Sender.SenderName, @mail.Sender.SenderEmail</h6>
-                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <button type="button" class="close close-button" data-dismiss="modal" data-target="@mail.GmailIdNumber">&times;</button>
                                     </div>
 
                                     <!-- Modal body -->
@@ -113,6 +125,7 @@
             {
                 <tr href="" style="cursor:pointer" class="applicationEmail" data-target="#mails-@mail.GmailIdNumber" data-url="/home/openapplication" data-toggle="modal">
                     <td>@mail.Id</td>
+                    <td>@mail.GmailIdNumber</td>
                     <td>@mail.DateReceived</td>
                     <td>@mail.Sender.SenderName &lt@(mail.Sender.SenderEmail)&gt</td>
                     <td>@mail.Subject</td>
