@@ -19,17 +19,18 @@ namespace eMAM.Service.DbServices.Contracts
 
         Task ValidateEmail(Email mail, string body, Status newStatus, User user);
 
-        IQueryable<Email> ReadAllMailsFromDb();
+        IQueryable<Email> ReadAllMailsFromDb(bool isManager, User user);
 
         Task<Email> GetEmailByIdAsync(int id);
 
-        Task<Email> UpdateAsync(Email newEmail);
+        Task UpdateAsync(Email newEmail);
 
         Task<Email> WorkInProcessAsync(User user, string messageId);
 
+        Task<Email> WorkNotInProcessAsync(string messageId);
 
         Task<string> GetEmailBodyAsync(string mailId);
 
-        Task<Email> GetEmailByIdDBAsync(string id);
+        
     }
 }
