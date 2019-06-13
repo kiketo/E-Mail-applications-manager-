@@ -6,7 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 using eMAM.Data.Models;
 using eMAM.Service.DbServices;
+using eMAM.Service.DbServices.Contracts;
 using eMAM.Service.DTO;
+using eMAM.Service.UserServices.Contracts;
+using eMAM.UI.Areas.SuperAdmin.Models;
+using eMAM.UI.Mappers;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 //TODO to finalize
@@ -14,11 +20,17 @@ namespace eMAM.UI.Areas.SuperAdmin.Controllers
 {
     public class DashboardController : Controller
     {
-        private GmailUserDataService gmailUserDataService;
+        private readonly IGmailUserDataService gmailUserDataService;
+        private readonly IUserService userService;
+        private readonly UserManager<User> userManager;
+        private readonly IViewModelMapper<User, UserViewModel> userMapper;
 
-        public DashboardController(GmailUserDataService gmailUserDataService)
+        public DashboardController(IGmailUserDataService gmailUserDataService, IUserService userService, UserManager<User> userManager, IViewModelMapper<User, UserViewModel> userMapper)
         {
             this.gmailUserDataService = gmailUserDataService ?? throw new ArgumentNullException(nameof(gmailUserDataService));
+            this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
+            this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            this.userMapper = userMapper ?? throw new ArgumentNullException(nameof(userMapper));
         }
 
         public IActionResult Index()
@@ -26,7 +38,9 @@ namespace eMAM.UI.Areas.SuperAdmin.Controllers
             return View();
         }
 
-
+        [Area("SuperAdmin")]
+       
+        [Authorize(Roles = "SuperAdmin")]
         public IActionResult GoogleLogin()
         {
             var sb = new StringBuilder()
@@ -75,6 +89,26 @@ namespace eMAM.UI.Areas.SuperAdmin.Controllers
                 return Json(await TryReadGmail(client, userDataDTO));
             }
         }
+
+
+        [Area("SuperAdmin")]
+        [Route("superadmin")]
+        [Authorize(Roles = "SuperAdmin")]
+        public async Task<IActionResult> Users()
+        {
+            var users = await this.userService.GetAllUsersAsync();
+            UserViewModel model = new UserViewModel();
+            model.UsersList = (users)
+                   .Select(this.userMapper.MapFrom)
+                   .ToList();
+            foreach (var user in model.UsersList)
+            {
+                user.Roles = new List<string>();
+                user.Roles = await userManager.GetRolesAsync(user.User);
+            }
+            return View(model);
+        }
+
         public async Task<bool> TryReadGmail(HttpClient client, GmailUserDataDTO userDataDTO)
         {
             client.DefaultRequestHeaders.Add("Authorization", "Bearer " + userDataDTO.AccessToken);

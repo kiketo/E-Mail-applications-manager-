@@ -50,16 +50,12 @@ namespace eMAM.UI
                 .AsImplementedInterfaces()
                 .WithSingletonLifetime());
 
-            //services.AddDataProtection()
-            //    .PersistKeysToAzureBlobStorage(new Uri("<blobUriWithSasToken>"))
-            //    .ProtectKeysWithAzureKeyVault("<keyIdentifier>", "<clientId>", "<clientSecret>");
-
-            //register PG server
+            //register PostgreSQL server on Azure 
             services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(
         Configuration.GetConnectionString("DefaultConnection")));
 
-            //register PostGreSQL server
+            //register PostGreSQL server on localhost
             //services.AddDbContext<ApplicationDbContext>(options =>
             //    options.UseNpgsql($"Server=localhost;Port=5432;Database=eMAM;UserId=postgres;Password={Constants.posgrePassword};"));
 
@@ -81,9 +77,6 @@ namespace eMAM.UI
             services.AddMvc()
                 .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_2_2)
                 .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
-
-            //Add Kendo UI service to the service container
-          //  services.AddKendo();
 
             services.AddRouting(options => options.LowercaseUrls = true);
 
@@ -129,7 +122,7 @@ namespace eMAM.UI
             {
                 routes.MapRoute(
                   name: "areas",
-                  template: "{area:exists}/{controller=Admin}/{action=Dashboard}/{id?}");
+                  template: "{area:exists}/{controller=Dashboard}/{action=Users}/{id?}");
 
                 routes.MapRoute(
                     name: "default",

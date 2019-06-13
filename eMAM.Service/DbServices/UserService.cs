@@ -35,15 +35,18 @@ namespace eMAM.Service.UserServices
             }
             return managers;
         }
+
         public async Task<User> GetUserByIdAsync(string id)
         {
             return await this.context.Users
                 .FirstOrDefaultAsync(u => u.Id == id);
         }
+
         public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
-            return await this.context.Users.ToListAsync();
+            return await this.context.Users.Where(u=>u.UserName!= "super@admin.user").ToListAsync();
         }
+
         public async Task<User> ChangeUserRoleAsync(string userId)
         {
             var updatedUser = await this.context.Users

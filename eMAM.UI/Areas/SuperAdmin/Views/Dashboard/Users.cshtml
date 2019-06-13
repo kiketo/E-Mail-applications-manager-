@@ -1,0 +1,68 @@
+﻿@using eMAM.UI.Areas.SuperAdmin.Models
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+{
+    @Html.AntiForgeryToken()
+}
+@model UserViewModel
+
+<h1>Users</h1>
+
+<table class="table-hover">
+    <thead class="thead-dark" style="background-color:cadetblue">
+        <tr>
+            <th>User ID</th>
+            <th>User name</th>
+            <th>E-mail</th>
+            <th>Role</th>
+            <th> </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model.UsersList)
+        {
+            <tr>
+                <td>@user.Id</td>
+                <td>@user.UserName</td>
+                <td>@user.Email</td>
+                @if (user.UserName == "SuperAdmin")
+                {
+                    foreach (var role in user.Roles)
+                    {
+                        <td>@role</td>
+                        <td></td>
+                    }
+                }
+                else
+                {
+                    foreach (var role in user.Roles)
+                    {
+
+                        @if (role == "User")
+                        {
+                            <td><button class="btn btn-success">User</button></td>
+
+                            <td>
+                                <form asp-area="SuperAdmin" asp-controller="Admin" asp-action="ChangeUserRole" asp-route-id="@user.Id" method="post">
+                                    <button class="btn btn-outline-success" type="submit">Admin</button>
+                                </form>
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                <form asp-area="SuperAdmin" asp-controller="Admin" asp-action="ChangeUserRole" asp-route-id="@user.Id" method="post">
+                                    <button class="btn btn-outline-success">User</button>
+                                </form>
+                            </td>
+                            <td>
+                                <button class="btn btn-success" type="submit">Admin</button>
+                            </td>
+                        }
+
+                    }
+                }
+            </tr>
+        }
+
+    </tbody>
+</table>

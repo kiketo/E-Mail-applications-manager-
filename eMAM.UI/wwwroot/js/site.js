@@ -34,11 +34,13 @@ $('.email-button').click(function (ev) {
     //});
     //ev.stopPropagation();
 });
+
 //loading indicator while requesting body mail for preview
 $('.emailButton')
     .ajaxStop(function () {
         $('#loading-indicator').hide();
     });
+
 //validate e-mail & close
 $('.validation-button').click(function (ev) {
     var $this = $(this);
@@ -55,13 +57,27 @@ $('.validation-button').click(function (ev) {
             __RequestVerificationToken: token,
             messageId: messageId
         },
-        success: function (res, as, okijjg) {
+        success: function () {
             toastr.success("Mail Validated");
         },
-        error: function (res, as, okijjg) {
+        error: function (err) {
             toastr.error(err.responseText);
         }
     });
+    //change the status in the DOM
+    var status = $.find(".status-" + messageId);
+    status[0].innerHTML = "New";
+    //remove the preview button if not a Manager
+
+    //var selector = '.email-button[data-target="#mails-' + messageId + '"]';
+    var previewButton = $('.email-button[data-target="#mails-' + messageId + '"]');
+    var isManager = previewButton.data('isManager');
+    if (!isManager) {
+        previewButton.remove();
+    }
+    //previewButton[0].childNodes[1].outerHTML = "";
+    console.log(previewButton);
+
 });
 
 //not valid e-mail
@@ -87,6 +103,19 @@ $('.notValid-button').click(function (ev) {
             toastr.error(res.responseText);
         }
     });
+    //change the status in the DOM
+    var status = $.find(".status-" + messageId);
+    status[0].innerHTML = "New";
+    //remove the preview button if not a Manager
+
+    //var selector = '.email-button[data-target="#mails-' + messageId + '"]';
+    var previewButton = $('.email-button[data-target="#mails-' + messageId + '"]');
+    var isManager = previewButton.data('isManager');
+    if (!isManager) {
+        previewButton.remove();
+    }
+    //previewButton[0].childNodes[1].outerHTML = "";
+    console.log(previewButton);
 });
 
 //back to not previewed e-mail
