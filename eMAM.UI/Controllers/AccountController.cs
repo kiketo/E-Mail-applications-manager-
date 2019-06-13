@@ -211,7 +211,7 @@ namespace eMAM.UI.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        //[Authorize(Roles ="Admin")]
+        //[Authorize(Roles ="Manager")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
         {
@@ -222,6 +222,7 @@ namespace eMAM.UI.Controllers
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    await _userManager.AddToRoleAsync(user, "User");
                     _logger.LogInformation("User created a new account with password.");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

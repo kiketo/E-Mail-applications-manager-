@@ -6,8 +6,9 @@ namespace eMAM.Data.Models
 {
     public class AuditLog
     {
-
         public int Id { get; set; }
+
+        public string GmailId { get; set; }
 
         public DateTime TimeStamp { get; set; }
 
