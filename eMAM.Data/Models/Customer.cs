@@ -9,13 +9,7 @@ namespace eMAM.Data.Models
         public int Id { get; set; }
 
         //TODO: to be encrypted
-        public string FirstName { get; set; }
-
-        //TODO: to be encrypted
-        public string LastName { get; set; }
-
-        //TODO: to be encrypted
-        public int CustomerEGN { get; set; }
+        public string CustomerEGN { get; set; }
 
         //TODO: to be encrypted
         public string CustomerPhoneNumber { get; set; }

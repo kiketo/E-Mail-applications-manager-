@@ -124,8 +124,7 @@
             }
             else
             {
-                <tr href="" style="cursor:pointer" class="applicationEmail" data-target="#mails-@mail.GmailIdNumber" data-url="/home/openapplication" 
-                    data-toggle="modal" data-backdrop="static" data-keyboard="false" >
+                <tr href="" style="cursor:pointer" class="applicationEmail" data-target="#mails-@mail.GmailIdNumber" data-url="/home/openapplication" data-toggle="modal" data-backdrop="static" data-keyboard="false">
                     <td>@mail.Id</td>
                     <td>@mail.GmailIdNumber</td>
                     <td>@mail.DateReceived</td>
@@ -148,59 +147,96 @@
                                     <!-- Modal Header -->
                                     <div class="modal-header">
                                         <h6 class="modal-title">@mail.Sender.SenderName, @mail.Sender.SenderEmail</h6>
-                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                        <button type="button" class="close">&times;</button>
                                     </div>
 
                                     <!-- Modal body -->
                                     <div class="modal-body">
-                                        <table>
-                                            <tbody>
-                                                <tr class="" style="background-color:lavender;">
-                                                    <td>
-                                                        <p><h7>Subject: <r style="font-weight:bold">@mail.Subject</r></h7></p>
-                                                        <p><h7>Date/Time received in the mail: <r style="font-weight:bold">@mail.DateReceived</r></h7></p>
-                                                        <p>
-                                                            <h7>
-                                                                Date/Time of initial registration within the system:
-                                                                <r style="font-weight:bold">@mail.InitialRegistrationInSystemOn</r>
-                                                            </h7>
-                                                        </p>
-                                                        <p>
-                                                            Aplication Status:
-                                                            <r style="font-weight:bold">@mail.Status.Text</r>
-                                                        </p>
-                                                        <p>
-                                                            <h7>
-                                                                <r style="font-weight:bold">@mail.Attachments.Count</r> attachment/s, total size:
-                                                                <r style="font-weight:bold">@mail.Attachments.Sum(x => x.FileSizeInMb).ToString("0.00")</r> MB
-                                                            </h7>
-                                                        </p>
-                                                        <p><h7>Subject: <r style="font-weight:bold">@mail.Subject</r></h7></p>
-                                                        <div class="mail-bodyDB" style="width: 100%; height:300px; overflow-y:scroll;">
-                                                            <img src="/images/ajax-loader.gif" class="loading-indicator" style="height:150px" />
-                                                        </div>
-                                                    </td>
-                                                    <td class="openApplicationForm" style="background-color:antiquewhite;">
-                                                        <form action="/" method="post">
-                                                            <input asp-for="@mail.Customer.FirstName" placeholder="First Name" class="form-control" />
-                                                            <input asp-for="@mail.Customer.LastName" placeholder="Last Name" class="form-control" />
-                                                            <input asp-for="@mail.Customer.CustomerEGN " placeholder="Personal Identification Number" class="form-control" />
-                                                            <input asp-for="@mail.Customer.CustomerPhoneNumber " placeholder="Phone Number" class="form-control" />
-                                                            <input asp-for="@mail.Customer.Emails" placeholder="Email Address" class="form-control" />
-                                                        </form>
-                                                        <div style="">
-                                                            <p></p>
-                                                            <button type="button" data-dismiss="modal" style="width:160px" class="btn btn-success validation-button" data-messageId="@mail.GmailIdNumber" data-url="/home/validatemail">Validate&Close</button>
-                                                            <p></p>
-                                                            <p></p>
-                                                            <button style="width:160px" class="btn btn-danger">Unvalidate&Close</button>
-                                                            <p></p>
-                                                            <button style="width:160px" class="btn btn-secondary">Cancel</button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                        <div class="row">
+                                            <div class="col-sm-9" style="background-color:lavender;">
+                                                <p><strong>Subject: </strong><r>@mail.Subject</r></p>
+                                                <p><strong>Received At: </strong> <r>@mail.DateReceived</r></p>
+                                                <p>
+                                                    <r style="font-weight:bold">@mail.Attachments.Count</r> attachment/s, total size:
+                                                    <r style="font-weight:bold">@mail.Attachments.Sum(x => x.FileSizeInMb).ToString("0.00")</r> MB
+                                                </p>
+                                                <div class="mail-bodyDB" style="width: 100%; height:300px; overflow-y:scroll;">
+                                                    <img src="/images/ajax-loader.gif" class="loading-indicator" style="height:150px" />
+                                                </div>
+                                                
+                                            </div>
+                                            <div class="col-sm-3" style="background-color:antiquewhite;">
+                                                <form action="/" method="post">
+
+                                                    <input asp-for="@mail.GmailIdNumber" type="hidden" name="gmid" id="gmailid" class="form-control" />
+                                                    <label>Personal Identification Number:</label>
+                                                    <input asp-for="@mail.Customer.CustomerEGN " placeholder="Personal Identification Number" name="rgn" id="egn" type="text" class="form-control" />
+                                                    <label>Phone Number:</label>
+                                                    <input asp-for="@mail.Customer.CustomerPhoneNumber " placeholder="Phone Number" id="phone" name="phone" type="text" class="form-control" />
+
+                                                    <button type="submit" style="width:160px" value="Submit" class="btn btn-success close-application" formmethod="post" data-url="/home/submitncloseapplication">Submit&Close</button>
+                                                </form>
+                                                <br />
+                                                <div style="">
+                                                    <button type="button" data-dismiss="modal" style="width:160px" class="btn btn-danger notValid-button" data-messageId="@mail.GmailIdNumber" data-url="/home/notvalidmail">Cancel</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
+                                        @*<table>
+                                                <tbody>
+                                                    <tr class="" style="background-color:lavender;">
+                                                        <td>
+                                                            <p><h7>Subject: <r style="font-weight:bold">@mail.Subject</r></h7></p>
+                                                            <p><h7>Date/Time received in the mail: <r style="font-weight:bold">@mail.DateReceived</r></h7></p>
+                                                            <p>
+                                                                <h7>
+                                                                    Date/Time of initial registration within the system:
+                                                                    <r style="font-weight:bold">@mail.InitialRegistrationInSystemOn</r>
+                                                                </h7>
+                                                            </p>
+                                                            <p>
+                                                                Aplication Status:
+                                                                <r style="font-weight:bold">@mail.Status.Text</r>
+                                                            </p>
+                                                            <p>
+                                                                <h7>
+                                                                    <r style="font-weight:bold">@mail.Attachments.Count</r> attachment/s, total size:
+                                                                    <r style="font-weight:bold">@mail.Attachments.Sum(x => x.FileSizeInMb).ToString("0.00")</r> MB
+                                                                </h7>
+                                                            </p>
+                                                            <p><h7>Subject: <r style="font-weight:bold">@mail.Subject</r></h7></p>
+                                                            <div class="mail-bodyDB" style="width: 100%; height:300px; overflow-y:scroll;">
+                                                                <img src="/images/ajax-loader.gif" class="loading-indicator" style="height:150px" />
+                                                            </div>
+                                                        </td>
+                                                        <td class="openApplicationForm" style="background-color:antiquewhite;">
+                                                            <form action="/" method="post">
+                                                                <input asp-for="@mail.GmailIdNumber" placeholder="First Name" name="gmid" id="gmailid" type="text" class="form-control" />
+                                                                <input asp-for="@mail.Customer.FirstName" placeholder="First Name" name="fname" id="firstname" type="text" class="form-control" />
+                                                                <input asp-for="@mail.Customer.LastName" placeholder="Last Name" name="lname" id="lastname" type="text" class="form-control" />
+                                                                <input asp-for="@mail.Customer.CustomerEGN " placeholder="Personal Identification Number" name="rgn" id="egn" type="text" class="form-control" />
+                                                                <input asp-for="@mail.Customer.CustomerPhoneNumber " placeholder="Phone Number" id="phone" name="phone" type="text" class="form-control" />
+                                                                <input type="submit" style="width:160px" value="Submit" class="btn btn-success close" formmethod="post" data-url="/home/submitncloseapplication">
+                                                            </form>
+                                                            <div style="">
+                                                                <p>
+
+
+                                                                </p>
+                                                                <button type="button" style="width:160px" class="btn btn-success validation-button" data-messageId="@mail.GmailIdNumber" data-url="/home/validatemail">Validate&Close</button>
+                                                                <p></p>
+                                                                <p></p>
+                                                                <button style="width:160px" class="btn btn-danger">Unvalidate&Close</button>
+                                                                <p></p>
+                                                                <button style="width:160px" class="btn btn-secondary">Cancel</button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>*@
                                     </div>
                                 </div>
                             </div>
@@ -208,6 +244,7 @@
                     </td>
                 </tr>
             }
+        }
         }
     </tbody>
 </table>

@@ -111,6 +111,7 @@ namespace eMAM.Service.DbServices
         public async Task<string> GetEmailBodyAsync(string mailId)
         {
             var mail = await this.context.Emails.FirstOrDefaultAsync(e => e.GmailIdNumber == mailId);
+
             return mail.Body;
         }
 
@@ -133,5 +134,7 @@ namespace eMAM.Service.DbServices
 
             return mail;
         }
+
+
     }
 }

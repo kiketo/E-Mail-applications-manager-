@@ -28,8 +28,18 @@ namespace eMAM.UI.Controllers
         private readonly IAuditLogService auditLogService;
         private readonly IStatusService statusService;
         private readonly ILogger logger;
+        private readonly ICustomerService customerService;
 
-        public HomeController(UserManager<User> userManager, IGmailApiService gmailApiService, IGmailUserDataService gmailUserDataService, IEmailService emailService, IViewModelMapper<Email, EmailViewModel> emailViewModelMapper, IUserService userService, IAuditLogService auditLogService, IStatusService statusService, ILogger<User> logger)
+        public HomeController(UserManager<User> userManager, 
+            IGmailApiService gmailApiService, 
+            IGmailUserDataService gmailUserDataService, 
+            IEmailService emailService, 
+            IViewModelMapper<Email, EmailViewModel> emailViewModelMapper, 
+            IUserService userService, 
+            IAuditLogService auditLogService, 
+            IStatusService statusService, 
+            ILogger<User> logger,
+            ICustomerService customerService)
         {
             this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             this.gmailApiService = gmailApiService ?? throw new ArgumentNullException(nameof(gmailApiService));
@@ -40,6 +50,7 @@ namespace eMAM.UI.Controllers
             this.auditLogService = auditLogService ?? throw new ArgumentNullException(nameof(auditLogService));
             this.statusService = statusService ?? throw new ArgumentNullException(nameof(statusService));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.customerService = customerService ?? throw new ArgumentNullException(nameof(customerService));
         }
 
 
@@ -243,10 +254,13 @@ namespace eMAM.UI.Controllers
             var validStatus = await this.statusService.GetStatusByName("New");
             return Ok();
         }
-        [HttpGet]
+
+        [ValidateAntiForgeryToken]
+        [HttpPost]
         public async Task<IActionResult> GetBodyDB(string messageId)
         {
             var body = await this.emailService.GetEmailBodyAsync(messageId);
+
             var res = Json(body);
 
             return Json(body);
@@ -262,6 +276,37 @@ namespace eMAM.UI.Controllers
             return Ok();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> SubmitNCloseApplication(EmailViewModel model)
+        {
+
+            if (ModelState.IsValid)
+            {
+                var email = await this.emailService.GetEmailByGmailIdAsync(model.GmailIdNumber);
+                Customer customer;
+                if (await this.customerService.GetCustomerByEGNAsync(model.CustomerCustomerEGN) == null)
+                {
+                    customer = await this.customerService.CreateNewCustomerAsync(model.CustomerCustomerEGN, model.CustomerCustomerPhoneNumber);
+                    customer.Emails.Add(email);
+                    
+                }
+                else
+                {
+                    customer = await this.customerService.GetCustomerByEGNAsync(model.CustomerCustomerEGN);
+                    customer.Emails.Add(email);
+                    
+
+                }
+                email.Status = await this.statusService.GetStatusAsync("Close");
+                email.WorkInProcess = false;
+                await this.emailService.UpdateAsync(email);
+                return Ok();
+            }
+
+            return BadRequest();
+
+
+        }
 
 
         public IActionResult Error()
