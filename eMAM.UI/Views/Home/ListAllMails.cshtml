@@ -1,12 +1,12 @@
-﻿@model EmailViewModel
+﻿@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+{
+    @Html.AntiForgeryToken()
+}
+@model EmailViewModel
 
 <h3 style="display:inline">All Mails</h3>
 <button class="list-only-notValid" style="display:inline; float:right">Show only "Not Valid"</button>
 
-@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
-{
-    @Html.AntiForgeryToken()
-}
 
 
 <table class="table-hover">
@@ -39,7 +39,7 @@
                     <td>@mail.DateReceived</td>
                     <td>@mail.Sender.SenderName &lt@(mail.Sender.SenderEmail)&gt</td>
                     <td>@mail.Subject</td>
-                    <td>@mail.Status.Text</td>
+                    <td class="status-@mail.GmailIdNumber">@mail.Status.Text</td>
                     <td>
                         @if (mail.AreAttachments)
                         {<img src="~/images/attachment.png" height="42" width="42">}
@@ -50,7 +50,7 @@
                         <!-- Button to Open the Modal -->
                         @if (Model.UserIsManager)
                         {
-                            <button type="button" style="background-color:cadetblue" class="email-button" data-toggle="modal" data-target="#mails-@mail.GmailIdNumber" data-url="/home/previewmail">
+                            <button type="button" style="background-color:cadetblue" class="email-button" data-isManager=@Model.UserIsManager data-toggle="modal" data-target="#mails-@mail.GmailIdNumber" data-url="/home/previewmail">
                                 <img src="~/images/preview.png" height="30" width="30">
                             </button>
                         }

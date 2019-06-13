@@ -42,8 +42,6 @@
 
   <ItemGroup>
     <Folder Include="Areas\SuperAdmin\Data\" />
-    <Folder Include="Areas\SuperAdmin\Models\" />
-    <Folder Include="Areas\SuperAdmin\Views\" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JSONSchema="" /></VisualStudio></ProjectExtensions>
