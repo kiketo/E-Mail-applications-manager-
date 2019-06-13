@@ -260,7 +260,8 @@ namespace eMAM.UI.Controllers
         public async Task<IActionResult> GetBodyDB(string messageId)
         {
             var body = await this.emailService.GetEmailBodyAsync(messageId);
-
+            var email = await this.emailService.GetEmailByGmailIdAsync(messageId);
+            email.Status = await this.statusService.GetStatusAsync("Open");
             var res = Json(body);
 
             return Json(body);
@@ -284,18 +285,15 @@ namespace eMAM.UI.Controllers
             {
                 var email = await this.emailService.GetEmailByGmailIdAsync(model.GmailIdNumber);
                 Customer customer;
-                if (await this.customerService.GetCustomerByEGNAsync(model.CustomerCustomerEGN) == null)
+                if (await this.customerService.GetCustomerByEGNAsync(model.CustomerEGN) == null)
                 {
-                    customer = await this.customerService.CreateNewCustomerAsync(model.CustomerCustomerEGN, model.CustomerCustomerPhoneNumber);
+                    customer = await this.customerService.CreateNewCustomerAsync(model.CustomerEGN, model.CustomerPhoneNumber);
                     customer.Emails.Add(email);
-                    
                 }
                 else
                 {
-                    customer = await this.customerService.GetCustomerByEGNAsync(model.CustomerCustomerEGN);
+                    customer = await this.customerService.GetCustomerByEGNAsync(model.CustomerEGN);
                     customer.Emails.Add(email);
-                    
-
                 }
                 email.Status = await this.statusService.GetStatusAsync("Close");
                 email.WorkInProcess = false;

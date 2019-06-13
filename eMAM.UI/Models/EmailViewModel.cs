@@ -70,16 +70,10 @@ namespace eMAM.UI.Models
         public string Muted { get; set; }
 
         [Required]
-        public string CustomerFirstName { get; set; }
+        public string CustomerEGN { get; set; }
 
         [Required]
-        public string CustomerLastName { get; set; }
-
-        [Required]
-        public string CustomerCustomerEGN { get; set; }
-
-        [Required]
-        public string CustomerCustomerPhoneNumber { get; set; }
+        public string CustomerPhoneNumber { get; set; }
 
     }
 }

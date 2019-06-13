@@ -6,10 +6,10 @@ $('.email-button').click(function (ev) {
     var url = $this.attr('data-url');
 
     //disable modal from closing when clicked outside the modal window
-    $(messageId).modal({
-        backdrop: 'static',
-        keyboard: false
-    })
+    //$(messageId).modal({
+    //    backdrop: 'static',
+    //    keyboard: false
+    //})
 
     var form = $('#__AjaxAntiForgeryForm');
     var token = $('input[name="__RequestVerificationToken"]', form).val();
@@ -128,8 +128,6 @@ $('.close-button').click(function (ev) {
 
 });
 
-
-
 //open email new->open
 $('.applicationEmail').click(function (ev) {
     ev.stopPropagation();
@@ -165,6 +163,70 @@ $('.applicationEmail').click(function (ev) {
 
 });
 
+
+$('.close-application').click(function (ev) {
+    ev.preventDefault;
+    debugger;
+    $.ajax({
+        type: "POST",
+        url: "/home/submitncloseapplication",
+        data: {
+            GmailIdNumber: $("#gmailid").val(),
+            CustomerEGN: $("#egn").val(),
+            CustomerPhoneNumber: $("#phone").val()
+        },
+        dataType: "json"
+
+    })
+        .done(function (res, as, okijjg) {
+            toastr.success("Application was successfully closed!");
+        })
+        .fail(function (jqxhr, status, error) {
+            console.log("Something went wrong")
+        })
+});
+
+$('.close-button-open').click(function (ev) {
+    var $this = $(this);
+    var messageId = $this.attr('data-target');
+
+    var form = $('#__AjaxAntiForgeryForm');
+    var token = $('input[name="__RequestVerificationToken"]', form).val();
+
+    $.ajax({
+        type: "POST",
+        url: "/home/notpreviewed",
+        data: {
+            __RequestVerificationToken: token,
+            id: messageId
+        },
+        success: function (res, as, okijjg) {
+            toastr.warning("Mail Not Previewed");
+        },
+        error: function (res, as, okijjg) {
+            toastr.error(res.responseText);
+        }
+    });
+
+//show body of email in open
+//$('.applicationEmail').click(function (ev) {
+//    var $this = $(this);
+//    var messageId = $this.attr('data-target').replace("#mails-", "");
+//    var url = $this.attr('data-url');
+
+//    $.post(url, { messageId: messageId }, function (response) {
+//        $(messageId).find('.mail-bodyDB').html(response);
+//    });
+
+//    $.ajax({
+//        type: "GET",
+//        url: url,
+//        data: { messageId: messageRequestData },
+//        success: $.post(url, { emailId: messageRequestData }, function (response) {
+//            $(emailId).find('.mail-bodyDB').html(response)
+//        })
+//    });
+//});
 
 //rq for form validation
 //$('.openApplicationForm').validate({
@@ -214,49 +276,4 @@ $('.applicationEmail').click(function (ev) {
 //    onblur: true,
 //    focusCleanup: true
 
-//});
-
-
-
-$('.close-application').click(function (e) {
-    e.preventDefault();
-    debugger;
-    $.ajax({
-        type: "POST",
-        url: "/home/submitncloseapplication",
-        data: {
-            GmailIdNumber: $("#gmailid").val(),
-            CustomerCustomerEGN: $("#egn").val(),
-            CustomerCustomerPhoneNumber: $("#phone").val()
-        },
-        
-        dataType: "json",
-
-    })
-        .done(function (res, as, okijjg) {
-            toastr.success("Application was successfully closed!");
-        })
-        .fail(function (jqxhr, status, error) {
-            console.log("Something went wrong")
-        })
-});
-
-//show body of email in open
-//$('.applicationEmail').click(function (ev) {
-//    var $this = $(this);
-//    var messageId = $this.attr('data-target').replace("#mails-", "");
-//    var url = $this.attr('data-url');
-
-//    $.post(url, { messageId: messageId }, function (response) {
-//        $(messageId).find('.mail-bodyDB').html(response);
-//    });
-
-//    $.ajax({
-//        type: "GET",
-//        url: url,
-//        data: { messageId: messageRequestData },
-//        success: $.post(url, { emailId: messageRequestData }, function (response) {
-//            $(emailId).find('.mail-bodyDB').html(response)
-//        })
-//    });
 //});
