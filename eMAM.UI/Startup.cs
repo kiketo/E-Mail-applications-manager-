@@ -47,8 +47,8 @@ namespace eMAM.UI
             //registers all mappers
             services.Scan(scan => scan.FromCallingAssembly()
                 .AddClasses(classes => classes.Where(type => type.Name.EndsWith("Mapper")))
-                .AsImplementedInterfaces()
-                .WithSingletonLifetime());
+                .AsImplementedInterfaces().WithScopedLifetime());
+                //.WithSingletonLifetime());
 
             //register PostgreSQL server on Azure 
             services.AddDbContext<ApplicationDbContext>(options =>

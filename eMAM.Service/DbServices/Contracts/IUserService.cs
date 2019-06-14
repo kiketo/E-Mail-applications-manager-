@@ -1,6 +1,7 @@
 ﻿using eMAM.Data.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,6 +13,8 @@ namespace eMAM.Service.UserServices.Contracts
 
         Task<User> GetUserByIdAsync(string id);
 
-        Task<IEnumerable<User>> GetAllUsersAsync();
+        IQueryable<User> GetAllUsersQuery();
+
+        Task<User> ToggleRoleBetweenUserManagerAsync(string userId);
     }
 }

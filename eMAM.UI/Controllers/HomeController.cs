@@ -44,7 +44,7 @@ namespace eMAM.UI.Controllers
 
 
 
-        //[Authorize]
+        [Authorize]
         public IActionResult Index()
         {
 
