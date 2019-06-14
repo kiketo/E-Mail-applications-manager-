@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using eMAM.Data;
@@ -9,9 +10,10 @@ using eMAM.Data;
 namespace eMAM.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190612193229_sfix")]
+    partial class sfix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -151,8 +153,6 @@ namespace eMAM.Data.Migrations
 
                     b.Property<string>("ActionType");
 
-                    b.Property<string>("GmailId");
-
                     b.Property<int?>("NewStatusId");
 
                     b.Property<int?>("OldStatusId");
@@ -180,6 +180,10 @@ namespace eMAM.Data.Migrations
                     b.Property<string>("CustomerEGN");
 
                     b.Property<string>("CustomerPhoneNumber");
+
+                    b.Property<string>("FirstName");
+
+                    b.Property<string>("LastName");
 
                     b.HasKey("Id");
 

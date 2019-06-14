@@ -1,6 +1,7 @@
 ﻿using eMAM.Data.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -67,5 +68,12 @@ namespace eMAM.UI.Models
         public bool UserIsManager { get; set; }
 
         public string Muted { get; set; }
+
+        [Required]
+        public string CustomerEGN { get; set; }
+
+        [Required]
+        public string CustomerPhoneNumber { get; set; }
+
     }
 }

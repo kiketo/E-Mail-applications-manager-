@@ -6,10 +6,10 @@ $('.email-button').click(function (ev) {
     var url = $this.attr('data-url');
 
     //disable modal from closing when clicked outside the modal window
-    $(messageId).modal({
-        backdrop: 'static',
-        keyboard: false
-    })
+    //$(messageId).modal({
+    //    backdrop: 'static',
+    //    keyboard: false
+    //})
 
     var form = $('#__AjaxAntiForgeryForm');
     var token = $('input[name="__RequestVerificationToken"]', form).val();
@@ -59,24 +59,30 @@ $('.validation-button').click(function (ev) {
         },
         success: function () {
             toastr.success("Mail Validated");
+            var status = $.find(".status-" + messageId);
+            status[0].innerHTML = "New";
+            //remove the preview button if not a Manager
+
+            //var selector = '.email-button[data-target="#mails-' + messageId + '"]';
+            //previewButton[0].childNodes[1].outerHTML = "";
+            //console.log(previewButton);
+            //var selector = '.email-button[data-target="#mails-' + messageId + '"]';
+            var previewButton = $('.email-button[data-target="#mails-' + messageId + '"]');
+            var isManager = previewButton.data('isManager');
+            if (!isManager) {
+                previewButton.remove();
+            }
+            //todo refresh data properly
+            location.reload();
+            //previewButton[0].childNodes[1].outerHTML = "";
+            console.log(previewButton);
         },
         error: function (err) {
             toastr.error(err.responseText);
         }
     });
     //change the status in the DOM
-    var status = $.find(".status-" + messageId);
-    status[0].innerHTML = "New";
-    //remove the preview button if not a Manager
 
-    //var selector = '.email-button[data-target="#mails-' + messageId + '"]';
-    var previewButton = $('.email-button[data-target="#mails-' + messageId + '"]');
-    var isManager = previewButton.data('isManager');
-    if (!isManager) {
-        previewButton.remove();
-    }
-    //previewButton[0].childNodes[1].outerHTML = "";
-    //console.log(previewButton);
 
 });
 
@@ -212,7 +218,61 @@ function userManagerToggle(button) {
 //    clickedButton.removeClass(clickedButtonClass).addClass(otherButtonClass);
 //    otherButton.removeClass(otherButtonClass).addClass(clickedButtonClass);
 
-//})
+//});
+
+//open email new->open
+$('.applicationEmail').click(function (ev) {
+    var $this = $(this);
+    var messageId = $this.attr('data-target');
+    var messageRequestData = messageId.replace("#mails-", "");
+    var url = '/home/getbodydb';
+    //disable modal from closing when clicked outside the modal window?does not work?
+    $(messageId).modal({
+        backdrop: 'static',
+        keyboard: false
+    })
+    debugger;
+    var form = $('#__AjaxAntiForgeryForm');
+    var token = $('input[name="__RequestVerificationToken"]', form).val();
+
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: {
+            __RequestVerificationToken: token,
+            messageId: messageRequestData
+        },
+        success: function (response) {
+            $(messageId).find('.mail-bodyDB').html(response)
+        },
+        error: function (res) {
+            toastr.error("Ups, something went wrong");
+        }
+    });
+
+});
+
+
+$('.close-application').click(function (ev) {
+    $.ajax({
+        type: "POST",
+        url: "/home/submitncloseapplication",
+        data: {
+            GmailIdNumber: $("#gmailid").val(),
+            CustomerEGN: $("#egn").val(),
+            CustomerPhoneNumber: $("#phone").val()
+        },
+        dataType: "json"
+
+    })
+        .done(function (res, as, okijjg) {
+            toastr.success("Application was successfully closed!");
+            location.pathname("/home/index");
+        })
+        .fail(function (jqxhr, status, error) {
+            console.log("Something went wrong")
+        })
+});
 
 
 
@@ -236,27 +296,52 @@ function userManagerToggle(button) {
 //    });
 //});
 
-$('.applicationEmail').click(function (ev) {
-    //ev.stopPropagation();
-    var $this = $(this);
-    var messageId = $this.attr('data-target');
-    var messageRequestData = messageId.replace("#mails-", "");
-    var url = '/home/getbodydb';
-    $.ajax({
-        type: "GET",
-        url: url,
-        data: { messageId: messageRequestData },
-        success: function (response) {
-            $(messageId).find('.mail-bodyDB').html(response)
-        }
-    })
+//rq for form validation
+//$('.openApplicationForm').validate({
+//    debug: true,
+//    rules: {
+//        FirstName: {
+//            required: true,
+//            minlength: 2
+//        },
+//        LastName: {
+//            required: true,
+//            minlength: 2
+//        },
+//        CustomerEGN: {
+//            required: true
+//        },
+//        CustomerPhoneNumber: {
+//            required: false,
+//            minlength: 10,
+//            number: true
+//        },
+//        Emails: {
+//            required: true
 
-});
+//        },
+//    },
+//    messages: {
+//        FirstName: {
+//            required: "First name is required",
+//        },
+//        LastName: {
+//            required: "Last name is required",
+//        },
+//        CustomerEGN: {
+//            required: "Identification number is required e.g EGN, Passport Number"
+//        },
+//        CustomerPhoneNumber: {
+//            required: false,
+//            number: "Only digits are allowed"
+//        },
+//        Emails: {
+//            required: true
 
+//        },
+//    },
+//    onkeyup: false,
+//    onblur: true,
+//    focusCleanup: true
 
-
-
-
-
-//class="applicationEmail" data-target="#mails-@mail.GmailIdNumber" data-url="/home/openapplication"
-//<div class="mail-bodyDB" style="width: 100%; height:300px; overflow-y:scroll;">
+//});
