@@ -59,24 +59,27 @@ $('.validation-button').click(function (ev) {
         },
         success: function () {
             toastr.success("Mail Validated");
+            var status = $.find(".status-" + messageId);
+            status[0].innerHTML = "New";
+            //remove the preview button if not a Manager
+
+            //var selector = '.email-button[data-target="#mails-' + messageId + '"]';
+            var previewButton = $('.email-button[data-target="#mails-' + messageId + '"]');
+            var isManager = previewButton.data('isManager');
+            if (!isManager) {
+                previewButton.remove();
+            }
+            //todo refresh data properly
+            location.reload();
+            //previewButton[0].childNodes[1].outerHTML = "";
+            console.log(previewButton);
         },
         error: function (err) {
             toastr.error(err.responseText);
         }
     });
     //change the status in the DOM
-    var status = $.find(".status-" + messageId);
-    status[0].innerHTML = "New";
-    //remove the preview button if not a Manager
-
-    //var selector = '.email-button[data-target="#mails-' + messageId + '"]';
-    var previewButton = $('.email-button[data-target="#mails-' + messageId + '"]');
-    var isManager = previewButton.data('isManager');
-    if (!isManager) {
-        previewButton.remove();
-    }
-    //previewButton[0].childNodes[1].outerHTML = "";
-    console.log(previewButton);
+    
 
 });
 
@@ -159,9 +162,6 @@ $('.close-button').click(function (ev) {
 
 //open email new->open
 $('.applicationEmail').click(function (ev) {
-    ev.stopPropagation();
-    //ev.preventDefault();
-    // ev.stopImmediatePropagation();
     var $this = $(this);
     var messageId = $this.attr('data-target');
     var messageRequestData = messageId.replace("#mails-", "");
@@ -194,8 +194,6 @@ $('.applicationEmail').click(function (ev) {
 
 
 $('.close-application').click(function (ev) {
-    ev.preventDefault;
-    debugger;
     $.ajax({
         type: "POST",
         url: "/home/submitncloseapplication",
@@ -209,33 +207,14 @@ $('.close-application').click(function (ev) {
     })
         .done(function (res, as, okijjg) {
             toastr.success("Application was successfully closed!");
+            location.pathname("/home/index");
         })
         .fail(function (jqxhr, status, error) {
             console.log("Something went wrong")
         })
 });
 
-$('.close-button-open').click(function (ev) {
-    var $this = $(this);
-    var messageId = $this.attr('data-target');
 
-    var form = $('#__AjaxAntiForgeryForm');
-    var token = $('input[name="__RequestVerificationToken"]', form).val();
-
-    $.ajax({
-        type: "POST",
-        url: "/home/notpreviewed",
-        data: {
-            __RequestVerificationToken: token,
-            id: messageId
-        },
-        success: function (res, as, okijjg) {
-            toastr.warning("Mail Not Previewed");
-        },
-        error: function (res, as, okijjg) {
-            toastr.error(res.responseText);
-        }
-    });
 
 //show body of email in open
 //$('.applicationEmail').click(function (ev) {

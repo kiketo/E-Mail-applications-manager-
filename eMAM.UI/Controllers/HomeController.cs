@@ -239,29 +239,33 @@ namespace eMAM.UI.Controllers
             return Ok();
         }
 
-        [HttpPost]
-        public async Task<IActionResult> OpenApplication(string messageId) // Accessible to all logged users and managers to see New->Open
-        {
-            var mail = await this.emailService.GetEmailByGmailIdAsync(messageId);
+        //[HttpPost]
+        //public async Task<IActionResult> OpenApplication(string messageId) // Accessible to all logged users and managers to see New->Open
+        //{
+        //    var mail = await this.emailService.GetEmailByGmailIdAsync(messageId);
 
 
-            string userName = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
-            var newStatus = await this.statusService.GetStatusAsync("Open");
-            var email = await this.emailService.GetEmailByIdAsync(2);
-            await auditLogService.Log(userName, "CHANGED STATUS", newStatus, email.Status); // Audit logs => how to display action? One more type i db or strings, user?
-            await this.emailService.UpdateAsync(email);
-            var model = this.emailViewModelMapper.MapFrom(email);
-            var validStatus = await this.statusService.GetStatusByName("New");
-            return Ok();
-        }
+        //   string userName = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+        //    var newStatus = await this.statusService.GetStatusAsync("Open");
+        //    var email = await this.emailService.GetEmailByIdAsync(2);
+        //    await auditLogService.Log(userName, "CHANGED STATUS", newStatus, email.Status); // Audit logs => how to display action? One more type i db or strings, user?
+        //    await this.emailService.UpdateAsync(email);
+        //    var model = this.emailViewModelMapper.MapFrom(email);
+        //    var validStatus = await this.statusService.GetStatusByName("New");
+        //    return Ok();
+        //}
 
         [ValidateAntiForgeryToken]
         [HttpPost]
-        public async Task<IActionResult> GetBodyDB(string messageId)
+        public async Task<IActionResult> GetBodyDB(string messageId) // changes status to Open and working TODO put auditlog
         {
             var body = await this.emailService.GetEmailBodyAsync(messageId);
             var email = await this.emailService.GetEmailByGmailIdAsync(messageId);
             email.Status = await this.statusService.GetStatusAsync("Open");
+            email.WorkInProcess = true;
+            email.WorkingBy = await userManager.GetUserAsync(User);
+            await this.emailService.UpdateAsync(email);
+
             var res = Json(body);
 
             return Json(body);
