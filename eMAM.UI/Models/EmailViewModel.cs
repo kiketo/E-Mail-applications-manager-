@@ -76,5 +76,7 @@ namespace eMAM.UI.Models
         public string CustomerPhoneNumber { get; set; }
 
         public TimeSpan InCurrentStatusSince { get; set; }
+
+        public bool FilterOnlyNotValid { get; set; }
     }
 }
