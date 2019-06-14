@@ -82,7 +82,7 @@ namespace eMAM.Service.UserServices
             var userRole = await this.userManager.GetRolesAsync(updatedUser);
 
             var allRoles = await this.context.Roles
-                .Where(u => u.Name == "Manager" || u.Name == "Operator")
+                .Where(u => u.Name == "User" || u.Name == "Operator")
                 .ToListAsync();
             if (userRole[0] == allRoles[0].Name)
             {
