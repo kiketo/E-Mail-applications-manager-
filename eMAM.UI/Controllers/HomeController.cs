@@ -8,6 +8,7 @@ using eMAM.UI.Utills;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -56,11 +57,18 @@ namespace eMAM.UI.Controllers
 
 
         [Authorize]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-
-
-            return View();
+            var model = new HomeViewModel();
+            var listEmails = await this.emailService.ReadAllMailsFromDb(true, await this.userManager.GetUserAsync(User)).ToListAsync();
+            var modelEmails = listEmails.Select(x => emailViewModelMapper.MapFrom(x));
+            model.NotReviewed = modelEmails.Where(s => s.Status.Text == "Not Reviewed").OrderByDescending(x => x.DateReceived).Take(5).ToList();
+            model.New = modelEmails.Where(s => s.Status.Text == "New").OrderByDescending(x => x.DateReceived).Take(5).ToList();
+            model.Open = modelEmails.Where(s => s.Status.Text == "Open").OrderByDescending(x => x.DateReceived).Take(5).ToList();
+            model.Closed = modelEmails.Where(s => s.Status.Text == "Open").OrderBy(x => x.DateReceived).Take(5).ToList();
+           model.UserIsManager = User.IsInRole("Manager");
+            
+            return View(model);
         }
 
         [AutoValidateAntiforgeryToken]
