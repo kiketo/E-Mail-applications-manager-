@@ -8,6 +8,7 @@ using eMAM.UI.Utills;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -28,8 +29,18 @@ namespace eMAM.UI.Controllers
         private readonly IAuditLogService auditLogService;
         private readonly IStatusService statusService;
         private readonly ILogger logger;
+        private readonly ICustomerService customerService;
 
-        public HomeController(UserManager<User> userManager, IGmailApiService gmailApiService, IGmailUserDataService gmailUserDataService, IEmailService emailService, IViewModelMapper<Email, EmailViewModel> emailViewModelMapper, IUserService userService, IAuditLogService auditLogService, IStatusService statusService, ILogger<User> logger)
+        public HomeController(UserManager<User> userManager, 
+            IGmailApiService gmailApiService, 
+            IGmailUserDataService gmailUserDataService, 
+            IEmailService emailService, 
+            IViewModelMapper<Email, EmailViewModel> emailViewModelMapper, 
+            IUserService userService, 
+            IAuditLogService auditLogService, 
+            IStatusService statusService, 
+            ILogger<User> logger,
+            ICustomerService customerService)
         {
             this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             this.gmailApiService = gmailApiService ?? throw new ArgumentNullException(nameof(gmailApiService));
@@ -40,16 +51,24 @@ namespace eMAM.UI.Controllers
             this.auditLogService = auditLogService ?? throw new ArgumentNullException(nameof(auditLogService));
             this.statusService = statusService ?? throw new ArgumentNullException(nameof(statusService));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.customerService = customerService ?? throw new ArgumentNullException(nameof(customerService));
         }
 
 
 
         [Authorize]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-
-
-            return View();
+            var model = new HomeViewModel();
+            var listEmails = await this.emailService.ReadAllMailsFromDb(true, await this.userManager.GetUserAsync(User)).ToListAsync();
+            var modelEmails = listEmails.Select(x => emailViewModelMapper.MapFrom(x));
+            model.NotReviewed = modelEmails.Where(s => s.Status.Text == "Not Reviewed").OrderByDescending(x => x.DateReceived).Take(5).ToList();
+            model.New = modelEmails.Where(s => s.Status.Text == "New").OrderByDescending(x => x.DateReceived).Take(5).ToList();
+            model.Open = modelEmails.Where(s => s.Status.Text == "Open").OrderByDescending(x => x.DateReceived).Take(5).ToList();
+            model.Closed = modelEmails.Where(s => s.Status.Text == "Open").OrderBy(x => x.DateReceived).Take(5).ToList();
+           model.UserIsManager = User.IsInRole("Manager");
+            
+            return View(model);
         }
 
         [AutoValidateAntiforgeryToken]
@@ -107,14 +126,13 @@ namespace eMAM.UI.Controllers
             return View(model);
         }
 
-
         [ValidateAntiForgeryToken]
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> PreviewMail(string messageId)
         {
             var user = await this.userManager.GetUserAsync(User);
-            await this.emailService.WorkInProcessAsync(user, messageId);
+          //  await this.emailService.WorkInProcessAsync(user, messageId);//TODO stops PREVIEW
             var userData = await this.gmailUserDataService.GetAsync();
             var mailDTO = await this.gmailApiService.DownloadBodyOfMailAsync(messageId, userData.AccessToken);
             var body = mailDTO.BodyAsString;
@@ -228,31 +246,39 @@ namespace eMAM.UI.Controllers
             return Ok();
         }
 
+        //[HttpPost]
+        //public async Task<IActionResult> OpenApplication(string messageId) // Accessible to all logged users and managers to see New->Open
+        //{
+        //    var mail = await this.emailService.GetEmailByGmailIdAsync(messageId);
+
+
+        //   string userName = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+        //    var newStatus = await this.statusService.GetStatusAsync("Open");
+        //    var email = await this.emailService.GetEmailByIdAsync(2);
+        //    await auditLogService.Log(userName, "CHANGED STATUS", newStatus, email.Status); // Audit logs => how to display action? One more type i db or strings, user?
+        //    await this.emailService.UpdateAsync(email);
+        //    var model = this.emailViewModelMapper.MapFrom(email);
+        //    var validStatus = await this.statusService.GetStatusByName("New");
+        //    return Ok();
+        //}
+
+        [ValidateAntiForgeryToken]
         [HttpPost]
-        public async Task<IActionResult> OpenApplication(string messageId) // Accessible to all logged users and managers to see New->Open
-        {
-            var mail = await this.emailService.GetEmailByGmailIdAsync(messageId);
-
-
-            string userName = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
-            var newStatus = await this.statusService.GetStatusAsync("Open");
-            var email = await this.emailService.GetEmailByIdAsync(2);
-            await auditLogService.Log(userName, "CHANGED STATUS", newStatus, email.Status); // Audit logs => how to display action? One more type i db or strings, user?
-            await this.emailService.UpdateAsync(email);
-            var model = this.emailViewModelMapper.MapFrom(email);
-            var validStatus = await this.statusService.GetStatusByName("New");
-            return Ok();
-        }
-        [HttpGet]
-        public async Task<IActionResult> GetBodyDB(string messageId)
+        public async Task<IActionResult> GetBodyDB(string messageId) // changes status to Open and working TODO put auditlog
         {
             var body = await this.emailService.GetEmailBodyAsync(messageId);
+            var email = await this.emailService.GetEmailByGmailIdAsync(messageId);
+            email.Status = await this.statusService.GetStatusAsync("Open");
+            email.WorkInProcess = true;
+            email.WorkingBy = await userManager.GetUserAsync(User);
+            await this.emailService.UpdateAsync(email);
+
             var res = Json(body);
 
             return Json(body);
         }
-        //status open, work in process
 
+        //status open, work in process
         public async Task<IActionResult> ChangeStatusToOpen(string messageId)
         {
             var mail = await emailService.GetEmailByGmailIdAsync(messageId);
@@ -261,6 +287,37 @@ namespace eMAM.UI.Controllers
             await this.emailService.UpdateAsync(mail);
             return Ok();
         }
+
+        [HttpPost]
+        public async Task<IActionResult> SubmitNCloseApplication(EmailViewModel model)
+        {
+
+            if (ModelState.IsValid)
+            {
+                var email = await this.emailService.GetEmailByGmailIdAsync(model.GmailIdNumber);
+                Customer customer;
+                if (await this.customerService.GetCustomerByEGNAsync(model.CustomerEGN) == null)
+                {
+                    customer = await this.customerService.CreateNewCustomerAsync(model.CustomerEGN, model.CustomerPhoneNumber);
+                    customer.Emails.Add(email);
+                }
+                else
+                {
+                    customer = await this.customerService.GetCustomerByEGNAsync(model.CustomerEGN);
+                    customer.Emails.Add(email);
+                }
+                email.Status = await this.statusService.GetStatusAsync("Close");
+                email.WorkInProcess = false;
+                await this.emailService.UpdateAsync(email);
+                return Ok();
+            }
+
+            return BadRequest();
+
+
+        }
+
+
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });

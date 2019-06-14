@@ -41,8 +41,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\Manager\Data\" />
+    <Folder Include="Areas\Manager\Models\" />
     <Folder Include="Areas\SuperAdmin\Data\" />
   </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JSONSchema="" /></VisualStudio></ProjectExtensions>
 
   <!--<ItemGroup>
     <Folder Include="Data\" />
