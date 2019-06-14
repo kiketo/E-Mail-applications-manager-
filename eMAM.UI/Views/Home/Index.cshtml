@@ -1,12 +1,88 @@
-﻿@{
+﻿@model HomeViewModel
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <p>Last 5 Opened by me</p>
 
+<table class="table-hover">
+    <thead class="thead-dark" style="background-color:cadetblue">
+        <tr>
+            <th>Date/Time</th>
+            <th>Sender</th>
+            <th>Subject</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var mail in Model.Open)
+        {
+            <partial name="_email" model="mail" />
+        }
+
+    </tbody>
+</table>
+
+
+
 <p>Last 5 with status New</p>
+<table class="table-hover">
+    <thead class="thead-dark" style="background-color:cadetblue">
+        <tr>
+            <th>Date/Time</th>
+            <th>Sender</th>
+            <th>Subject</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var mail in Model.New)
+        {
+            <partial name="_email" model="mail" />
+        }
+
+    </tbody>
+</table>
 
 <p>Last 5 with status Not Reviewed</p>
+<table class="table-hover">
+    <thead class="thead-dark" style="background-color:cadetblue">
+        <tr>
+            <th>Date/Time</th>
+            <th>Sender</th>
+            <th>Subject</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var mail in Model.NotReviewed)
+        {
+            <partial name="_email" model="mail" />
+        }
+
+    </tbody>
+</table>
 
 <p>Last 5 with Closed by me</p>
+<table class="table-hover">
+    <thead class="thead-dark" style="background-color:cadetblue">
+        <tr>
+            <th>Date/Time</th>
+            <th>Sender</th>
+            <th>Subject</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var mail in Model.Closed)
+        {
+            <partial name="_email" model="mail" />
+        }
+
+    </tbody>
+</table>
 

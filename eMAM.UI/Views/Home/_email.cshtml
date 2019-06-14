@@ -1,0 +1,17 @@
+﻿@model EmailViewModel
+
+<tr href="" style="cursor:pointer" class="applicationEmail" data-target="#mails-@Model.GmailIdNumber" data-url="/home/GetBodyDB" data-toggle="modal" data-backdrop="static" data-keyboard="false">
+
+    <td>@Model.DateReceived</td>
+    <td>@Model.Sender.SenderName &lt@(Model.Sender.SenderEmail)&gt</td>
+    <td>@Model.Subject</td>
+    <td>@Model.Status.Text</td>
+
+
+    <td>
+        @if (Model.AreAttachments)
+        {<img src="~/images/attachment.png" height="42" width="42">}
+    </td>
+
+
+</tr>
