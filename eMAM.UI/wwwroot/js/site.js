@@ -63,14 +63,9 @@ $('.validation-button').click(function (ev) {
             status[0].innerHTML = "New";
             //remove the preview button if not a Manager
 
-    //var selector = '.email-button[data-target="#mails-' + messageId + '"]';
-    var previewButton = $('.email-button[data-target="#mails-' + messageId + '"]');
-    var isManager = previewButton.data('isManager');
-    if (!isManager) {
-        previewButton.remove();
-    }
-    //previewButton[0].childNodes[1].outerHTML = "";
-    //console.log(previewButton);
+            //var selector = '.email-button[data-target="#mails-' + messageId + '"]';
+            //previewButton[0].childNodes[1].outerHTML = "";
+            //console.log(previewButton);
             //var selector = '.email-button[data-target="#mails-' + messageId + '"]';
             var previewButton = $('.email-button[data-target="#mails-' + messageId + '"]');
             var isManager = previewButton.data('isManager');
@@ -87,7 +82,7 @@ $('.validation-button').click(function (ev) {
         }
     });
     //change the status in the DOM
-    
+
 
 });
 
@@ -223,7 +218,7 @@ function userManagerToggle(button) {
 //    clickedButton.removeClass(clickedButtonClass).addClass(otherButtonClass);
 //    otherButton.removeClass(otherButtonClass).addClass(clickedButtonClass);
 
-});
+//});
 
 //open email new->open
 $('.applicationEmail').click(function (ev) {
