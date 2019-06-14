@@ -118,7 +118,6 @@ namespace eMAM.UI.Controllers
             return View(model);
         }
 
-
         [ValidateAntiForgeryToken]
         [Authorize]
         [HttpPost]

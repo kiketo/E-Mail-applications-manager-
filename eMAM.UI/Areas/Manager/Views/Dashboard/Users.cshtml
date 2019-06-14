@@ -21,25 +21,29 @@
         {
             if (user.UserName != User.Identity.Name)
             {
+                if (user.Roles.Contains("Manager"))
+                {
+                    continue;
+                }
 
                 <tr>
                     <td>@user.Id</td>
                     <td>@user.UserName</td>
                     <td>@user.Email</td>
                     <td>
+                        @if (user.Roles.Contains("User"))
+                        {<button class="btn btn-success disabled @user.Id" data-userId="@user.Id">User</button>}
+                        else
+                        {
+                            <div onclick="userOperatorToggle(this)" class="btn btn-outline-success @user.Id" data-userId="@user.Id">User</div>
+                        }
+                    </td>
+                    <td>
                         @if (user.Roles.Contains("Operator"))
                         {<button class="btn btn-success disabled @user.Id" data-userId="@user.Id">Operator</button>}
                         else
                         {
-                            <div onclick="userManagerToggle(this)" class="btn btn-outline-success @user.Id" data-userId="@user.Id">User</div>
-                        }
-                    </td>
-                    <td>
-                        @if (user.Roles.Contains("Manager"))
-                        {<button class="btn btn-success disabled @user.Id" data-userId="@user.Id">Manager</button>}
-                        else
-                        {
-                            <div onclick="userManagerToggle(this)" class="btn btn-outline-success @user.Id" data-userId="@user.Id">Manager</div>
+                         <div onclick="userOperatorToggle(this)" class="btn btn-outline-success @user.Id" data-userId="@user.Id">Operator</div>
                         }
                     </td>
                 </tr>
