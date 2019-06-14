@@ -15,6 +15,7 @@ namespace eMAM.Service.UserServices
     public class UserService : IUserService
     {
         private readonly ApplicationDbContext context;
+
         private readonly UserManager<User> userManager;
 
         public UserService(ApplicationDbContext context, UserManager<User> userManager)
@@ -42,12 +43,12 @@ namespace eMAM.Service.UserServices
                 .FirstOrDefaultAsync(u => u.Id == id);
         }
 
-        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        public IQueryable<User> GetAllUsersQuery()
         {
-            return await this.context.Users.Where(u=>u.UserName!= "super@admin.user").ToListAsync();
+            return this.context.Users.Where(u=>u.UserName!= "super@admin.user");
         }
 
-        public async Task<User> ChangeUserRoleAsync(string userId)
+        public async Task<User> ToggleRoleBetweenUserManagerAsync(string userId)
         {
             var updatedUser = await this.context.Users
                 .FirstOrDefaultAsync(u => u.Id == userId);
@@ -55,7 +56,7 @@ namespace eMAM.Service.UserServices
             var userRole = await this.userManager.GetRolesAsync(updatedUser);
 
             var allRoles = await this.context.Roles
-                .Where(u => u.Name != "SuperAdmin")
+                .Where(u => u.Name=="Manager"||u.Name=="User")
                 .ToListAsync();
             if (userRole[0] == allRoles[0].Name)
             {

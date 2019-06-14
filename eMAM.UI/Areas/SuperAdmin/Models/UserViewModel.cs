@@ -18,6 +18,11 @@ namespace eMAM.UI.Areas.SuperAdmin.Models
 
         public ICollection<string> Roles { get; set; }
 
-        public IReadOnlyCollection<UserViewModel> UsersList { get; set; }
+        public ICollection<UserViewModel> UsersList { get; set; } = new List<UserViewModel>();
+
+        public bool HasPreviousPage { get; set; }
+        public bool HasNextPage { get; set; }
+        public int PageIndex { get; set; }
+        public int TotalPages { get; set; }
     }
 }

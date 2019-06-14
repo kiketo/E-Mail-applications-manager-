@@ -1,20 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using eMAM.Data.Models;
-using eMAM.Service.DbServices;
+﻿using eMAM.Data.Models;
 using eMAM.Service.DbServices.Contracts;
 using eMAM.Service.DTO;
 using eMAM.Service.UserServices.Contracts;
 using eMAM.UI.Areas.SuperAdmin.Models;
 using eMAM.UI.Mappers;
+using eMAM.UI.Utills;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
 //TODO to finalize
 namespace eMAM.UI.Areas.SuperAdmin.Controllers
 {
@@ -23,9 +23,9 @@ namespace eMAM.UI.Areas.SuperAdmin.Controllers
         private readonly IGmailUserDataService gmailUserDataService;
         private readonly IUserService userService;
         private readonly UserManager<User> userManager;
-        private readonly IViewModelMapper<User, UserViewModel> userMapper;
+        private readonly IUserViewModelMapper<User, UserViewModel> userMapper;
 
-        public DashboardController(IGmailUserDataService gmailUserDataService, IUserService userService, UserManager<User> userManager, IViewModelMapper<User, UserViewModel> userMapper)
+        public DashboardController(IGmailUserDataService gmailUserDataService, IUserService userService, UserManager<User> userManager, IUserViewModelMapper<User, UserViewModel> userMapper)
         {
             this.gmailUserDataService = gmailUserDataService ?? throw new ArgumentNullException(nameof(gmailUserDataService));
             this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
@@ -39,7 +39,6 @@ namespace eMAM.UI.Areas.SuperAdmin.Controllers
         }
 
         [Area("SuperAdmin")]
-       
         [Authorize(Roles = "SuperAdmin")]
         public IActionResult GoogleLogin()
         {
@@ -90,23 +89,61 @@ namespace eMAM.UI.Areas.SuperAdmin.Controllers
             }
         }
 
-
         [Area("SuperAdmin")]
         [Route("superadmin")]
         [Authorize(Roles = "SuperAdmin")]
-        public async Task<IActionResult> Users()
+        public async Task<IActionResult> Users(int? pageNumber)
         {
-            var users = await this.userService.GetAllUsersAsync();
-            UserViewModel model = new UserViewModel();
-            model.UsersList = (users)
-                   .Select(this.userMapper.MapFrom)
-                   .ToList();
-            foreach (var user in model.UsersList)
+            var pageSize = 10;
+            var users = this.userService.GetAllUsersQuery();
+            var page = await PaginatedList<User>.CreateAsync(users, pageNumber ?? 1, pageSize);
+            page.Reverse();
+
+            UserViewModel model = new UserViewModel
             {
-                user.Roles = new List<string>();
-                user.Roles = await userManager.GetRolesAsync(user.User);
+                HasNextPage = page.HasNextPage,
+                HasPreviousPage = page.HasPreviousPage,
+                PageIndex = page.PageIndex,
+                TotalPages = page.TotalPages,
+            };
+
+            foreach (var user in page)
+            {
+                var element = await this.userMapper.MapFrom(user);
+                model.UsersList.Add(element);
             }
+
             return View(model);
+
+
+
+            //var users = await this.userService.GetAllUsersAsync();
+            //UserViewModel model = new UserViewModel();
+            //model.UsersList = (users)
+            //       .Select(this.userMapper.MapFrom)
+            //       .ToList();
+            //foreach (var user in model.UsersList)
+            //{
+            //    user.Roles = new List<string>();
+            //    user.Roles = await userManager.GetRolesAsync(user.User);
+            //}
+            //return View(model);
+        }
+
+        [Area("SuperAdmin")]
+        [Route("superadmin/ChangeUserRole")]
+        [Authorize(Roles = "SuperAdmin")]
+        public async Task<IActionResult> ToggleRoleBetweenUserManager(string userId)
+        {
+            try
+            {
+                var user = await this.userService.ToggleRoleBetweenUserManagerAsync(userId);
+            }
+            catch (Exception)
+            {
+                return BadRequest();
+            }
+            return Ok();
         }
 
         public async Task<bool> TryReadGmail(HttpClient client, GmailUserDataDTO userDataDTO)

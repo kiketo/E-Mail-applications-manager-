@@ -1,23 +1,30 @@
 ﻿using eMAM.Data.Models;
-using eMAM.UI.Mappers;
+using Microsoft.AspNetCore.Identity;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace eMAM.UI.Areas.SuperAdmin.Models
 {
-    public class UserViewModelMapper : IViewModelMapper<User, UserViewModel>
+    public class UserViewModelMapper : IUserViewModelMapper<User, UserViewModel>
     {
-        public UserViewModel MapFrom(User entity)
+        private readonly UserManager<User> userManager;
 
-       => new UserViewModel
-       {
-           Id = entity.Id,
-           UserName = entity.UserName,
-           User = entity,
-            //RolesList = await this._userManager.GetRolesAsync(entity),
-            Email = entity.Email
-       };
+        public UserViewModelMapper(UserManager<User> userManager)
+        {
+            this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+        }
+
+        public async Task<UserViewModel> MapFrom(User entity)
+        {
+            var res = new UserViewModel
+            {
+                Id = entity.Id,
+                UserName = entity.UserName,
+                User = entity,
+                Roles = await this.userManager.GetRolesAsync(entity),
+                Email = entity.Email
+            };
+            return res;
+        }
     }
 }

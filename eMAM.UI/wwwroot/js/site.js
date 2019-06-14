@@ -63,6 +63,14 @@ $('.validation-button').click(function (ev) {
             status[0].innerHTML = "New";
             //remove the preview button if not a Manager
 
+    //var selector = '.email-button[data-target="#mails-' + messageId + '"]';
+    var previewButton = $('.email-button[data-target="#mails-' + messageId + '"]');
+    var isManager = previewButton.data('isManager');
+    if (!isManager) {
+        previewButton.remove();
+    }
+    //previewButton[0].childNodes[1].outerHTML = "";
+    //console.log(previewButton);
             //var selector = '.email-button[data-target="#mails-' + messageId + '"]';
             var previewButton = $('.email-button[data-target="#mails-' + messageId + '"]');
             var isManager = previewButton.data('isManager');
@@ -108,7 +116,7 @@ $('.notValid-button').click(function (ev) {
     });
     //change the status in the DOM
     var status = $.find(".status-" + messageId);
-    status[0].innerHTML = "New";
+    status[0].innerHTML = "Invalid Application";
     //remove the preview button if not a Manager
 
     //var selector = '.email-button[data-target="#mails-' + messageId + '"]';
@@ -118,7 +126,7 @@ $('.notValid-button').click(function (ev) {
         previewButton.remove();
     }
     //previewButton[0].childNodes[1].outerHTML = "";
-    console.log(previewButton);
+    // console.log(previewButton);
 });
 
 //back to not previewed e-mail
@@ -143,20 +151,77 @@ $('.close-button').click(function (ev) {
             toastr.error(res.responseText);
         }
     });
+});
 
+//toggle roles User<->Manager
+function userManagerToggle(button) {
+    var clickedButton = $(button);
+    var userId = clickedButton.attr('data-userId');
+    var clickedButtonClass = clickedButton.attr('class');
+    var otherButtonClass = ".btn.btn-success.disabled." + userId;
+    var otherButton = $(otherButtonClass);
+    var otherButtonClass = otherButton.attr('class');
+    clickedButton.removeClass(clickedButtonClass).addClass(otherButtonClass);
+    otherButton.removeClass(otherButtonClass).addClass(clickedButtonClass);
+    var onClickEvent = clickedButton.attr('onclick');
+    otherButton.attr('onclick', onClickEvent);
+    console.log(otherButton.attr('onclick'));
+    clickedButton.removeAttr(onClickEvent);
 
+    var userId = clickedButton.attr('data-userId');
+
+    var form = $('#__AjaxAntiForgeryForm');
+    var token = $('input[name="__RequestVerificationToken"]', form).val();
     $.ajax({
         type: "POST",
-        url: url,
-        data: { messageId: messageId },
-        success: function (res, as, okijjg) {
-            toastr.warning("Mail Not Valid");
+        url: "superadmin/ChangeUserRole",
+        data: {
+            __RequestVerificationToken: token,
+            userId: userId
         },
-        error: function (res, as, okijjg) {
-            toastr.error(err.responseText);
+        success: function () {
+            toastr.success("Role changed");
+        },
+        error: function (res) {
+            toastr.error("Ups, something went wrong ;-)");
         }
     });
 
+}
+
+//$('.btn-outline-success').click(function (ev) {
+//    console.log(ev.target);
+//    debugger;
+//    var clickedButton = $(this);
+//    var userId = clickedButton.attr('data-userId');
+
+//    //var form = $('#__AjaxAntiForgeryForm');
+//    //var token = $('input[name="__RequestVerificationToken"]', form).val();
+//    //$.ajax({
+//    //    type: "POST",
+//    //    url: "superadmin/ChangeUserRole",
+//    //    data: {
+//    //        __RequestVerificationToken: token,
+//    //        userId: userId
+//    //    },
+//    //    success: function () {
+//    //        toastr.warning("Role changed");
+//    //    },
+//    //    error: function (res) {
+//    //        toastr.error(res.responseText);
+//    //    }
+//    //});
+//    //$(document).ready(function () {
+//    //console.log(clickedButton);
+
+//    //change the type of buttons
+//   // debugger;
+//    var clickedButtonClass = clickedButton.attr('class');
+//    var otherButtonClass = ".btn.btn-success.disabled." + userId;
+//    var otherButton = $(otherButtonClass);
+//    var otherButtonClass = otherButton.attr('class');
+//    clickedButton.removeClass(clickedButtonClass).addClass(otherButtonClass);
+//    otherButton.removeClass(otherButtonClass).addClass(clickedButtonClass);
 
 });
 

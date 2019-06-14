@@ -37,12 +37,20 @@ namespace eMAM.UI.Utills
 
         public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> source, int pageIndex, int pageSize)
         {
+            List<T> items;
             var count = await source.CountAsync();
-            if (count-pageIndex* pageSize < pageSize)
+            if (count > pageSize)
             {
-                pageSize = count - pageIndex * pageSize;
+                if (count - pageIndex * pageSize < pageSize)
+                {
+                    pageSize = count - pageIndex * pageSize;
+                }
+                items = await source.Skip(count - pageIndex * pageSize).Take(pageSize).ToListAsync();
             }
-            var items = await source.Skip(count - pageIndex * pageSize).Take(pageSize).ToListAsync();
+            else
+            {
+                items = await source.ToListAsync();
+            }
             return new PaginatedList<T>(items, count, pageIndex, pageSize);
         }
     }
