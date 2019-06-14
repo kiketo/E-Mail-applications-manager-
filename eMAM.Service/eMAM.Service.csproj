@@ -5,7 +5,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="DbServices\EmailSender.cs" />
+    <Compile Remove="Utills\AccessTokenRefresher.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Apis.Gmail.v1" Version="1.40.0.1572" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\eMAM.Data\eMAM.Data.csproj" />
+    <ProjectReference Include="..\eMAM.Logs\eMAM.Logs.csproj" />
   </ItemGroup>
 
 </Project>

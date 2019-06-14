@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using eMAM.Service.Utills;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 
 namespace eMAM.UI
 {
@@ -14,12 +8,16 @@ namespace eMAM.UI
     {
         public static void Main(string[] args)
         {
-            BuildWebHost(args).Run();
+            var host = BuildWebHost(args);
+            DataSeed.SeedDatabaseWithSuperAdminAsync(host).Wait();
+            DataSeed.SeedDatabaseWithStatus(host).Wait();
+            DataSeed.SeedToken(host).Wait();
+            host.Run();
         }
-
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
+                .UseIISIntegration()
                 .Build();
     }
 }

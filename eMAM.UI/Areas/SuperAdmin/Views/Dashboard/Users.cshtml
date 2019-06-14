@@ -1,0 +1,61 @@
+﻿@using eMAM.UI.Areas.SuperAdmin.Models
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+{
+    @Html.AntiForgeryToken()
+}
+@model UserViewModel
+
+<h1>Users</h1>
+
+<table class="table-hover">
+    <thead class="thead-dark" style="background-color:cadetblue">
+        <tr>
+            <th>User ID</th>
+            <th>User name</th>
+            <th>E-mail</th>
+            <th colspan="2">Role</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model.UsersList)
+        {
+            <tr>
+                <td>@user.Id</td>
+                <td>@user.UserName</td>
+                <td>@user.Email</td>
+                <td>
+                    @if (user.Roles.Contains("User"))
+                    {<button class="btn btn-success disabled @user.Id" data-userId="@user.Id">User</button>}
+                    else
+                    {
+                        <div onclick="userManagerToggle(this)" class="btn btn-outline-success @user.Id" data-userId="@user.Id">User</div>
+                    }
+                </td>
+                <td>
+                    @if (user.Roles.Contains("Manager"))
+                    {<button class="btn btn-success disabled @user.Id" data-userId="@user.Id">Manager</button>}
+                    else
+                    {
+                        <div onclick="userManagerToggle(this)" class="btn btn-outline-success @user.Id" data-userId="@user.Id">Manager</div>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="ListAllMails"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="ListAllMails"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>

@@ -3,18 +3,45 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <UserSecretsId>aspnet-eMAM.UI-6DBFB582-43AB-4A5E-89DB-46B8AB726F2F</UserSecretsId>
-    <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+    <AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel>
+    <AspNetCoreModuleName>AspNetCoreModule</AspNetCoreModuleName>
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="token.json\**" />
+    <Compile Remove="wwwroot\lib\kendo-ui\**" />
+    <Content Remove="token.json\**" />
+    <Content Remove="wwwroot\lib\kendo-ui\**" />
+    <EmbeddedResource Remove="token.json\**" />
+    <EmbeddedResource Remove="wwwroot\lib\kendo-ui\**" />
+    <None Remove="token.json\**" />
+    <None Remove="wwwroot\lib\kendo-ui\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Extensions\EmailSenderExtensions.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Apis.Gmail.v1" Version="1.40.1.1613" />
+    <PackageReference Include="Microsoft.ApplicationInsights.SnapshotCollector" Version="1.3.4" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.2.0" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.2.4" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" PrivateAssets="All" />
+    <PackageReference Include="PagedList.Mvc" Version="4.5.0" />
+    <PackageReference Include="popper.js" Version="1.14.3" />
+    <PackageReference Include="Scrutor" Version="3.0.2" />
+    <PackageReference Include="toastr" Version="2.1.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\eMAM.Data\eMAM.Data.csproj" />
+    <ProjectReference Include="..\eMAM.Logs\eMAM.Logs.csproj" />
     <ProjectReference Include="..\eMAM.Service\eMAM.Service.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\SuperAdmin\Data\" />
   </ItemGroup>
 
   <!--<ItemGroup>

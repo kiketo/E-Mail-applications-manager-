@@ -1,0 +1,8 @@
+﻿@model EmailViewModel
+
+<div class="font-weight-bold">
+    <a class="btn btn-info" style="width:70.59px" asp-controller="Home" asp-action="GetMails" asp-route-id="@Model.Id">Preview</a>
+
+</div>
+<div>Email Id: @Model.Id | Received : @Model.DateReceived | Sender: @Model.Sender.SenderName @Model.Sender.SenderEmail | Subject: @Model.Subject | Status: @Model.Status.Text | Are there attachements: @Model.AreAttachments</div>
+<hr />
