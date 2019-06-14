@@ -41,11 +41,16 @@ namespace eMAM.UI.Utills
             var count = await source.CountAsync();
             if (count > pageSize)
             {
-                if (count - pageIndex * pageSize < pageSize)
+                var lesPage = count - (pageIndex - 1) * pageSize;
+                if (lesPage < pageSize)
                 {
-                    pageSize = count - pageIndex * pageSize;
+                    //pageSize = count - (pageIndex-1) * pageSize;
+                    items = await source.Take(lesPage).ToListAsync();
                 }
-                items = await source.Skip(count - pageIndex * pageSize).Take(pageSize).ToListAsync();
+                else
+                {
+                    items = await source.Skip(count - pageIndex * pageSize).Take(pageSize).ToListAsync();
+                }
             }
             else
             {

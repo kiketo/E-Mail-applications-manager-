@@ -31,7 +31,7 @@ namespace eMAM.Service.Utills
             this.logger.LogInformation("Timed Background Service is starting.");
 
             this.timer = new Timer(GetNewEmailsFromGmail, null, TimeSpan.Zero,
-                TimeSpan.FromSeconds(300));
+                TimeSpan.FromSeconds(60));
 
             return Task.CompletedTask;
         }

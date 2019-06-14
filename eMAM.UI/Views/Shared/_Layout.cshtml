@@ -28,11 +28,13 @@
                     {
                         <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                         <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListAllMails">List All Mails</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListOpenEmails">List Open Mails</a></li>
                     }
                     @if (User.IsInRole("Manager"))
                     {
                         <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                         <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListAllMails">List All Mails</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListOpenEmails">List Open Mails</a></li>
                         <li><a class="nav-link text-danger" asp-area="Manager" asp-controller="Dashboard" asp-action="Users">Manager Area-Users</a></li>
                     }
                     @if (User.Identity.IsAuthenticated)
@@ -48,7 +50,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>@DateTime.Now.ToString("g") TeamX &copy;</p>
+            <p>@DateTime.Now.ToString() TeamX &copy;</p>
         </footer>
     </div>
 

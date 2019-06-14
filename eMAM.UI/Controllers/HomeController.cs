@@ -100,6 +100,37 @@ namespace eMAM.UI.Controllers
             return View(model);
         }
 
+        [AutoValidateAntiforgeryToken]
+        [Authorize]
+        public async Task<IActionResult> ListOpenEmails(int? pageNumber)
+        {
+            var pageSize = 10;
+            var user = await this.userManager.GetUserAsync(User);
+            var isManager = User.IsInRole("Manager");
+            var mails = this.emailService.ReadOpenMailsFromDb(isManager, user);
+            var page = await PaginatedList<Email>.CreateAsync(mails, pageNumber ?? 1, pageSize);
+            //page.Reverse();
+
+            EmailViewModel model = new EmailViewModel
+            {
+                HasNextPage = page.HasNextPage,
+                HasPreviousPage = page.HasPreviousPage,
+                PageIndex = page.PageIndex,
+                TotalPages = page.TotalPages,
+                UserIsManager = isManager
+            };
+
+            foreach (var mail in page)
+            {
+                var element = this.emailViewModelMapper.MapFrom(mail);
+                element.InCurrentStatusSince = DateTime.Now - element.SetInCurrentStatusOn;
+                model.SearchResults.Add(element);
+            }
+
+            return View(model);
+        }
+    
+
         public async Task<IActionResult> ListAllMailsNotValid(int? pageNumber)
         {
             var pageSize = 10;
@@ -284,6 +315,9 @@ namespace eMAM.UI.Controllers
             var mail = await emailService.GetEmailByGmailIdAsync(messageId);
             mail.Status = await this.statusService.GetStatusAsync("Open");
             mail.WorkInProcess = true;
+            mail.WorkingBy = await this.userManager.GetUserAsync(User);
+            mail.OpenedBy = mail.WorkingBy;
+            mail.SetInCurrentStatusOn = DateTime.Now;
             await this.emailService.UpdateAsync(mail);
             return Ok();
         }
