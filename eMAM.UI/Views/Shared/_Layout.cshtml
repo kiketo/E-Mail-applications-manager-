@@ -24,22 +24,22 @@
                     {
                         <li><a class="nav-link text-danger" asp-area="SuperAdmin" asp-controller="Dashboard" asp-action="Users">SuperAdmin Area</a></li>
                     }
-                    else
+                    @if (User.IsInRole("Operator"))
                     {
-                        if (User.Identity.IsAuthenticated)
-                        {
-                            <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                            <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListAllMails">List All Mails</a></li>
-
-                        }
-                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-
+                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListAllMails">List All Mails</a></li>
                     }
                     @if (User.IsInRole("Manager"))
                     {
+                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListAllMails">List All Mails</a></li>
                         <li><a class="nav-link text-danger" asp-area="Manager" asp-controller="Dashboard" asp-action="Users">Manager Area-Users</a></li>
                     }
-                    <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ContactManager">Contact Manager</a></li>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ContactManager">Contact Manager</a></li>
+                    }
+                    <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                 </ul>
             </div>
         </div>
