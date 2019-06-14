@@ -45,7 +45,7 @@ namespace eMAM.Service.UserServices
 
         public IQueryable<User> GetAllUsersQuery()
         {
-            return this.context.Users.Where(u=>u.UserName!= "super@admin.user");
+            return this.context.Users.Where(u=>u.UserName!= "super@admin.user"&& u.UserName != "admin@tbi.bg");
         }
 
         public async Task<User> ToggleRoleBetweenUserManagerAsync(string userId)
@@ -57,6 +57,32 @@ namespace eMAM.Service.UserServices
 
             var allRoles = await this.context.Roles
                 .Where(u => u.Name=="Manager"||u.Name=="User")
+                .ToListAsync();
+            if (userRole[0] == allRoles[0].Name)
+            {
+                await this.userManager.RemoveFromRoleAsync(updatedUser, userRole[0]);
+                await this.userManager.AddToRoleAsync(updatedUser, allRoles[1].Name);
+            }
+            else
+            {
+                await this.userManager.RemoveFromRoleAsync(updatedUser, userRole[0]);
+                await this.userManager.AddToRoleAsync(updatedUser, allRoles[0].Name);
+            }
+
+            await this.context.SaveChangesAsync();
+
+            return updatedUser;
+        }
+
+        public async Task<User> ToggleRoleBetweenUserOperatorAsync(string userId)
+        {
+            var updatedUser = await this.context.Users
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
+            var userRole = await this.userManager.GetRolesAsync(updatedUser);
+
+            var allRoles = await this.context.Roles
+                .Where(u => u.Name == "Manager" || u.Name == "Operator")
                 .ToListAsync();
             if (userRole[0] == allRoles[0].Name)
             {

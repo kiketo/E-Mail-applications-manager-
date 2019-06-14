@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - eMAM.UI</title>
 
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css"/>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link href="~/css/toastr.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
@@ -26,9 +26,21 @@
                     }
                     else
                     {
-                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListAllMails">List All Mails</a></li>
+                        if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                            <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListAllMails">List All Mails</a></li>
+
+                        }
                         <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="About">About</a></li>
+
+                    }
+                    @if (User.IsInRole("Manager"))
+                    {
+                        <li><a class="nav-link text-danger" asp-area="Manager" asp-controller="Dashboard" asp-action="Users">Manager Area-Users</a></li>
+                    }
+                    else if (User.Identity.IsAuthenticated)
+                    {
                         <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ContactManager">Contact Manager</a></li>
                     }
                 </ul>
@@ -43,10 +55,10 @@
         </footer>
     </div>
 
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js" ></script>
-        <script src="~/js/toastr.js"></script>
-        <script src="~/js/site.js" ></script>
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.js"></script>
+    <script src="~/js/toastr.js"></script>
+    <script src="~/js/site.js"></script>
 
     @RenderSection("Scripts", required: false)
 </body>

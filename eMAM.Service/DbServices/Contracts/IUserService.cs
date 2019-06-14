@@ -16,5 +16,7 @@ namespace eMAM.Service.UserServices.Contracts
         IQueryable<User> GetAllUsersQuery();
 
         Task<User> ToggleRoleBetweenUserManagerAsync(string userId);
+
+        Task<User> ToggleRoleBetweenUserOperatorAsync(string userId);
     }
 }
