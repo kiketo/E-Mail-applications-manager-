@@ -26,21 +26,23 @@
                     }
                     @if (User.IsInRole("Operator"))
                     {
-                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListAllMails">List All Mails</a></li>
-                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListOpenEmails">List Open Mails</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListAllMails">All Mails</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListStatusNew">New Applications</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListOpenEmails">Opened Applications</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListClosedEmails">Closed Applications</a></li>
                     }
                     @if (User.IsInRole("Manager"))
                     {
-                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListAllMails">List All Mails</a></li>
-                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListOpenEmails">List Open Mails</a></li>
-                        <li><a class="nav-link text-danger" asp-area="Manager" asp-controller="Dashboard" asp-action="Users">Manager Area-Users</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListAllMails">All Mails</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListStatusNew">New Applications</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListOpenEmails">Opened Applications</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListClosedMails">Closed Applications</a></li>
+                        <li><a class="nav-link text-danger" asp-area="Manager" asp-controller="Dashboard" asp-action="Users">Users</a></li>
                     }
                     @if (User.Identity.IsAuthenticated)
                     {
                         <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ContactManager">Contact Manager</a></li>
-                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListStatusNew">New Applications</a></li>
+
                     }
                     <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                 </ul>

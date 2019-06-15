@@ -103,11 +103,12 @@ namespace eMAM.Service.DbServices
             if (isManager)
             {
                 allMails = this.context.Emails
-                                       .Where(e=>e.Status.Text=="Open")
-                                       .Include(e=>e.OpenedBy)
+                                       .Where(e => e.Status.Text == "Open")
+                                       .Include(e => e.OpenedBy)
                                        .Include(e => e.Attachments)
                                        .Include(e => e.Sender)
-                                       .Include(e => e.Status);
+                                       .Include(e => e.Status).OrderBy(e=>e.SetInCurrentStatusOn);
+                                       
             }
             else
             {
@@ -116,7 +117,31 @@ namespace eMAM.Service.DbServices
                                            .Where(e => e.WorkInProcess == true && e.WorkingBy == user || e.WorkInProcess == false)
                                            .Include(e => e.Attachments)
                                            .Include(e => e.Sender)
-                                           .Include(e => e.Status);
+                                           .Include(e => e.Status).OrderBy(e => e.SetInCurrentStatusOn);
+
+            }
+            return allMails;
+        }
+
+        public IQueryable<Email> ReadClosedMailsFromDb(bool isManager, User user)
+        {
+            IQueryable<Email> allMails;
+            if (isManager)
+            {
+                allMails = this.context.Emails
+                                       .Include(e => e.Status)
+                                       .Where(e => e.Status.Text == "Aproved" || e.Status.Text == "Rejected")
+                                       .Include(e => e.Attachments)
+                                       .Include(e => e.Sender);
+            }
+            else
+            {
+                allMails = this.context.Emails
+                                           .Include(e => e.Status)
+                                           .Where(e => e.Status.Text == "Aproved" || e.Status.Text == "Rejected")
+                                           .Where(e => e.ClosedBy == user)
+                                           .Include(e => e.Attachments)
+                                           .Include(e => e.Sender);
             }
             return allMails;
         }

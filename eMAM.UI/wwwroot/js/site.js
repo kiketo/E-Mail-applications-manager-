@@ -93,7 +93,6 @@ $('.notValid-button').click(function (ev) {
             var status = $.find(".status-" + messageId);
             status[0].innerHTML = "Invalid Application";
             //remove the preview button if not a Manager
-
             var previewButton = $('.email-button[data-target="#mails-' + messageId + '"]');
             var row = previewButton.parent();
             row.addClass('text-muted');

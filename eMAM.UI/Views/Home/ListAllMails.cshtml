@@ -9,9 +9,17 @@
 <form asp-action="ListAllMails" method="post" style="display:inline; float:right">
     <div class="form-actions no-color">
         <p>
-            <input type="checkbox" name="newFilter" value="true" checked hidden />
-            <input type="submit" value="Show only with status  Not Valid" class="btn btn-success" />
-            <a asp-action="ListAllMails" class="btn btn-outline-success">Back to Full List</a>
+            @if (Model.FilterOnlyNotValid)
+            {
+                <input type="submit" value="Not Valid Only" class="btn btn-success" disabled/>
+                <a asp-action="ListAllMails" class="btn btn-outline-success">Full List</a>
+            }
+            else
+            {
+                <input type="checkbox" name="newFilter" value="true" checked hidden />
+                <input type="submit" value="Not Valid Only" class="btn btn-outline-success" />
+                <a asp-action="" class="btn btn-success disabled" >Full List</a>
+            }
         </p>
     </div>
 </form>
@@ -57,7 +65,7 @@
                         <!-- Button to Open the Modal -->
                         @if (Model.UserIsManager)
                         {
-                            <button type="button"  class="email-button btn btn-success" data-isManager=@Model.UserIsManager data-toggle="modal" data-target="#mails-@mail.GmailIdNumber" data-url="/home/previewmail">
+                            <button type="button" class="email-button btn btn-success" data-isManager=@Model.UserIsManager data-toggle="modal" data-target="#mails-@mail.GmailIdNumber" data-url="/home/previewmail">
                                 <img src="~/images/preview.png" height="30" width="30">
                             </button>
                         }
