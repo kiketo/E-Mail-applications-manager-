@@ -272,7 +272,7 @@ $('.applicationEmail').click(function (ev) {
         },
         success: function (response) {
             $(messageId).find('.mail-bodyDB').html(response);
-           
+
             $.ajax({
                 type: "POST",
                 url: url1,
@@ -288,14 +288,14 @@ $('.applicationEmail').click(function (ev) {
                     toastr.error("Ups, Application is Not Open");
                 }
             });
-           
+
         },
         error: function () {
             toastr.error("Ups, e-mail didn't load");
         }
     });
 
-   
+
     debugger;
 });
 
@@ -305,14 +305,14 @@ $('.close-application-aprove').submit(function (ev) {
     var form = $('#__AjaxAntiForgeryForm');
     var token = $('input[name="__RequestVerificationToken"]', form).val();
     var data = $(this).serialize() + "&__RequestVerificationToken=" + token;
-   
-    
+
+
     debugger;
     $.ajax({
         type: "POST",
         url: "/home/submitncloseapplicationaproved",
         data: {
-            __RequestVerificationToken : token,
+            __RequestVerificationToken: token,
             data: data
         },
         dataType: "json",
@@ -353,7 +353,7 @@ $('.notreviewed-button').click(function (ev) {
             location.reload();
 
             toastr.warning("Application Reverted To Not Reviewed");
-            
+
         },
         error: function (res, as, okijjg) {
             toastr.error(res.responseText);
@@ -393,3 +393,52 @@ $('.rejected-button').click(function (ev) {
     debugger;
 });
 
+//preview open aplication
+$('.preview-open-manager-button').click(function (ev) {
+    var $this = $(this);
+    var messageId = $this.attr('data-messageId'); //??
+    var url = '/home/getbodydb';
+    //disable modal from closing when clicked outside the modal window?does not work?
+    $(messageId).modal({
+        backdrop: 'static',
+        keyboard: false
+    })
+    var form = $('#__AjaxAntiForgeryForm');
+    var token = $('input[name="__RequestVerificationToken"]', form).val();
+
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: {
+            __RequestVerificationToken: token,
+            GmailIdNumber: messageId
+        },
+        success: function () {
+            toastr.warning("Application Rejected");
+            //change the status in the DOM
+            var status = $.find(".open-status-" + messageId);
+            status[0].innerHTML = "Rejected";
+            location.reload();
+        },
+        error: function (res, as, okijjg) {
+            toastr.error(res.responseText);
+        }
+    });
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: {
+            __RequestVerificationToken: token,
+            messageId: messageRequestData
+        },
+        success: function (response) {
+            $(messageId).find('.mail-bodyDB').html(response);
+            toastr.success("Preview");
+
+        },
+        error: function (res) {
+            toastr.error(res.responseText);
+        }
+    });
+    debugger;
+});

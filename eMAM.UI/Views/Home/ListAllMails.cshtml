@@ -130,21 +130,13 @@
             }
             else
             {
-                <tr href="" style="cursor:pointer" class="applicationEmail" data-target="#mails-@mail.GmailIdNumber" data-url="/home/GetBodyDB" data-toggle="modal" data-backdrop="static" data-keyboard="false">
-                    <td>@mail.Id</td>
-                    <td hidden>@mail.GmailIdNumber</td>
-                    <td>@mail.DateReceived</td>
-                    <td>@mail.Sender.SenderName &lt@(mail.Sender.SenderEmail)&gt</td>
-                    <td>@mail.Subject</td>
-                    <td>@mail.Status.Text</td>
+                @if (mail.UserIsManager && mail.Status.Text != "New")
+                {
+                    
 
-
-                    <td>
-                        @if (mail.AreAttachments)
-                        {<img src="~/images/attachment.png" height="42" width="42">}
-                    </td>
-                    @*<td>LIST new mails ???</td>*@
-
+                }
+                <tr>
+                    
                 </tr>
 
                 <tr>
@@ -218,3 +210,24 @@
    class="btn btn-success @nextDisabled">
     Next
 </a>
+
+
+
+
+
+@*<tr href="" style="cursor:pointer" class="applicationEmail" data-target="#mails-@mail.GmailIdNumber" data-url="/home/GetBodyDB" data-toggle="modal" data-backdrop="static" data-keyboard="false">
+    <td>@mail.Id</td>
+    <td hidden>@mail.GmailIdNumber</td>
+    <td>@mail.DateReceived</td>
+    <td>@mail.Sender.SenderName &lt@(mail.Sender.SenderEmail)&gt</td>
+    <td>@mail.Subject</td>
+    <td>@mail.Status.Text</td>
+
+
+    <td>
+        @if (mail.AreAttachments)
+        {<img src="~/images/attachment.png" height="42" width="42">}
+    </td>
+    @*<td>LIST new mails ???</td>*@
+
+</tr>*@

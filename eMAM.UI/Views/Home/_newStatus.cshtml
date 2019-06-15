@@ -1,0 +1,72 @@
+﻿@model EmailViewModel
+
+<tr href="" style="cursor:pointer" class="applicationEmail open-app" data-target="#mails-@Model.GmailIdNumber" data-url="/home/getbodydb" data-toggle="modal" data-backdrop="static" data-keyboard="false">
+
+    <td>@Model.DateReceived</td>
+    <td>@Model.Sender.SenderName &lt@(Model.Sender.SenderEmail)&gt</td>
+    <td>@Model.Subject</td>
+    <td class="open-status-@Model.GmailIdNumber">@Model.Status.Text</td>
+
+    <td>
+        @if (Model.AreAttachments)
+        {<img src="~/images/attachment.png" height="42" width="42">}
+    </td>
+
+
+</tr>
+
+<tr>
+    <!-- The Modal -->
+    <td class="modal fade bootstrap-modal open-app" id="mails-@Model.GmailIdNumber" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header" style="cursor:default">
+                    <h6 class="modal-title">@Model.Sender.SenderName, @Model.Sender.SenderEmail</h6>
+                    <button type="button" class="close close-button-open" data-dismiss="modal" data-target="@Model.GmailIdNumber">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body " data-backdrop="true" style="cursor:default">
+                    <div class="row">
+                        <div class="col-sm-9" style="background-color:lavender;">
+                            <p><strong>Subject: </strong><r>@Model.Subject</r></p>
+                            <p><strong>Received At: </strong> <r>@Model.DateReceived</r></p>
+                            <p>
+                                <r style="font-weight:bold">@Model.Attachments.Count</r> attachment/s, total size:
+                                <r style="font-weight:bold">@Model.Attachments.Sum(x => x.FileSizeInMb).ToString("0.00")</r> MB
+                            </p>
+                            <div class="mail-bodyDB" style="width: 100%; height:300px; overflow-y:scroll;">
+                                <img src="/images/ajax-loader.gif" class="loading-indicator" style="height:150px" />
+                            </div>
+
+                        </div>
+                        <div class="col-sm-3" style="background-color:antiquewhite;">
+
+                            <form id="formid" class="close-application-aprove">
+                                <input type="hidden" name="gmailid" value="@Model.GmailIdNumber" id="gmailid" />
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <label>Personal Identification Number:</label>
+                                <input asp-for="@Model.CustomerEGN" placeholder="Personal Identification Number" name="egnid" id="egnid" />
+                                <span asp-validation-for="@Model.CustomerEGN" class="text-danger"></span>
+                                <label>Phone Number:</label>
+                                <input asp-for="@Model.CustomerPhoneNumber" placeholder="Phone Number" id="phoneid" name="phoneid" />
+                                <span asp-validation-for="@Model.CustomerPhoneNumber" class="text-danger"></span>
+
+                                <button type="submit" style="width:160px" class="btn btn-success">Submit&Close</button>
+                            </form>
+                            <br />
+
+                            <div style="">
+                                <button type="button" data-dismiss="modal" style="width:160px" class="btn btn-danger rejected-button" data-messageId="@Model.GmailIdNumber" data-url="/home/SubmitNCloseApplicationRejected">Reject&Close</button>
+                            </div>
+                            <br />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </td>
+</tr>
