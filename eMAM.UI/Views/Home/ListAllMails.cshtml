@@ -206,7 +206,7 @@
 </a>
 <a asp-action="ListAllMails"
    asp-route-pageNumber="@(Model.PageIndex + 1)"
-   asp-route-currentFilter="Model.FilterOnlyNotValid"
+   asp-route-currentFilter="@Model.FilterOnlyNotValid"
    class="btn btn-success @nextDisabled">
     Next
 </a>

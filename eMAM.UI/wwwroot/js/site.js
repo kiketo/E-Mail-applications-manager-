@@ -101,7 +101,7 @@ $('.notValid-button').click(function (ev) {
             if (!isManager) {
                 previewButton.remove();
             }
-            location.reload();
+            //location.reload();
         },
         error: function (res, as, okijjg) {
             toastr.error(res.responseText);
@@ -128,7 +128,7 @@ $('.close-button').click(function (ev) {
             toastr.warning("Mail Not Previewed");
             var row = $this.parent();
             row.removeClass('text-muted');
-            location.reload();
+            //location.reload();
         },
         error: function (res, as, okijjg) {
             toastr.error(res.responseText);
