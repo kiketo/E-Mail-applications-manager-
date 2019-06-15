@@ -111,7 +111,7 @@ namespace eMAM.UI.Controllers
 
         [AutoValidateAntiforgeryToken]
         [Authorize]
-        public async Task<IActionResult> ListAllMails(int? pageNumber, bool currentFilter=false, bool newFilter=false)
+        public async Task<IActionResult> ListAllMails(int? pageNumber, bool currentFilter = false, bool newFilter = false)
         {
             if (newFilter)
             {
@@ -141,8 +141,8 @@ namespace eMAM.UI.Controllers
                 HasPreviousPage = page.HasPreviousPage,
                 PageIndex = page.PageIndex,
                 TotalPages = page.TotalPages,
-                UserIsManager=isManager,
-                FilterOnlyNotValid=newFilter
+                UserIsManager = isManager,
+                FilterOnlyNotValid = newFilter
             };
 
             foreach (var mail in page)
@@ -183,7 +183,7 @@ namespace eMAM.UI.Controllers
 
             return View(model);
         }
-    
+
 
         public async Task<IActionResult> ListAllMailsNotValid(int? pageNumber)
         {
@@ -235,7 +235,7 @@ namespace eMAM.UI.Controllers
             var mailDTO = await this.gmailApiService.DownloadBodyOfMailAsync(messageId, userData.AccessToken);
             var mail = await this.emailService.GetEmailByGmailIdAsync(messageId);
             var validStatus = await this.statusService.GetStatusByName("New");
-            await this.auditLogService.Log(user.UserName, "status change", messageId, validStatus.Text, mail.Status.Text);
+           // await this.auditLogService.Log(user.UserName, "status change", messageId, validStatus.Text, mail.Status.Text);
             mail.Status = validStatus;
             mail.Body = mailDTO.BodyAsString;
             mail.WorkInProcess = false;
@@ -305,8 +305,8 @@ namespace eMAM.UI.Controllers
             return View(managers);
         }
 
-       
-        
+
+
         [Authorize]
         public async Task<IActionResult> ListStatusNew(int? pageNumber) // Accessible to all logged users and managers to see
         {
@@ -367,13 +367,21 @@ namespace eMAM.UI.Controllers
         }
 
         //status open, work in process
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        [HttpPost]
         public async Task<IActionResult> ChangeStatusToOpen(string messageId)
         {
+            var email = await this.emailService.GetEmailByGmailIdAsync(messageId);
+            var user = await this.userManager.GetUserAsync(User);
+            var newStatus = await this.statusService.GetStatusAsync("Open");
+            //await this.auditLogService.Log(user.UserName, "status change", messageId, newStatus.Text, email.Status.Text);
+            
             var mail = await emailService.GetEmailByGmailIdAsync(messageId);
-            mail.Status = await this.statusService.GetStatusAsync("Open");
+            mail.Status = newStatus;
             mail.WorkInProcess = true;
-            mail.WorkingBy = await this.userManager.GetUserAsync(User);
-            mail.OpenedBy = mail.WorkingBy;
+            mail.WorkingBy = user;
+            mail.OpenedBy = user;
             mail.SetInCurrentStatusOn = DateTime.Now;
             await this.emailService.UpdateAsync(mail);
             return Ok();
@@ -421,7 +429,7 @@ namespace eMAM.UI.Controllers
         }
 
 
-        [Authorize(Roles ="Manager")]
+        [Authorize(Roles = "Manager")]
         [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> ManagerStatusChangeNotReviewed(string messageId)
@@ -441,24 +449,28 @@ namespace eMAM.UI.Controllers
             return Ok();
         }
 
-        [Authorize(Roles = "Manager")]
-        [ValidateAntiForgeryToken]
-        [HttpPost]
-        public async Task<IActionResult> ManagerStatusChangeNew(string messageId)
-        {
-            var email = await this.emailService.GetEmailByGmailIdAsync(messageId);
-            var user = await this.userManager.GetUserAsync(User);
+        //[Authorize(Roles = "Manager, Operator")]
+        //[ValidateAntiForgeryToken]
+        //[HttpPost]
+        //public async Task<IActionResult> StatusChangeNew(string messageId) // manager open new application - status change
+        //{
+        //    var email = await this.emailService.GetEmailByGmailIdAsync(messageId);
+        //    var user = await this.userManager.GetUserAsync(User);
 
-            var newStatus = await this.statusService.GetStatusAsync("New");
+        //    var newStatus = await this.statusService.GetStatusAsync("New");
 
-            await this.auditLogService.Log(user.UserName, "status change", email.GmailIdNumber, newStatus.Text, email.Status.Text);
-            email.Status = newStatus;
-            email.ClosedBy = null;
-            email.WorkingBy = null;
-            email.WorkInProcess = false;
-            await this.emailService.UpdateAsync(email);
-            return Ok();
-        }
+        //    await this.auditLogService.Log(user.UserName, "status change", email.GmailIdNumber, newStatus.Text, email.Status.Text);
+        //    email.Status = newStatus;
+        //    email.ClosedBy = null;
+        //    email.WorkingBy = user;
+        //    email.WorkInProcess = true;
+        //    email.OpenedBy = user;
+        //    await this.emailService.UpdateAsync(email);
+        //    return Ok();
+        //}
+
+
+
 
         public IActionResult Error()
         {
