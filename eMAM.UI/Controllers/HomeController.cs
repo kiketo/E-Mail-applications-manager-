@@ -31,14 +31,14 @@ namespace eMAM.UI.Controllers
         private readonly ILogger logger;
         private readonly ICustomerService customerService;
 
-        public HomeController(UserManager<User> userManager, 
-            IGmailApiService gmailApiService, 
-            IGmailUserDataService gmailUserDataService, 
-            IEmailService emailService, 
-            IViewModelMapper<Email, EmailViewModel> emailViewModelMapper, 
-            IUserService userService, 
-            IAuditLogService auditLogService, 
-            IStatusService statusService, 
+        public HomeController(UserManager<User> userManager,
+            IGmailApiService gmailApiService,
+            IGmailUserDataService gmailUserDataService,
+            IEmailService emailService,
+            IViewModelMapper<Email, EmailViewModel> emailViewModelMapper,
+            IUserService userService,
+            IAuditLogService auditLogService,
+            IStatusService statusService,
             ILogger<User> logger,
             ICustomerService customerService)
         {
@@ -56,18 +56,27 @@ namespace eMAM.UI.Controllers
 
 
 
-        [Authorize]
+        [Authorize] // MAnager & Operator
         public async Task<IActionResult> Index()
         {
+            var isManager = User.IsInRole("Manager");
+            var user = await this.userManager.GetUserAsync(User);
+            var mails = this.emailService.ReadAllMailsFromDb(isManager, user);
             var model = new HomeViewModel();
-            var listEmails = await this.emailService.ReadAllMailsFromDb(true, await this.userManager.GetUserAsync(User)).ToListAsync();
+            List<Email> listEmails = await this.emailService.ReadAllMailsFromDb(true, user).ToListAsync();
             var modelEmails = listEmails.Select(x => emailViewModelMapper.MapFrom(x));
             model.NotReviewed = modelEmails.Where(s => s.Status.Text == "Not Reviewed").OrderByDescending(x => x.DateReceived).Take(5).ToList();
             model.New = modelEmails.Where(s => s.Status.Text == "New").OrderByDescending(x => x.DateReceived).Take(5).ToList();
+
+            if (!User.IsInRole("Manager"))
+            {
+                model.Open = modelEmails.Where(s => s.Status.Text == "Open").Where(u => u.WorkingBy == user).OrderByDescending(x => x.DateReceived).Take(5).ToList();
+                model.Closed = modelEmails.Where(s => s.Status.Text == "Aproved" || s.Status.Text == "Rejected").OrderBy(x => x.DateReceived).Take(5).ToList();
+                model.UserIsManager = isManager;
+                return View(model);
+            }
             model.Open = modelEmails.Where(s => s.Status.Text == "Open").OrderByDescending(x => x.DateReceived).Take(5).ToList();
-            model.Closed = modelEmails.Where(s => s.Status.Text == "Open").OrderBy(x => x.DateReceived).Take(5).ToList();
-           model.UserIsManager = User.IsInRole("Manager");
-            
+            model.Closed = modelEmails.Where(s => s.Status.Text == "Aproved" || s.Status.Text == "Rejected").OrderBy(x => x.DateReceived).Take(5).ToList();
             return View(model);
         }
 
@@ -88,7 +97,36 @@ namespace eMAM.UI.Controllers
                 HasPreviousPage = page.HasPreviousPage,
                 PageIndex = page.PageIndex,
                 TotalPages = page.TotalPages,
-                UserIsManager=isManager
+                UserIsManager = isManager
+            };
+
+            foreach (var mail in page)
+            {
+                var element = this.emailViewModelMapper.MapFrom(mail);
+                model.SearchResults.Add(element);
+            }
+
+            return View(model);
+        }
+
+        [AutoValidateAntiforgeryToken]
+        [Authorize]
+        public async Task<IActionResult> ListAllMails2(int? pageNumber)
+        {
+            var pageSize = 10;
+            var user = await this.userManager.GetUserAsync(User);
+            var isManager = User.IsInRole("Manager");
+            var mails = this.emailService.ReadAllMailsFromDb(isManager, user);
+            var page = await PaginatedList<Email>.CreateAsync(mails, pageNumber ?? 1, pageSize);
+            page.Reverse();
+
+            EmailViewModel model = new EmailViewModel
+            {
+                HasNextPage = page.HasNextPage,
+                HasPreviousPage = page.HasPreviousPage,
+                PageIndex = page.PageIndex,
+                TotalPages = page.TotalPages,
+                UserIsManager = isManager
             };
 
             foreach (var mail in page)
@@ -133,7 +171,7 @@ namespace eMAM.UI.Controllers
         public async Task<IActionResult> PreviewMail(string messageId)
         {
             var user = await this.userManager.GetUserAsync(User);
-          //  await this.emailService.WorkInProcessAsync(user, messageId);//TODO stops PREVIEW
+            //  await this.emailService.WorkInProcessAsync(user, messageId);//TODO stops PREVIEW
             var userData = await this.gmailUserDataService.GetAsync();
             var mailDTO = await this.gmailApiService.DownloadBodyOfMailAsync(messageId, userData.AccessToken);
             var body = mailDTO.BodyAsString;
@@ -151,6 +189,7 @@ namespace eMAM.UI.Controllers
             var mailDTO = await this.gmailApiService.DownloadBodyOfMailAsync(messageId, userData.AccessToken);
             var mail = await this.emailService.GetEmailByGmailIdAsync(messageId);
             var validStatus = await this.statusService.GetStatusByName("New");
+            await this.auditLogService.Log(user.UserName, "status change", messageId, validStatus.Text, mail.Status.Text);
             mail.Status = validStatus;
             mail.Body = mailDTO.BodyAsString;
             mail.WorkInProcess = false;
@@ -220,32 +259,34 @@ namespace eMAM.UI.Controllers
             return View(managers);
         }
 
-        // [Authorize(Roles = "Manager, Operator")]
+       
+        
+        [Authorize]
         public async Task<IActionResult> ListStatusNew(int? pageNumber) // Accessible to all logged users and managers to see
         {
-  
             var pageSize = 10;
             var isManager = User.IsInRole("Manager");
             var user = await this.userManager.GetUserAsync(User);
-            var mailStatusNewLst = this.emailService.ReadAllMailsFromDb(isManager, user).Where(e=>e.Status.Text == "New");
+            var mailStatusNewLst = this.emailService.ReadAllMailsFromDb(isManager, user).Where(e => e.Status.Text == "New");
             var page = await PaginatedList<Email>.CreateAsync(mailStatusNewLst, pageNumber ?? 1, pageSize);
+            page.Reverse();
 
             EmailViewModel model = new EmailViewModel
             {
                 HasNextPage = page.HasNextPage,
                 HasPreviousPage = page.HasPreviousPage,
                 PageIndex = page.PageIndex,
-                TotalPages = page.TotalPages
+                TotalPages = page.TotalPages,
+                UserIsManager = isManager
             };
-
             foreach (var mail in page)
             {
                 var element = this.emailViewModelMapper.MapFrom(mail);
                 model.SearchResults.Add(element);
             }
-
-            return Ok();
+            return View(model);
         }
+
 
         //[HttpPost]
         //public async Task<IActionResult> OpenApplication(string messageId) // Accessible to all logged users and managers to see New->Open
@@ -279,18 +320,9 @@ namespace eMAM.UI.Controllers
             return Json(body);
         }
 
-        //status open, work in process
-        public async Task<IActionResult> ChangeStatusToOpen(string messageId)
-        {
-            var mail = await emailService.GetEmailByGmailIdAsync(messageId);
-            mail.Status = await this.statusService.GetStatusAsync("Open");
-            mail.WorkInProcess = true;
-            await this.emailService.UpdateAsync(mail);
-            return Ok();
-        }
-
+        [ValidateAntiForgeryToken]
         [HttpPost]
-        public async Task<IActionResult> SubmitNCloseApplication(EmailViewModel model)
+        public async Task<IActionResult> SubmitNCloseApplicationAproved(EmailViewModel model)
         {
 
             if (ModelState.IsValid)
@@ -307,17 +339,68 @@ namespace eMAM.UI.Controllers
                     customer = await this.customerService.GetCustomerByEGNAsync(model.CustomerEGN);
                     customer.Emails.Add(email);
                 }
-                email.Status = await this.statusService.GetStatusAsync("Close");
+                email.Status = await this.statusService.GetStatusAsync("Aproved");
+                email.ClosedBy = await this.userManager.GetUserAsync(User);
                 email.WorkInProcess = false;
                 await this.emailService.UpdateAsync(email);
                 return Ok();
             }
 
             return BadRequest();
-
-
         }
 
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public async Task<IActionResult> SubmitNCloseApplicationRejected(EmailViewModel model)
+        {
+            var email = await this.emailService.GetEmailByGmailIdAsync(model.GmailIdNumber);
+
+            email.Status = await this.statusService.GetStatusAsync("Rejected");
+            email.ClosedBy = await this.userManager.GetUserAsync(User);
+            email.WorkInProcess = false;
+            await this.emailService.UpdateAsync(email);
+            return Ok();
+        }
+
+
+        [Authorize(Roles ="Manager")]
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public async Task<IActionResult> ManagerStatusChangeNotReviewed(string messageId)
+        {
+            var email = await this.emailService.GetEmailByGmailIdAsync(messageId);
+            var user = await this.userManager.GetUserAsync(User);
+
+            var newStatus = await this.statusService.GetInitialStatusAsync();
+
+            await this.auditLogService.Log(user.UserName, "status change", email.GmailIdNumber, newStatus.Text, email.Status.Text);
+            email.Status = newStatus;
+            email.ClosedBy = null;
+            email.WorkingBy = null;
+            email.WorkInProcess = false;
+            email.Body = null;
+            await this.emailService.UpdateAsync(email);
+            return Ok();
+        }
+
+        [Authorize(Roles = "Manager")]
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public async Task<IActionResult> ManagerStatusChangeNew(string messageId)
+        {
+            var email = await this.emailService.GetEmailByGmailIdAsync(messageId);
+            var user = await this.userManager.GetUserAsync(User);
+
+            var newStatus = await this.statusService.GetStatusAsync("New");
+
+            await this.auditLogService.Log(user.UserName, "status change", email.GmailIdNumber, newStatus.Text, email.Status.Text);
+            email.Status = newStatus;
+            email.ClosedBy = null;
+            email.WorkingBy = null;
+            email.WorkInProcess = false;
+            await this.emailService.UpdateAsync(email);
+            return Ok();
+        }
 
         public IActionResult Error()
         {

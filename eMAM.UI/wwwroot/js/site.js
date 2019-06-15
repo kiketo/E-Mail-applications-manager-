@@ -183,6 +183,38 @@ function userManagerToggle(button) {
     });
 
 }
+//revert-invalid to not reviewed
+
+$('.revert-not-reviewed-button').click(function (ev) {
+    var $this = $(this);
+    var messageId = $this.attr('data-messageId');
+    var url = $this.attr('data-url');
+
+    var form = $('#__AjaxAntiForgeryForm');
+    var token = $('input[name="__RequestVerificationToken"]', form).val();
+
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: {
+            __RequestVerificationToken: token,
+            messageId: messageId
+        },
+        success: function (res, as, okijjg) {
+            location.reload();
+            var status = $.find(".status-" + messageId);
+            status[0].innerHTML = "Invalid Application";
+            toastr.success("Mail Status Reverted");
+        },
+        error: function (res, as, okijjg) {
+            toastr.error(res.responseText);
+        }
+    });
+});
+
+
+
+
 
 //$('.btn-outline-success').click(function (ev) {
 //    console.log(ev.target);
@@ -222,6 +254,7 @@ function userManagerToggle(button) {
 
 //open email new->open
 $('.applicationEmail').click(function (ev) {
+    debugger;
     var $this = $(this);
     var messageId = $this.attr('data-target');
     var messageRequestData = messageId.replace("#mails-", "");
@@ -243,105 +276,107 @@ $('.applicationEmail').click(function (ev) {
             messageId: messageRequestData
         },
         success: function (response) {
-            $(messageId).find('.mail-bodyDB').html(response)
+            $(messageId).find('.mail-bodyDB').html(response);
+            toastr.success("Application is Open");
         },
         error: function (res) {
             toastr.error("Ups, something went wrong");
         }
     });
-
+    debugger;
 });
 
-
-$('.close-application').click(function (ev) {
+//submit and approve form
+$('.close-application-aprove').submit(function (ev) {
+    // ev.preventDefault;
+    var form = $('#__AjaxAntiForgeryForm');
+    var token = $('input[name="__RequestVerificationToken"]', form).val();
+    var data = $(this).serialize() + "&__RequestVerificationToken=" + token;
+   
+    
+    debugger;
     $.ajax({
         type: "POST",
-        url: "/home/submitncloseapplication",
+        url: "/home/submitncloseapplicationaproved",
         data: {
-            GmailIdNumber: $("#gmailid").val(),
-            CustomerEGN: $("#egn").val(),
-            CustomerPhoneNumber: $("#phone").val()
+            __RequestVerificationToken : token,
+            data: data
         },
-        dataType: "json"
-
+        dataType: "json",
+        success: function (response) {
+            toastr.success("Application was Aproved");
+            //change the status in the DOM
+            var status = $.find(".open-status-" + messageId);
+            status[0].innerHTML = "Aproved";
+            location.reload();
+        },
+        error: function (res) {
+            toastr.error(res.responseText);
+        }
     })
-        .done(function (res, as, okijjg) {
-            toastr.success("Application was successfully closed!");
-            location.pathname("/home/index");
-        })
-        .fail(function (jqxhr, status, error) {
-            console.log("Something went wrong")
-        })
+    debugger;
+});
+
+//revert back to not reviewed
+$('.notreviewed-button').click(function (ev) {
+    var $this = $(this);
+    var messageId = $this.attr('data-messageId');
+    var url = $this.attr('data-url');
+
+    var form = $('#__AjaxAntiForgeryForm');
+    var token = $('input[name="__RequestVerificationToken"]', form).val();
+
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: {
+            __RequestVerificationToken: token,
+            GmailIdNumber: messageId
+        },
+        success: function () {
+            //change the status in the DOM
+            var status = $.find(".open-status-" + messageId);
+            status[0].innerHTML = "Not Reviewed";
+            location.reload();
+
+            toastr.warning("Application Reverted To Not Reviewed");
+            
+        },
+        error: function (res, as, okijjg) {
+            toastr.error(res.responseText);
+        }
+    });
+    debugger;
 });
 
 
+//reject application
+$('.rejected-button').click(function (ev) {
+    var $this = $(this);
+    var messageId = $this.attr('data-messageId');
+    var url = $this.attr('data-url');
 
-//show body of email in open
-//$('.applicationEmail').click(function (ev) {
-//    var $this = $(this);
-//    var messageId = $this.attr('data-target').replace("#mails-", "");
-//    var url = $this.attr('data-url');
+    var form = $('#__AjaxAntiForgeryForm');
+    var token = $('input[name="__RequestVerificationToken"]', form).val();
 
-//    $.post(url, { messageId: messageId }, function (response) {
-//        $(messageId).find('.mail-bodyDB').html(response);
-//    });
+    $.ajax({
+        type: "POST",
+        url: url,
+        data: {
+            __RequestVerificationToken: token,
+            GmailIdNumber: messageId
+        },
+        success: function () {
+            toastr.warning("Application Rejected");
+            //change the status in the DOM
+            var status = $.find(".open-status-" + messageId);
+            status[0].innerHTML = "Rejected";
+            location.reload();
+        },
+        error: function (res, as, okijjg) {
+            toastr.error(res.responseText);
+        }
+    });
+    debugger;
+});
 
-//    $.ajax({
-//        type: "GET",
-//        url: url,
-//        data: { messageId: messageRequestData },
-//        success: $.post(url, { emailId: messageRequestData }, function (response) {
-//            $(emailId).find('.mail-bodyDB').html(response)
-//        })
-//    });
-//});
-
-//rq for form validation
-//$('.openApplicationForm').validate({
-//    debug: true,
-//    rules: {
-//        FirstName: {
-//            required: true,
-//            minlength: 2
-//        },
-//        LastName: {
-//            required: true,
-//            minlength: 2
-//        },
-//        CustomerEGN: {
-//            required: true
-//        },
-//        CustomerPhoneNumber: {
-//            required: false,
-//            minlength: 10,
-//            number: true
-//        },
-//        Emails: {
-//            required: true
-
-//        },
-//    },
-//    messages: {
-//        FirstName: {
-//            required: "First name is required",
-//        },
-//        LastName: {
-//            required: "Last name is required",
-//        },
-//        CustomerEGN: {
-//            required: "Identification number is required e.g EGN, Passport Number"
-//        },
-//        CustomerPhoneNumber: {
-//            required: false,
-//            number: "Only digits are allowed"
-//        },
-//        Emails: {
-//            required: true
-
-//        },
-//    },
-//    onkeyup: false,
-//    onblur: true,
-//    focusCleanup: true
-
-//});

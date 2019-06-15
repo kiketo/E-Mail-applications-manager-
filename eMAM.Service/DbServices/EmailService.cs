@@ -89,7 +89,7 @@ namespace eMAM.Service.DbServices
             else
             {
                 allMails = this.context.Emails
-                                           .Where(e => e.WorkInProcess == true && e.WorkingBy == user|| e.WorkInProcess == false)
+                                           .Where(e => e.WorkInProcess == true && e.WorkingBy == user || e.WorkInProcess == false)
                                            .Include(e => e.Attachments)
                                            .Include(e => e.Sender)
                                            .Include(e => e.Status);
@@ -135,6 +135,18 @@ namespace eMAM.Service.DbServices
             return mail;
         }
 
+        public IQueryable<Email> ReadClosedByUserEmailsDb(User user)
+        {
+            IQueryable<Email> allMails;
 
+                allMails = this.context.Emails
+                                           .Where(e => e.ClosedBy == user || e.WorkInProcess == false)
+                                           .Where(s=>s.Status.Text == "Aproved" || s.Status.Text == "Rejected")
+                                           .Include(e => e.Attachments)
+                                           .Include(e => e.Sender)
+                                           .Include(e => e.Status);
+            
+            return allMails;
+        }
     }
 }

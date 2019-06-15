@@ -14,10 +14,10 @@ namespace eMAM.Data.Models
 
         public string ActionType { get; set; } //TODO?????
 
-        public User User { get; set; }
+        public string UserName { get; set; }
 
-        public Status OldStatus { get; set; } //TODO
+        public string OldStatus { get; set; } //TODO
 
-        public Status NewStatus { get; set; } //TODO
+        public string NewStatus { get; set; } //TODO
     }
 }

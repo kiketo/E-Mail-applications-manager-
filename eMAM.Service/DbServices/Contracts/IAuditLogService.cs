@@ -8,6 +8,6 @@ namespace eMAM.Service.DbServices.Contracts
 {
     public interface IAuditLogService
     {
-        Task Log(string userName, string actionType, Status newStatus, Status oldStatus);
+        Task Log(string user, string actionType, string gmailId, string newStatus, string oldStatus);
     }
 }

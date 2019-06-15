@@ -18,12 +18,13 @@ namespace eMAM.Service.DbServices
             this.context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
-        public async Task Log(string userName, string actionType, Status newStatus, Status oldStatus  )
+        public async Task Log(string user, string actionType, string gmailId, string newStatus, string oldStatus  )
         {
-            var user = await this.context.Users.FirstOrDefaultAsync(u => u.UserName == userName);
+            
             var auditLog = new AuditLog()
             {
-                User = user,
+                UserName = user,
+                GmailId = gmailId,
                 ActionType = actionType,
                 NewStatus = newStatus,
                 OldStatus = oldStatus,
@@ -31,6 +32,7 @@ namespace eMAM.Service.DbServices
             };
             await this.context.AuditLogs.AddAsync(auditLog);
             await this.context.SaveChangesAsync();
+            return;
         }
 
 

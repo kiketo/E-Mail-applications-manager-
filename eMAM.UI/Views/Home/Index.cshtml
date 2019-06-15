@@ -3,7 +3,7 @@
     ViewData["Title"] = "Home Page";
 }
 
-<p>Last 5 Opened by me</p>
+<p>Last 5 Opened</p>
 
 <table class="table-hover">
     <thead class="thead-dark" style="background-color:cadetblue">
@@ -18,7 +18,7 @@
 
         @foreach (var mail in Model.Open)
         {
-            <partial name="_email" model="mail" />
+            <partial name="_emailOpen" model="mail" />
         }
 
     </tbody>
@@ -40,7 +40,7 @@
 
         @foreach (var mail in Model.New)
         {
-            <partial name="_email" model="mail" />
+            <partial name="_emailOpen" model="mail" />
         }
 
     </tbody>
@@ -60,29 +60,32 @@
 
         @foreach (var mail in Model.NotReviewed)
         {
-            <partial name="_email" model="mail" />
+            <partial name="_previewEmail" model="mail" />
         }
 
     </tbody>
 </table>
+@if (Model.UserIsManager)
+{
+    <p>Last 5 with Closed</p>
+    <table class="table-hover">
+        <thead class="thead-dark" style="background-color:cadetblue">
+            <tr>
+                <th>Date/Time</th>
+                <th>Sender</th>
+                <th>Subject</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
 
-<p>Last 5 with Closed by me</p>
-<table class="table-hover">
-    <thead class="thead-dark" style="background-color:cadetblue">
-        <tr>
-            <th>Date/Time</th>
-            <th>Sender</th>
-            <th>Subject</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody>
+            @foreach (var mail in Model.Closed)
+            {
+                <partial name="_emailHome" model="mail" />
+            }
 
-        @foreach (var mail in Model.Closed)
-        {
-            <partial name="_email" model="mail" />
-        }
+        </tbody>
+    </table>
+}
 
-    </tbody>
-</table>
 
