@@ -82,7 +82,7 @@ namespace eMAM.UI.Controllers
 
         [AutoValidateAntiforgeryToken]
         [Authorize]
-        public async Task<IActionResult> ListAllMails(int? pageNumber)
+        public async Task<IActionResult> ListAllMails2(int? pageNumber)
         {
             var pageSize = 10;
             var user = await this.userManager.GetUserAsync(User);

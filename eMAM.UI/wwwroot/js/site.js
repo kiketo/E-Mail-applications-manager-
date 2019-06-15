@@ -254,6 +254,7 @@ $('.applicationEmail').click(function (ev) {
     var messageId = $this.attr('data-target');
     var messageRequestData = messageId.replace("#mails-", "");
     var url = '/home/getbodydb';
+    var url1 = '/home/changestatustoopen';
     //disable modal from closing when clicked outside the modal window?does not work?
     $(messageId).modal({
         backdrop: 'static',
@@ -272,12 +273,30 @@ $('.applicationEmail').click(function (ev) {
         },
         success: function (response) {
             $(messageId).find('.mail-bodyDB').html(response);
-            toastr.success("Application is Open");
+           
+            $.ajax({
+                type: "POST",
+                url: url1,
+                data: {
+                    __RequestVerificationToken: token,
+                    messageId: messageRequestData
+                },
+                success: function (response) {
+                    toastr.success("Application is Open");
+
+                },
+                error: function (res) {
+                    toastr.error("Ups, Application is Not Open");
+                }
+            });
+           
         },
-        error: function (res) {
-            toastr.error("Ups, something went wrong");
+        error: function () {
+            toastr.error("Ups, e-mail didn't load");
         }
     });
+
+   
     debugger;
 });
 
