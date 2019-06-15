@@ -255,6 +255,7 @@ namespace eMAM.UI.Controllers
             await emailService.UpdateAsync(mail);
 
             var model = this.emailViewModelMapper.MapFrom(mail);
+            model.UserIsManager = User.IsInRole("Manager");
 
             //await emailService.ValidateEmail(mail, mailDTO.BodyAsString, validStatus,user);
             //await emailService.WorkNotInProcessAsync(messageId);
@@ -277,7 +278,10 @@ namespace eMAM.UI.Controllers
             mail.SetInTerminalStatusOn = DateTime.Now;
             await emailService.UpdateAsync(mail);
             //await emailService.WorkNotInProcessAsync(messageId);
-            return Ok();
+            var model = this.emailViewModelMapper.MapFrom(mail);
+            model.UserIsManager = User.IsInRole("Manager");
+
+            return PartialView("_AllEmailsPartial", model);
         }
 
         [AutoValidateAntiforgeryToken]
