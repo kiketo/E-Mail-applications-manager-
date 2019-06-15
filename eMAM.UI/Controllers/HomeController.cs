@@ -254,9 +254,11 @@ namespace eMAM.UI.Controllers
             mail.WorkInProcess = false;
             await emailService.UpdateAsync(mail);
 
+            var model = this.emailViewModelMapper.MapFrom(mail);
+
             //await emailService.ValidateEmail(mail, mailDTO.BodyAsString, validStatus,user);
             //await emailService.WorkNotInProcessAsync(messageId);
-            return Ok();
+            return PartialView("_AllEmailsPartial", model);
         }
 
         [AutoValidateAntiforgeryToken]

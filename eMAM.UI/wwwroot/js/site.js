@@ -5,12 +5,6 @@ $('.email-button').click(function (ev) {
     var messageRequestData = messageId.replace("#mails-", "");
     var url = $this.attr('data-url');
 
-    //disable modal from closing when clicked outside the modal window
-    //$(messageId).modal({
-    //    backdrop: 'static',
-    //    keyboard: false
-    //})
-
     var form = $('#__AjaxAntiForgeryForm');
     var token = $('input[name="__RequestVerificationToken"]', form).val();
 
@@ -39,6 +33,7 @@ $('.emailButton')
 //validate e-mail & close
 $('.validation-button').click(function (ev) {
     var $this = $(this);
+    debugger;
     var messageId = $this.attr('data-messageId');
     var url = $this.attr('data-url');
 
@@ -48,22 +43,15 @@ $('.validation-button').click(function (ev) {
     $.ajax({
         type: "POST",
         url: url,
+        dataType: "html",
         data: {
             __RequestVerificationToken: token,
             messageId: messageId
         },
-        success: function () {
+        success: function (data) {
             toastr.success("Mail Validated");
-            var status = $.find(".status-" + messageId);
-            status[0].innerHTML = "New";
-            //remove the preview button if not a Manager
-            var previewButton = $('.email-button[data-target="#mails-' + messageId + '"]');
-            var isManager = previewButton.data('isManager');
-            if (!isManager) {
-                previewButton.remove();
-            }
-            //refresh data properly
-            location.reload();
+              //change the status in the DOM
+            $('.row-' + messageId).html(data);
         },
         error: function (err) {
             toastr.error(err.responseText);
@@ -83,24 +71,26 @@ $('.notValid-button').click(function (ev) {
     $.ajax({
         type: "POST",
         url: url,
+        ataType: "html",
         data: {
             __RequestVerificationToken: token,
             messageId: messageId
         },
-        success: function (res, as, okijjg) {
+        success: function (data) {
             toastr.warning("Mail Not Valid");
             //change the status in the DOM
-            var status = $.find(".status-" + messageId);
-            status[0].innerHTML = "Invalid Application";
-            //remove the preview button if not a Manager
-            var previewButton = $('.email-button[data-target="#mails-' + messageId + '"]');
-            var row = previewButton.parent();
-            row.addClass('text-muted');
-            var isManager = previewButton.data('isManager');
-            if (!isManager) {
-                previewButton.remove();
-            }
-            //location.reload();
+            $('.row-' + messageId).html(data);
+
+            //status[0].innerHTML = "Invalid Application";
+            ////remove the preview button if not a Manager
+            //var previewButton = $('.email-button[data-target="#mails-' + messageId + '"]');
+            //var row = previewButton.parent();
+            //row.addClass('text-muted');
+            //var isManager = previewButton.data('isManager');
+            //if (!isManager) {
+            //    previewButton.remove();
+            //}
+            ////location.reload();
         },
         error: function (res, as, okijjg) {
             toastr.error(res.responseText);
