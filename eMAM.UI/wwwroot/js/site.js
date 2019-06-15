@@ -307,15 +307,25 @@ $('.close-application-aprove').submit(function (ev) {
     var token = $('input[name="__RequestVerificationToken"]', form).val();
     var data = $(this).serialize() + "&__RequestVerificationToken=" + token;
 
+    var egn = $("#egnid").val();
+    var number = $("#phoneid").val();
+    var gmail = $("#gmailid").val();
 
+    var model = {
+        __RequestVerificationToken: token,
+        CustomerEGN: egn,
+        CustomerPhoneNumber: number,
+        GmailIdNumber: gmail
+    };
     debugger;
     $.ajax({
         type: "POST",
         url: "/home/submitncloseapplicationaproved",
-        data: {
-            __RequestVerificationToken: token,
-            data: data
-        },
+        //data: {
+        //    
+        //    data: data
+        //},
+        data: model,
         dataType: "json",
         success: function (response) {
             toastr.success("Application was Aproved");
@@ -407,24 +417,8 @@ $('.preview-open-manager-button').click(function (ev) {
     var form = $('#__AjaxAntiForgeryForm');
     var token = $('input[name="__RequestVerificationToken"]', form).val();
 
-    $.ajax({
-        type: "POST",
-        url: url,
-        data: {
-            __RequestVerificationToken: token,
-            GmailIdNumber: messageId
-        },
-        success: function () {
-            toastr.warning("Application Rejected");
-            //change the status in the DOM
-            var status = $.find(".open-status-" + messageId);
-            status[0].innerHTML = "Rejected";
-            location.reload();
-        },
-        error: function (res, as, okijjg) {
-            toastr.error(res.responseText);
-        }
-    });
+
+
     $.ajax({
         type: "POST",
         url: url,

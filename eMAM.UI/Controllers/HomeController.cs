@@ -387,6 +387,7 @@ namespace eMAM.UI.Controllers
             return Ok();
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost]
         public async Task<IActionResult> SubmitNCloseApplicationAproved(EmailViewModel model)
         {
@@ -469,6 +470,33 @@ namespace eMAM.UI.Controllers
         //    return Ok();
         //}
 
+        [AutoValidateAntiforgeryToken]
+        [Authorize]
+        public async Task<IActionResult> ListClosedEmails(int? pageNumber)
+        {
+            var pageSize = 10;
+            var user = await this.userManager.GetUserAsync(User);
+            var isManager = User.IsInRole("Manager");
+            var mails = this.emailService.ReadAllMailsFromDb(isManager, user).Where(c=>c.Status.Text == "Aproved" || c.Status.Text == "Rejected");
+            var page = await PaginatedList<Email>.CreateAsync(mails, pageNumber ?? 1, pageSize);
+
+            EmailViewModel model = new EmailViewModel
+            {
+                HasNextPage = page.HasNextPage,
+                HasPreviousPage = page.HasPreviousPage,
+                PageIndex = page.PageIndex,
+                TotalPages = page.TotalPages,
+                UserIsManager = isManager
+            };
+
+            foreach (var mail in page)
+            {
+                var element = this.emailViewModelMapper.MapFrom(mail);
+                model.SearchResults.Add(element);
+            }
+
+            return View(model);
+        }
 
 
 

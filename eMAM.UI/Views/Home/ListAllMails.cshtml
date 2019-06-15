@@ -25,9 +25,9 @@
             <th>Sender</th>
             <th>Subject</th>
             <th>Status</th>
-            <th> </th>
+            <th> Attachments</th>
             @*<th>List new emails</th>*@
-            <th> </th>
+            <th> Preview</th>
         </tr>
     </thead>
     <tbody>
@@ -124,12 +124,12 @@
             {
                 @if (mail.UserIsManager && mail.Status.Text != "New")
                 {
-                    <
+                    <tr>
+                        <partial name="_previewOpenedClosed" model="mail" />
+                    </tr>
 
                 }
-                <tr>
-                    
-                </tr>
+
 
                 <tr>
                     <!-- The Modal -->
@@ -222,4 +222,4 @@
     </td>
     @*<td>LIST new mails ???</td>*@
 
-</tr>*@
+@*</tr>*@

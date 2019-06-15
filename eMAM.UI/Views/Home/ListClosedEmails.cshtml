@@ -14,7 +14,8 @@
             <th>Date/Time</th>
             <th>Sender</th>
             <th>Subject</th>
-            <th>Open since</th>
+            <th>Status</th>
+            <th>Preview</th>
             @if (User.IsInRole("Manager"))
             {
                 <th>Opened by</th>
@@ -28,7 +29,7 @@
             @if (Model.UserIsManager && mail.Status.Text != "New")
             {
                 <tr>
-                    <partial name="_" model="mail" />
+                    <partial name="_previewOpenedClosed" model="mail" />
                 </tr>
 
             }

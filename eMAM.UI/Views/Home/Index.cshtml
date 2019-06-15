@@ -5,30 +5,38 @@
 
 <p>Last 5 Opened</p>
 
-<table class="table-hover">
-    <thead class="thead-dark" style="background-color:cadetblue">
+<table class="table-hover" style="width:100%">
+    <thead class="thead-light" style="background-color: cadetblue">
         <tr>
+            <th>ID</th>
             <th>Date/Time</th>
             <th>Sender</th>
             <th>Subject</th>
             <th>Status</th>
+            <th>Open since</th>
+            @if (User.IsInRole("Manager"))
+            {
+                <th>Opened by</th>
+            }
         </tr>
     </thead>
     <tbody>
 
         @foreach (var mail in Model.Open)
         {
-            <partial name="_emailOpen" model="mail" />
-        }
+        <tr>
+            <partial name="_emailOpen.cshtml" model="mail" />
+        </tr>
+    }
 
-    </tbody>
-</table>
+        </tbody>
+    </table>
 
 
 
 <p>Last 5 with status New</p>
-<table class="table-hover">
-    <thead class="thead-dark" style="background-color:cadetblue">
+<table class="table-hover" style="width:100%">
+    <thead class="thead-light" style="background-color: cadetblue">
         <tr>
             <th>Date/Time</th>
             <th>Sender</th>
@@ -47,8 +55,8 @@
 </table>
 
 <p>Last 5 with status Not Reviewed</p>
-<table class="table-hover">
-    <thead class="thead-dark" style="background-color:cadetblue">
+<table class="table-hover" style="width:100%">
+    <thead class="thead-light" style="background-color: cadetblue">
         <tr>
             <th>Date/Time</th>
             <th>Sender</th>
@@ -65,27 +73,26 @@
 
     </tbody>
 </table>
-@if (Model.UserIsManager)
-{
-    <p>Last 5 with Closed</p>
-    <table class="table-hover">
-        <thead class="thead-dark" style="background-color:cadetblue">
-            <tr>
-                <th>Date/Time</th>
-                <th>Sender</th>
-                <th>Subject</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
 
-            @foreach (var mail in Model.Closed)
-            {
-                <partial name="_emailHome" model="mail" />
-            }
+<p>Last 5 with Closed</p>
+<table class="table-hover" style="width:100%">
+    <thead class="thead-light" style="background-color: cadetblue">
+        <tr>
+            <th>Date/Time</th>
+            <th>Sender</th>
+            <th>Subject</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
 
-        </tbody>
-    </table>
-}
+        @foreach (var mail in Model.Closed)
+        {
+            <partial name="_emailHome" model="mail" />
+        }
+
+    </tbody>
+</table>
+
 
 
