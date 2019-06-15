@@ -89,7 +89,31 @@ namespace eMAM.Service.DbServices
             else
             {
                 allMails = this.context.Emails
-                                           .Where(e => e.WorkInProcess == true && e.WorkingBy == user|| e.WorkInProcess == false)
+                                           .Where(e => e.WorkInProcess == true && e.WorkingBy == user || e.WorkInProcess == false)
+                                           .Include(e => e.Attachments)
+                                           .Include(e => e.Sender)
+                                           .Include(e => e.Status);
+            }
+            return allMails;
+        }
+
+        public IQueryable<Email> ReadOpenMailsFromDb(bool isManager, User user)
+        {
+            IQueryable<Email> allMails;
+            if (isManager)
+            {
+                allMails = this.context.Emails
+                                       .Where(e=>e.Status.Text=="Open")
+                                       .Include(e=>e.OpenedBy)
+                                       .Include(e => e.Attachments)
+                                       .Include(e => e.Sender)
+                                       .Include(e => e.Status);
+            }
+            else
+            {
+                allMails = this.context.Emails
+                                           .Where(e => e.Status.Text == "Open")
+                                           .Where(e => e.WorkInProcess == true && e.WorkingBy == user || e.WorkInProcess == false)
                                            .Include(e => e.Attachments)
                                            .Include(e => e.Sender)
                                            .Include(e => e.Status);
