@@ -19,6 +19,10 @@
     <tbody>
         @foreach (var user in Model.UsersList)
         {
+            if (user.Roles.Contains("Operator"))
+            {
+                continue;
+            }
             <tr>
                 <td>@user.Id</td>
                 <td>@user.UserName</td>

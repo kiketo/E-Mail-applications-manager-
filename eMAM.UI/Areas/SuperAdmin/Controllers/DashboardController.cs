@@ -85,7 +85,7 @@ namespace eMAM.UI.Areas.SuperAdmin.Controllers
 
                 await this.gmailUserDataService.CreateAsync(userDataDTO);
 
-                return Json(await TryReadGmail(client, userDataDTO));
+                return Redirect("superadmin");
             }
         }
 
@@ -146,15 +146,15 @@ namespace eMAM.UI.Areas.SuperAdmin.Controllers
             return Ok();
         }
 
-        public async Task<bool> TryReadGmail(HttpClient client, GmailUserDataDTO userDataDTO)
-        {
-            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + userDataDTO.AccessToken);
+        //public async Task<bool> TryReadGmail(HttpClient client, GmailUserDataDTO userDataDTO)
+        //{
+        //    client.DefaultRequestHeaders.Add("Authorization", "Bearer " + userDataDTO.AccessToken);
 
-            var res = await client.GetAsync("https://www.googleapis.com/gmail/v1/users/me/messages");
+        //    var res = await client.GetAsync("https://www.googleapis.com/gmail/v1/users/me/messages");
 
-            var content = await res.Content.ReadAsStringAsync();
+        //    var content = await res.Content.ReadAsStringAsync();
 
-            return res.IsSuccessStatusCode;
-        }
+        //    return res.IsSuccessStatusCode;
+        //}
     }
 }
