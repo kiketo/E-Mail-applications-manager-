@@ -9,9 +9,17 @@
 <form asp-action="ListAllMails" method="post" style="display:inline; float:right">
     <div class="form-actions no-color">
         <p>
-            <input type="checkbox" name="newFilter" value="true" checked hidden />
-            <input type="submit" value="Show only with status  Not Valid" class="btn btn-success" />
-            <a asp-action="ListAllMails" class="btn btn-outline-success">Back to Full List</a>
+            @if (Model.FilterOnlyNotValid)
+            {
+                <input type="submit" value="Not Valid Only" class="btn btn-success" disabled />
+                <a asp-action="ListAllMails" class="btn btn-outline-success">Full List</a>
+            }
+            else
+            {
+                <input type="checkbox" name="newFilter" value="true" checked hidden />
+                <input type="submit" value="Not Valid Only" class="btn btn-outline-success" />
+                <a asp-action="" class="btn btn-success disabled">Full List</a>
+            }
         </p>
     </div>
 </form>
@@ -34,151 +42,8 @@
 
         @foreach (var mail in Model.SearchResults)
         {
-            if (mail.Status.Text == "Not Reviewed" || mail.Status.Text == "Invalid Application")
-            {
-                @if (mail.Status.Text == "Invalid Application")
-                {
-                    mail.Muted = "class=text-muted";
-                }
-                <tr @mail.Muted>
-                    <td>@mail.Id</td>
-                    <td hidden>@mail.GmailIdNumber</td>
-                    <td>@mail.DateReceived</td>
-                    <td>@mail.Sender.SenderName &lt@(mail.Sender.SenderEmail)&gt</td>
-                    <td>@mail.Subject</td>
-                    <td class="status-@mail.GmailIdNumber">@mail.Status.Text</td>
-                    <td>
-                        @if (mail.AreAttachments)
-                        {<img src="~/images/attachment.png" height="42" width="42">}
-                    </td>
-                    @*<td>LIST new mails ???</td>*@
-                    <td>
-
-                        <!-- Button to Open the Modal -->
-                        @if (Model.UserIsManager)
-                        {
-                            <button type="button" class="email-button btn btn-success" data-isManager=@Model.UserIsManager data-toggle="modal" data-target="#mails-@mail.GmailIdNumber" data-url="/home/previewmail">
-                                <img src="~/images/preview.png" height="30" width="30">
-                            </button>
-                        }
-                        else if (mail.Status.Text == "Not Reviewed")
-                        {
-                            <button type="button" class="email-button btn btn-success" data-toggle="modal" data-target="#mails-@mail.GmailIdNumber" data-url="/home/previewmail">
-                                <img src="~/images/preview.png" height="30" width="30">
-                            </button>
-                        }
-
-                        <!-- The Modal -->
-                        <div class="modal fade bootstrap-modal" id="mails-@mail.GmailIdNumber" data-backdrop="static" data-keyboard="false">
-                            <div class="modal-dialog modal-lg" style="width:100%">
-                                <div class="modal-content">
-
-                                    <!-- Modal Header -->
-                                    <div class="modal-header">
-                                        <h6 class="modal-title">@mail.Sender.SenderName, @mail.Sender.SenderEmail</h6>
-                                        <button type="button" class="close close-button" data-dismiss="modal" data-target="@mail.GmailIdNumber">&times;</button>
-                                    </div>
-
-                                    <!-- Modal body -->
-                                    <div class="modal-body">
-
-                                        <div class="row">
-                                            <div class="col-sm-9" style="background-color:lavender;">
-                                                <p><h7>Subject: <r style="font-weight:bold">@mail.Subject</r></h7></p>
-                                                <p><h7>Date/Time received in the mail: <r style="font-weight:bold">@mail.DateReceived</r></h7></p>
-                                                <p>
-                                                    <h7>
-                                                        Date/Time of initial registration within the system:
-                                                        <r style="font-weight:bold">@mail.InitialRegistrationInSystemOn</r>
-                                                    </h7>
-                                                </p>
-                                                <p>
-                                                    <h7>
-                                                        <r style="font-weight:bold">@mail.Attachments.Count</r> attachment/s, total size:
-                                                        <r style="font-weight:bold">@mail.Attachments.Sum(x => x.FileSizeInMb).ToString("0.00")</r> MB
-                                                    </h7>
-                                                </p>
-                                                <p><h7>Subject: <r style="font-weight:bold">@mail.Subject</r></h7></p>
-                                                <div class="mail-body" style="width: 100%; height:300px; overflow-y:scroll;">
-                                                    <img src="/images/ajax-loader.gif" class="loading-indicator" style="height:150px" />
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-3" style="background-color:lavender;">
-                                                <div style="">
-                                                    <p></p>
-                                                    <button type="button" data-dismiss="modal" style="width:160px" class="btn btn-success validation-button" data-messageId="@mail.GmailIdNumber" data-url="/home/validatemail">Valid</button>
-                                                    <p></p>
-                                                    <p></p>
-                                                    <button type="button" data-dismiss="modal" style="width:160px" class="btn btn-danger notValid-button" data-messageId="@mail.GmailIdNumber" data-url="/home/notvalidmail">Not Valid</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            }
-            else
-            {
-                @if (mail.UserIsManager && mail.Status.Text != "New")
-                {
-                    
-
-                }
-
-
-                <tr>
-                    <!-- The Modal -->
-                    <td class="modal fade bootstrap-modal" id="mails-@mail.GmailIdNumber" data-backdrop="static" data-keyboard="false">
-                        <div class="modal-dialog modal-xl">
-                            <div class="modal-content">
-
-                                <!-- Modal Header -->
-                                <div class="modal-header" style="cursor:default">
-                                    <h6 class="modal-title">@mail.Sender.SenderName, @mail.Sender.SenderEmail</h6>
-                                    <button type="button" class="close close-button-open" data-dismiss="modal" data-target="@mail.GmailIdNumber">&times;</button>
-                                </div>
-
-                                <!-- Modal body -->
-                                <div class="modal-body " data-backdrop="true" style="cursor:default">
-                                    <div class="row">
-                                        <div class="col-sm-9" style="background-color:lavender;">
-                                            <p><strong>Subject: </strong><r>@mail.Subject</r></p>
-                                            <p><strong>Received At: </strong> <r>@mail.DateReceived</r></p>
-                                            <p>
-                                                <r style="font-weight:bold">@mail.Attachments.Count</r> attachment/s, total size:
-                                                <r style="font-weight:bold">@mail.Attachments.Sum(x => x.FileSizeInMb).ToString("0.00")</r> MB
-                                            </p>
-                                            <div class="mail-bodyDB" style="width: 100%; height:300px; overflow-y:scroll;">
-                                                <img src="/images/ajax-loader.gif" class="loading-indicator" style="height:150px" />
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-3" style="background-color:antiquewhite;">
-                                            <form class="customer-form" action="/" method="post">
-
-                                                <input asp-for="@mail.GmailIdNumber" type="hidden" name="gmid" id="gmailid" class="form-control" />
-                                                <label>Personal Identification Number:</label>
-                                                <input asp-for="@mail.CustomerEGN " placeholder="Personal Identification Number" name="egn" id="egn" type="text" class="form-control" />
-                                                <label>Phone Number:</label>
-                                                <input asp-for="@mail.CustomerPhoneNumber " placeholder="Phone Number" id="phone" name="phone" type="text" class="form-control" />
-
-                                                <button type="submit" style="width:160px" value="Submit" class="btn btn-success close-application customer-form" formmethod="post" data-url="/home/submitncloseapplication">Submit&Close</button>
-                                            </form>
-                                            <br />
-                                            <div style="">
-                                                <button type="button" data-dismiss="modal" style="width:160px" class="btn btn-danger notValid-button" data-messageId="@mail.GmailIdNumber" data-url="/home/notvalidmail">Cancel</button>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-            }
+            mail.UserIsManager = Model.UserIsManager;
+            <tr class="row-@mail.GmailIdNumber"><partial name="_AllEmailsPartial" model="mail" /></tr>
         }
     </tbody>
 </table>
@@ -200,24 +65,3 @@
    class="btn btn-success @nextDisabled">
     Next
 </a>
-
-
-
-
-
-@*<tr href="" style="cursor:pointer" class="applicationEmail" data-target="#mails-@mail.GmailIdNumber" data-url="/home/GetBodyDB" data-toggle="modal" data-backdrop="static" data-keyboard="false">
-    <td>@mail.Id</td>
-    <td hidden>@mail.GmailIdNumber</td>
-    <td>@mail.DateReceived</td>
-    <td>@mail.Sender.SenderName &lt@(mail.Sender.SenderEmail)&gt</td>
-    <td>@mail.Subject</td>
-    <td>@mail.Status.Text</td>
-
-
-    <td>
-        @if (mail.AreAttachments)
-        {<img src="~/images/attachment.png" height="42" width="42">}
-    </td>
-    @*<td>LIST new mails ???</td>*@
-
-@*</tr>*@

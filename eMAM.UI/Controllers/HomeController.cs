@@ -184,13 +184,25 @@ namespace eMAM.UI.Controllers
             return View(model);
         }
 
-
-        public async Task<IActionResult> ListAllMailsNotValid(int? pageNumber)
+        [AutoValidateAntiforgeryToken]
+        [Authorize]
+        public async Task<IActionResult> ListClosedMails(int? pageNumber, string currentFilterUser = null, string newFilterUser
+            = null)
         {
             var pageSize = 10;
             var user = await this.userManager.GetUserAsync(User);
             var isManager = User.IsInRole("Manager");
             var mails = this.emailService.ReadAllMailsFromDb(isManager, user);
+            if (String.IsNullOrEmpty(newFilterUser))
+            {
+                pageNumber = 1;
+                mails = mails.Where(e => e.Status.Text == "Invalid Application");
+            }
+            else
+            {
+                newFilterUser = currentFilterUser;
+            }
+
             var page = await PaginatedList<Email>.CreateAsync(mails, pageNumber ?? 1, pageSize);
 
             EmailViewModel model = new EmailViewModel
@@ -199,7 +211,8 @@ namespace eMAM.UI.Controllers
                 HasPreviousPage = page.HasPreviousPage,
                 PageIndex = page.PageIndex,
                 TotalPages = page.TotalPages,
-                UserIsManager = isManager
+                UserIsManager = isManager,
+                FilterByUser = newFilterUser
             };
 
             foreach (var mail in page)
@@ -217,7 +230,7 @@ namespace eMAM.UI.Controllers
         public async Task<IActionResult> PreviewMail(string messageId)
         {
             var user = await this.userManager.GetUserAsync(User);
-            //  await this.emailService.WorkInProcessAsync(user, messageId);//TODO stops PREVIEW
+              await this.emailService.WorkInProcessAsync(user, messageId);//TODO stops PREVIEW
             var userData = await this.gmailUserDataService.GetAsync();
             var mailDTO = await this.gmailApiService.DownloadBodyOfMailAsync(messageId, userData.AccessToken);
             var body = mailDTO.BodyAsString;
@@ -235,15 +248,17 @@ namespace eMAM.UI.Controllers
             var mailDTO = await this.gmailApiService.DownloadBodyOfMailAsync(messageId, userData.AccessToken);
             var mail = await this.emailService.GetEmailByGmailIdAsync(messageId);
             var validStatus = await this.statusService.GetStatusByName("New");
-           // await this.auditLogService.Log(user.UserName, "status change", messageId, validStatus.Text, mail.Status.Text);
+            //await this.auditLogService.Log(user.UserName, "status change", messageId, validStatus.Text, mail.Status.Text);
             mail.Status = validStatus;
             mail.Body = mailDTO.BodyAsString;
             mail.WorkInProcess = false;
             await emailService.UpdateAsync(mail);
 
+            var model = this.emailViewModelMapper.MapFrom(mail);
+
             //await emailService.ValidateEmail(mail, mailDTO.BodyAsString, validStatus,user);
             //await emailService.WorkNotInProcessAsync(messageId);
-            return Ok();
+            return PartialView("_AllEmailsPartial", model);
         }
 
         [AutoValidateAntiforgeryToken]

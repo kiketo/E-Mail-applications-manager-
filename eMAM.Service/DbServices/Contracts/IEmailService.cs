@@ -32,5 +32,7 @@ namespace eMAM.Service.DbServices.Contracts
         Task<string> GetEmailBodyAsync(string mailId);
 
         IQueryable<Email> ReadOpenMailsFromDb(bool isManager, User user);
+
+        IQueryable<Email> ReadClosedMailsFromDb(bool isManager, User user);
     }
 }

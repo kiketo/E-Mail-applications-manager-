@@ -78,5 +78,7 @@ namespace eMAM.UI.Models
         public TimeSpan InCurrentStatusSince { get; set; }
 
         public bool FilterOnlyNotValid { get; set; }
+
+        public string FilterByUser { get; set; }
     }
 }
