@@ -71,7 +71,7 @@ $('.notValid-button').click(function (ev) {
     $.ajax({
         type: "POST",
         url: url,
-        ataType: "html",
+        dataType: "html",
         data: {
             __RequestVerificationToken: token,
             messageId: messageId
@@ -80,17 +80,6 @@ $('.notValid-button').click(function (ev) {
             toastr.warning("Mail Not Valid");
             //change the status in the DOM
             $('.row-' + messageId).html(data);
-
-            //status[0].innerHTML = "Invalid Application";
-            ////remove the preview button if not a Manager
-            //var previewButton = $('.email-button[data-target="#mails-' + messageId + '"]');
-            //var row = previewButton.parent();
-            //row.addClass('text-muted');
-            //var isManager = previewButton.data('isManager');
-            //if (!isManager) {
-            //    previewButton.remove();
-            //}
-            ////location.reload();
         },
         error: function (res, as, okijjg) {
             toastr.error(res.responseText);
@@ -108,16 +97,16 @@ $('.close-button').click(function (ev) {
 
     $.ajax({
         type: "POST",
+        dataType: "html",
         url: "/home/notpreviewed",
         data: {
             __RequestVerificationToken: token,
             id: messageId
         },
-        success: function (res, as, okijjg) {
+        success: function (data) {
             toastr.warning("Mail Not Previewed");
-            var row = $this.parent();
-            row.removeClass('text-muted');
-            //location.reload();
+            //change the status in the DOM
+            $('.row-' + messageId).html(data);//TODO
         },
         error: function (res, as, okijjg) {
             toastr.error(res.responseText);
@@ -196,32 +185,32 @@ function userOperatorToggle(button) {
 }
 //revert-invalid to not reviewed
 
-$('.revert-not-reviewed-button').click(function (ev) {
-    var $this = $(this);
-    var messageId = $this.attr('data-messageId');
-    var url = $this.attr('data-url');
+//$('.revert-not-reviewed-button').click(function (ev) {
+//    var $this = $(this);
+//    var messageId = $this.attr('data-messageId');
+//    var url = $this.attr('data-url');
 
-    var form = $('#__AjaxAntiForgeryForm');
-    var token = $('input[name="__RequestVerificationToken"]', form).val();
+//    var form = $('#__AjaxAntiForgeryForm');
+//    var token = $('input[name="__RequestVerificationToken"]', form).val();
 
-    $.ajax({
-        type: "POST",
-        url: url,
-        data: {
-            __RequestVerificationToken: token,
-            messageId: messageId
-        },
-        success: function (res, as, okijjg) {
-            location.reload();
-            var status = $.find(".status-" + messageId);
-            status[0].innerHTML = "Invalid Application";
-            toastr.success("Mail Status Reverted");
-        },
-        error: function (res, as, okijjg) {
-            toastr.error(res.responseText);
-        }
-    });
-});
+//    $.ajax({
+//        type: "POST",
+//        url: url,
+//        data: {
+//            __RequestVerificationToken: token,
+//            messageId: messageId
+//        },
+//        success: function (res, as, okijjg) {
+//            location.reload();
+//            var status = $.find(".status-" + messageId);
+//            status[0].innerHTML = "Invalid Application";
+//            toastr.success("Mail Status Reverted");
+//        },
+//        error: function (res, as, okijjg) {
+//            toastr.error(res.responseText);
+//        }
+//    });
+//});
 
 
 
@@ -237,7 +226,7 @@ $('.revert-not-reviewed-button').click(function (ev) {
 
 
 //open email new->open
-$('.applicationEmail').click(function (ev) {
+$('.process-button').click(function (ev) {
     debugger;
     var $this = $(this);
     var messageId = $this.attr('data-target');
