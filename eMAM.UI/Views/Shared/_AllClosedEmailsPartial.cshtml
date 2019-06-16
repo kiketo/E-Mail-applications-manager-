@@ -1,15 +1,15 @@
 ﻿@model EmailViewModel
 
 <td>@Model.Id</td>
-<td hidden data-gmailIdNumber="@Model.GmailIdNumber">@Model.GmailIdNumber</td>
 <td>@Model.DateReceived</td>
 <td>@Model.Sender.SenderName &lt@(Model.Sender.SenderEmail)&gt</td>
 <td>@Model.Subject</td>
-<td class="status-@Model.GmailIdNumber">@Model.Status.Text</td>
-<td data-label="areAttachments">
-    @if (Model.AreAttachments)
-    {<img src="~/images/attachment.png" height="42" width="42">}
-</td>
+<td data-label="status">@Model.Status.Text</td>
+<th>Preview</th>
+@if (true)
+{
+    <th>@Model.ClosedBy.UserName</th>
+}
 
 @if (Model.Status.Text == "Not Reviewed" || Model.Status.Text == "Invalid Application")
 {
@@ -74,7 +74,7 @@
                                         <button onclick="invalidateEmail(this)" type="button" data-dismiss="modal" style="width:160px" class="btn btn-danger notValid-button" data-messageId="@Model.GmailIdNumber" data-url="/home/notvalidmail">Not Valid</button>
                                         <p></p>
                                         <p></p>
-                                        @if (Model.UserIsManager&&Model.Status.Text!= "Not Reviewed")
+                                        @if (Model.UserIsManager && Model.Status.Text != "Not Reviewed")
                                         {
                                             <button onclick="backToNotPreviewed(this)" type="button" data-dismiss="modal" style="width:160px" class="btn btn-info close-button" data-target="@Model.GmailIdNumber" data-status="@Model.Status.Text">Not Reviewed</button>
                                         }
@@ -145,15 +145,23 @@ if (Model.Status.Text == "New" || /*Model.Status.Text == "Open" && Model.OpenedB
 
                                     <button onclick="approveApplicationButton(this)" data-gmailIdNumber="@Model.GmailIdNumber" type="button" style="width:160px" class="btn btn-success" data-dismiss="modal">Submit&Close</button>
                                 </div>
+
+
+                                @*<form id="@Model.GmailIdNumber" class="close-application-aprove @Model.GmailIdNumber "  data-gmailIdNumber="@Model.GmailIdNumber">
+                                        <input type="hidden" name="GmailIdNumber" value="@Model.GmailIdNumber" id="gmailid" />
+                                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                        <label>Personal Identification Number:</label>
+                                        <input asp-for="@Model.CustomerEGN" placeholder="Personal Identification Number" name="CustomerEGN" id="egnid-@Model.GmailIdNumber" />
+                                        <span asp-validation-for="@Model.CustomerEGN" class="text-danger"></span>
+                                        <label>Phone Number:</label>
+                                        <input asp-for="@Model.CustomerPhoneNumber" placeholder="Phone Number" id="phoneid-@Model.GmailIdNumber" name="CustomerPhoneNumber" />
+                                        <span asp-validation-for="@Model.CustomerPhoneNumber" class="text-danger"></span>
+
+                                        <button type="submit" style="width:160px" class="btn btn-success">Submit&Close</button>
+                                    </form>*@
                                 <br />
                                 <div style="">
                                     <button onclick="rejectApplicationButton(this)" type="button" data-dismiss="modal" style="width:160px" class="btn btn-danger notValid-button" data-messageId="@Model.GmailIdNumber" data-url="/home/submitncloseapplicationrejected">Reject&Close</button>
-                                    <p></p>
-                                    <p></p>
-                                    <button type="button" data-dismiss="modal" style="width:160px" class="btn btn-default notValid-button">Cancel</button>
-
-
-
                                 </div>
                             </div>
                         </div>

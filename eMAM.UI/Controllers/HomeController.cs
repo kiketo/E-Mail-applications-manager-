@@ -73,10 +73,24 @@ namespace eMAM.UI.Controllers
                 model.Open = modelEmails.Where(s => s.Status.Text == "Open").Where(u => u.WorkingBy == user).OrderByDescending(x => x.DateReceived).Take(5).ToList();
                 model.Closed = modelEmails.Where(s => s.Status.Text == "Aproved" || s.Status.Text == "Rejected").OrderBy(x => x.DateReceived).Take(5).ToList();
                 model.UserIsManager = isManager;
-                return View(model);
             }
+            else
+            {
             model.Open = modelEmails.Where(s => s.Status.Text == "Open").OrderByDescending(x => x.DateReceived).Take(5).ToList();
             model.Closed = modelEmails.Where(s => s.Status.Text == "Aproved" || s.Status.Text == "Rejected").OrderBy(x => x.DateReceived).Take(5).ToList();
+
+            }
+
+            foreach (var mail in model.New)
+            {
+                mail.InCurrentStatusSince = DateTime.Now - mail.SetInCurrentStatusOn;
+            }
+            foreach (var mail in model.Open)
+            {
+                mail.InCurrentStatusSince = DateTime.Now - mail.SetInCurrentStatusOn;
+            }
+
+
             return View(model);
         }
 
@@ -237,6 +251,7 @@ namespace eMAM.UI.Controllers
             var validStatus = await this.statusService.GetStatusByName("New");
             //await this.auditLogService.Log(user.UserName, "status change", messageId, validStatus.Text, mail.Status.Text);
             mail.Status = validStatus;
+            mail.SetInCurrentStatusOn = DateTime.Now;
             mail.Body = mailDTO.BodyAsString;
             mail.WorkInProcess = false;
             await emailService.UpdateAsync(mail);
@@ -322,7 +337,9 @@ namespace eMAM.UI.Controllers
             var pageSize = 10;
             var isManager = User.IsInRole("Manager");
             var user = await this.userManager.GetUserAsync(User);
-            var mailStatusNewLst = this.emailService.ReadAllMailsFromDb(isManager, user).Where(e => e.Status.Text == "New");
+            var mailStatusNewLst = this.emailService.ReadAllMailsFromDb(isManager, user)
+                .Where(e => e.Status.Text == "New")
+                .OrderByDescending(n=>n.SetInCurrentStatusOn);
             var page = await PaginatedList<Email>.CreateAsync(mailStatusNewLst, pageNumber ?? 1, pageSize);
             page.Reverse();
 
@@ -337,6 +354,7 @@ namespace eMAM.UI.Controllers
             foreach (var mail in page)
             {
                 var element = this.emailViewModelMapper.MapFrom(mail);
+                element.InCurrentStatusSince = DateTime.Now - element.SetInCurrentStatusOn;
                 model.SearchResults.Add(element);
             }
             return View(model);
