@@ -214,7 +214,7 @@ function processMailButton(button) {
     var form = $('#__AjaxAntiForgeryForm');
     var token = $('input[name="__RequestVerificationToken"]', form).val();
     var status = $this.attr('data-status');
-
+    var data1;
     if (status == "New") {
         var url1 = '/home/changestatustoopen';
 
@@ -240,15 +240,18 @@ function processMailButton(button) {
                         messageId: messageRequestData
                     },
                     success: function (data) {
+                        data1 = data;
                         debugger;
                         //change the status in the DOM
-                        //$('.row-' + messageRequestData).html(data);
+                        var status = $.find('.status-' + messageRequestData);
+                        status[0].innerHTML = "Open";
                     },
                     error: function (res) {
                         toastr.error(res.responseText);
                     }
                 });
                 toastr.success("Mail Opened");
+                debugger;
             },
             error: function () {
                 toastr.error("Ups, e-mail didn't load");
@@ -283,7 +286,7 @@ function processMailButton(button) {
 
 //submit and approve form
 //$('.close-application-aprove').submit(
-function approveApplicationButton (button) {
+function approveApplicationButton(button) {
     //ev.preventDefault();
     //ev.stopPropagation();
     var form = $('#__AjaxAntiForgeryForm');
@@ -335,7 +338,7 @@ function approveApplicationButton (button) {
 
 //reject application
 //$('.rejected-button').click(
-function rejectApplicationButton (button) {
+function rejectApplicationButton(button) {
     var $this = $(button);
     var messageId = $this.attr('data-messageId');
     var url = $this.attr('data-url');
@@ -350,7 +353,7 @@ function rejectApplicationButton (button) {
             __RequestVerificationToken: token,
             GmailIdNumber: messageId
         },
-        dataType:"html",
+        dataType: "html",
         success: function (response) {
             toastr.warning("Application Rejected");
             //change the status in the DOM

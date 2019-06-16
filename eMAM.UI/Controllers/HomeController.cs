@@ -82,35 +82,6 @@ namespace eMAM.UI.Controllers
 
         [AutoValidateAntiforgeryToken]
         [Authorize]
-        public async Task<IActionResult> ListAllMails2(int? pageNumber)
-        {
-            var pageSize = 10;
-            var user = await this.userManager.GetUserAsync(User);
-            var isManager = User.IsInRole("Manager");
-            var mails = this.emailService.ReadAllMailsFromDb(isManager, user);
-            var page = await PaginatedList<Email>.CreateAsync(mails, pageNumber ?? 1, pageSize);
-            page.Reverse();
-
-            EmailViewModel model = new EmailViewModel
-            {
-                HasNextPage = page.HasNextPage,
-                HasPreviousPage = page.HasPreviousPage,
-                PageIndex = page.PageIndex,
-                TotalPages = page.TotalPages,
-                UserIsManager = isManager
-            };
-
-            foreach (var mail in page)
-            {
-                var element = this.emailViewModelMapper.MapFrom(mail);
-                model.SearchResults.Add(element);
-            }
-
-            return View(model);
-        }
-
-        [AutoValidateAntiforgeryToken]
-        [Authorize]
         public async Task<IActionResult> ListAllMails(int? pageNumber, bool currentFilter = false, bool newFilter = false)
         {
             if (newFilter)
@@ -121,8 +92,6 @@ namespace eMAM.UI.Controllers
             {
                 newFilter = currentFilter;
             }
-
-            //ViewData["CurrentFilter"] = newFilter;
 
             var pageSize = 10;
             var user = await this.userManager.GetUserAsync(User);
@@ -156,14 +125,27 @@ namespace eMAM.UI.Controllers
 
         [AutoValidateAntiforgeryToken]
         [Authorize]
-        public async Task<IActionResult> ListOpenEmails(int? pageNumber)
-        {
+        public async Task<IActionResult> ListOpenEmails(int? pageNumber, string currentFilter, string user)
+        {//filter - user who opened the mail, only for manafers
+            if (!string.IsNullOrEmpty(user))
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                user = currentFilter;
+            }
+
             var pageSize = 10;
-            var user = await this.userManager.GetUserAsync(User);
+            var userIs = await this.userManager.GetUserAsync(User);
             var isManager = User.IsInRole("Manager");
-            var mails = this.emailService.ReadOpenMailsFromDb(isManager, user);
+            var mails = this.emailService.ReadOpenMailsFromDb(isManager, userIs);
+            if (!string.IsNullOrEmpty(user))
+            {
+                mails = mails.Where(e => e.OpenedBy.UserName == user);
+            }
             var page = await PaginatedList<Email>.CreateAsync(mails, pageNumber ?? 1, pageSize);
-            //page.Reverse();
+            page.Reverse();
 
             EmailViewModel model = new EmailViewModel
             {
@@ -171,13 +153,18 @@ namespace eMAM.UI.Controllers
                 HasPreviousPage = page.HasPreviousPage,
                 PageIndex = page.PageIndex,
                 TotalPages = page.TotalPages,
-                UserIsManager = isManager
+                UserIsManager = isManager,
+                FilterByUser = user
             };
 
             foreach (var mail in page)
             {
+                if (!model.UserNames.Contains(mail.OpenedBy.UserName))
+                {
+                    model.UserNames.Add(mail.OpenedBy.UserName);
+                }
+
                 var element = this.emailViewModelMapper.MapFrom(mail);
-                element.InCurrentStatusSince = DateTime.Now - element.SetInCurrentStatusOn;
                 model.SearchResults.Add(element);
             }
 

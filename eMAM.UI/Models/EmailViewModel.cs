@@ -80,5 +80,7 @@ namespace eMAM.UI.Models
         public bool FilterOnlyNotValid { get; set; }
 
         public string FilterByUser { get; set; }
+
+        public ICollection<string> UserNames { get; set; } = new List<string>();
     }
 }
