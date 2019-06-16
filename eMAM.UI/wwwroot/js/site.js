@@ -71,7 +71,7 @@ $('.notValid-button').click(function (ev) {
     $.ajax({
         type: "POST",
         url: url,
-        ataType: "html",
+        dataType: "html",
         data: {
             __RequestVerificationToken: token,
             messageId: messageId
