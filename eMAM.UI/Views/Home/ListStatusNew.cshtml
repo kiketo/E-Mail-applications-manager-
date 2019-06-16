@@ -4,6 +4,8 @@
 }
 @model EmailViewModel
 
+<h3 style="display:inline">All Status New</h3>
+
 <table class="table-hover" style="width:100%">
     <thead class="thead-light" style="background-color: cadetblue">
         <tr>
@@ -11,71 +13,21 @@
             <th>Date/Time</th>
             <th>Sender</th>
             <th>Subject</th>
-            <th>Status</th>
             <th>Time Since Change</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
+
         @foreach (var mail in Model.SearchResults)
         {
-            <tr>    <partial name="_emailOpen" model="mail" /> </tr>
-
-            <tr>
-                <!-- The Modal -->
-                <td class="modal fade bootstrap-modal" id="mails-@mail.GmailIdNumber" data-backdrop="static" data-keyboard="false">
-                    <div class="modal-dialog modal-xl">
-                        <div class="modal-content">
-
-                            <!-- Modal Header -->
-                            <div class="modal-header" style="cursor:default">
-                                <h6 class="modal-title">@mail.Sender.SenderName, @mail.Sender.SenderEmail</h6>
-                                <button type="button" class="close close-button-open" data-dismiss="modal" data-target="@mail.GmailIdNumber">&times;</button>
-                            </div>
-
-                            <!-- Modal body -->
-                            <div class="modal-body " data-backdrop="true" style="cursor:default">
-                                <div class="row">
-                                    <div class="col-sm-9" style="background-color:lavender;">
-                                        <p><strong>Subject: </strong><r>@mail.Subject</r></p>
-                                        <p><strong>Received At: </strong> <r>@mail.DateReceived</r></p>
-                                        <p>
-                                            <r style="font-weight:bold">@mail.Attachments.Count</r> attachment/s, total size:
-                                            <r style="font-weight:bold">@mail.Attachments.Sum(x => x.FileSizeInMb).ToString("0.00")</r> MB
-                                        </p>
-                                        <div class="mail-bodyDB" style="width: 100%; height:300px; overflow-y:scroll;">
-                                            <img src="/images/ajax-loader.gif" class="loading-indicator" style="height:150px" />
-                                        </div>
-
-                                    </div>
-                                    <div class="col-sm-3" style="background-color:antiquewhite;">
-                                        <form class="customer-form" action="/" method="post">
-
-                                            <input asp-for="@mail.GmailIdNumber" type="hidden" name="gmid" id="gmailid" class="form-control" />
-                                            <label>Personal Identification Number:</label>
-                                            <input asp-for="@mail.CustomerEGN " placeholder="Personal Identification Number" name="egn" id="egn" type="text" class="form-control" />
-                                            <label>Phone Number:</label>
-                                            <input asp-for="@mail.CustomerPhoneNumber " placeholder="Phone Number" id="phone" name="phone" type="text" class="form-control" />
-
-                                            <button type="submit" style="width:160px" value="Submit" class="btn btn-success close-application customer-form" formmethod="post" data-url="/home/submitncloseapplication">Submit&Close</button>
-                                        </form>
-                                        <br />
-                                        <div style="">
-                                            <button type="button" data-dismiss="modal" style="width:160px" class="btn btn-danger notValid-button" data-messageId="@mail.GmailIdNumber" data-url="/home/notvalidmail">Cancel</button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                </td>
+            mail.UserIsManager = Model.UserIsManager;
+            <tr class="row-@mail.GmailIdNumber">
+                <partial name="_AllNewEmailsPartial" model="mail" />
             </tr>
-
         }
     </tbody>
-
 </table>
-
 
 
 @{
@@ -83,13 +35,18 @@
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 }
 
-<a asp-action="ListAllMails"
+<a asp-action="ListStatusNew"
    asp-route-pageNumber="@(Model.PageIndex - 1)"
    class="btn btn-default @prevDisabled">
     Previous
 </a>
-<a asp-action="ListAllMails"
+<a asp-action="ListStatusNew"
    asp-route-pageNumber="@(Model.PageIndex + 1)"
    class="btn btn-default @nextDisabled">
     Next
 </a>
+
+
+
+
+
