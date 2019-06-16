@@ -378,24 +378,8 @@ $('.preview-open-manager-button').click(function (ev) {
     var form = $('#__AjaxAntiForgeryForm');
     var token = $('input[name="__RequestVerificationToken"]', form).val();
 
-    $.ajax({
-        type: "POST",
-        url: url,
-        data: {
-            __RequestVerificationToken: token,
-            GmailIdNumber: messageId
-        },
-        success: function () {
-            toastr.warning("Application Rejected");
-            //change the status in the DOM
-            var status = $.find(".open-status-" + messageId);
-            status[0].innerHTML = "Rejected";
-            location.reload();
-        },
-        error: function (res, as, okijjg) {
-            toastr.error(res.responseText);
-        }
-    });
+
+
     $.ajax({
         type: "POST",
         url: url,

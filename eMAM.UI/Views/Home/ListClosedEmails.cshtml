@@ -11,11 +11,11 @@
         <tr>
             <th>ID</th>
             <th hidden>GmailID</th>
-            <th hidden>Status</th>
             <th>Date/Time</th>
             <th>Sender</th>
             <th>Subject</th>
-            <th>Open since</th>
+            <th>Status</th>
+            <th>Preview</th>
             @if (User.IsInRole("Manager"))
             {
                 <th>Opened by</th>
@@ -26,19 +26,31 @@
 
         @foreach (var mail in Model.SearchResults)
         {
-            <tr href="" style="cursor:pointer" class="applicationEmail" data-target="#mails-@mail.GmailIdNumber" data-url="/home/GetBodyDB" data-toggle="modal" data-backdrop="static" data-keyboard="false">
-                <td>@mail.Id</td>
-                <td hidden>@mail.GmailIdNumber</td>
-                <td hidden>@mail.Status.Text</td>
-                <td>@mail.DateReceived</td>
-                <td>@mail.Sender.SenderName &lt@(mail.Sender.SenderEmail)&gt</td>
-                <td>@mail.Subject</td>
-                <td>@(mail.InCurrentStatusSince.TotalHours.ToString("N0")):@mail.InCurrentStatusSince.Minutes</td>
-                @if (User.IsInRole("Manager"))
-                {
-                    <td>@mail.OpenedBy.UserName</td>
-                }
-            </tr>
+            @if (Model.UserIsManager && mail.Status.Text != "New")
+            {
+                <tr>
+                    <partial name="_previewOpenedClosed" model="mail" />
+                </tr>
+
+            }
+            else
+            {
+                <tr href="" style="cursor:pointer" class="applicationEmail" data-target="#mails-@mail.GmailIdNumber" data-url="/home/GetBodyDB" data-toggle="modal" data-backdrop="static" data-keyboard="false">
+                    <td>@mail.Id</td>
+                    <td hidden>@mail.GmailIdNumber</td>
+                    <td>@mail.DateReceived</td>
+                    <td>@mail.Sender.SenderName &lt@(mail.Sender.SenderEmail)&gt</td>
+                    <td>@mail.Subject</td>
+                    <td>@(mail.InCurrentStatusSince.TotalHours.ToString("N0")):@mail.InCurrentStatusSince.Minutes</td>
+                    @if (User.IsInRole("Manager"))
+                    {
+                        <td>@mail.OpenedBy.UserName</td>
+                    }
+                </tr>
+
+
+            }
+
             <tr>
                 <!-- The Modal -->
                 <td class="modal fade bootstrap-modal" id="mails-@mail.GmailIdNumber" data-backdrop="static" data-keyboard="false">

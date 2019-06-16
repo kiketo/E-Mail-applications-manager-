@@ -1,7 +1,8 @@
 ﻿@model EmailViewModel
 
 <tr href="" style="cursor:pointer" class="applicationEmail open-app" data-target="#mails-@Model.GmailIdNumber" data-url="/home/getbodydb" data-toggle="modal" data-backdrop="static" data-keyboard="false">
-
+    <td>@Model.Id</td>
+    <td hidden>@Model.GmailIdNumber</td>
     <td>@Model.DateReceived</td>
     <td>@Model.Sender.SenderName &lt@(Model.Sender.SenderEmail)&gt</td>
     <td>@Model.Subject</td>

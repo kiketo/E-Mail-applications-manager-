@@ -4,22 +4,22 @@
 }
 @model EmailViewModel
 
-<table class="table-hover">
-    <thead class="thead-dark" style="background-color:cadetblue">
+<table class="table-hover" style="width:100%">
+    <thead class="thead-light" style="background-color: cadetblue">
         <tr>
             <th>ID</th>
             <th>Date/Time</th>
             <th>Sender</th>
             <th>Subject</th>
             <th>Status</th>
-
+            <th>Time Since Change</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var mail in Model.SearchResults)
         {
-        <tr>    <partial name="_emailOpen" model="mail" /> </tr>
-       
+            <tr>    <partial name="_emailOpen" model="mail" /> </tr>
+
             <tr>
                 <!-- The Modal -->
                 <td class="modal fade bootstrap-modal" id="mails-@mail.GmailIdNumber" data-backdrop="static" data-keyboard="false">
