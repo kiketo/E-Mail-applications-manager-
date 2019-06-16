@@ -299,7 +299,10 @@ namespace eMAM.UI.Controllers
             mail.WorkingBy = null;
             await emailService.UpdateAsync(mail);
             //await emailService.WorkNotInProcessAsync(messageId);
-            return Ok();
+            var model = this.emailViewModelMapper.MapFrom(mail);
+            model.UserIsManager = User.IsInRole("Manager");
+
+            return PartialView("_AllEmailsPartial", model);
         }
 
         public IActionResult About()
@@ -375,23 +378,21 @@ namespace eMAM.UI.Controllers
         {
             var body = await this.emailService.GetEmailBodyAsync(messageId);
             var email = await this.emailService.GetEmailByGmailIdAsync(messageId);
-            email.Status = await this.statusService.GetStatusAsync("Open");
-            email.WorkInProcess = true;
-            email.WorkingBy = await userManager.GetUserAsync(User);
+            //email.Status = await this.statusService.GetStatusAsync("Open");
+            //email.WorkInProcess = true;
+            //email.WorkingBy = await userManager.GetUserAsync(User);
+            email.Body = body;
             await this.emailService.UpdateAsync(email);
-
-            var res = Json(body);
 
             return Json(body);
         }
 
-        //status open, work in process
         [ValidateAntiForgeryToken]
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> ChangeStatusToOpen(string messageId)
         {
-            var email = await this.emailService.GetEmailByGmailIdAsync(messageId);
+           // var email = await this.emailService.GetEmailByGmailIdAsync(messageId);
             var user = await this.userManager.GetUserAsync(User);
             var newStatus = await this.statusService.GetStatusAsync("Open");
             //await this.auditLogService.Log(user.UserName, "status change", messageId, newStatus.Text, email.Status.Text);
@@ -403,13 +404,17 @@ namespace eMAM.UI.Controllers
             mail.OpenedBy = user;
             mail.SetInCurrentStatusOn = DateTime.Now;
             await this.emailService.UpdateAsync(mail);
-            return Ok();
+            var model = this.emailViewModelMapper.MapFrom(mail);
+            model.UserIsManager = User.IsInRole("Manager");
+
+            return PartialView("_AllEmailsPartial", model);
         }
 
+        [ValidateAntiForgeryToken]
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> SubmitNCloseApplicationAproved(EmailViewModel model)
         {
-
             if (ModelState.IsValid)
             {
                 var email = await this.emailService.GetEmailByGmailIdAsync(model.GmailIdNumber);
@@ -417,18 +422,23 @@ namespace eMAM.UI.Controllers
                 if (await this.customerService.GetCustomerByEGNAsync(model.CustomerEGN) == null)
                 {
                     customer = await this.customerService.CreateNewCustomerAsync(model.CustomerEGN, model.CustomerPhoneNumber);
-                    customer.Emails.Add(email);
                 }
                 else
                 {
                     customer = await this.customerService.GetCustomerByEGNAsync(model.CustomerEGN);
-                    customer.Emails.Add(email);
                 }
+                    customer.Emails.Add(email);
+                await this.customerService.UpdateAsync(customer);
                 email.Status = await this.statusService.GetStatusAsync("Aproved");
                 email.ClosedBy = await this.userManager.GetUserAsync(User);
+                email.SetInTerminalStatusOn = DateTime.Now;
                 email.WorkInProcess = false;
+                email.WorkingBy = null;
                 await this.emailService.UpdateAsync(email);
-                return Ok();
+                var partModel = this.emailViewModelMapper.MapFrom(email);
+                partModel.UserIsManager = User.IsInRole("Manager");
+
+                return PartialView("_AllEmailsPartial", partModel);
             }
 
             return BadRequest();
@@ -439,12 +449,17 @@ namespace eMAM.UI.Controllers
         public async Task<IActionResult> SubmitNCloseApplicationRejected(EmailViewModel model)
         {
             var email = await this.emailService.GetEmailByGmailIdAsync(model.GmailIdNumber);
-
+            email.Body = null;
             email.Status = await this.statusService.GetStatusAsync("Rejected");
             email.ClosedBy = await this.userManager.GetUserAsync(User);
+            email.SetInTerminalStatusOn = DateTime.Now;
             email.WorkInProcess = false;
+            email.WorkingBy = null;
             await this.emailService.UpdateAsync(email);
-            return Ok();
+            var partModel = this.emailViewModelMapper.MapFrom(email);
+            partModel.UserIsManager = User.IsInRole("Manager");
+
+            return PartialView("_AllEmailsPartial", partModel);
         }
 
 

@@ -20,7 +20,7 @@
             <!-- Button to Open the Modal -->
             @if (Model.UserIsManager)
             {
-                <button type="button" class="email-button btn btn-success" data-isManager=@Model.UserIsManager data-toggle="modal" data-target="#mails-@Model.GmailIdNumber" data-url="/home/previewmail">
+                <button type="button" onclick="previewMailButton(this)" class="email-button btn btn-success" data-isManager=@Model.UserIsManager data-toggle="modal" data-target="#mails-@Model.GmailIdNumber" data-url="/home/previewmail">
                     <img src="~/images/preview.png" height="30" width="30">
                 </button>
             }
@@ -39,7 +39,7 @@
                         <!-- Modal Header -->
                         <div class="modal-header">
                             <h6 class="modal-title">@Model.Sender.SenderName, @Model.Sender.SenderEmail</h6>
-                            <button type="button" class="close close-button" data-dismiss="modal" data-target="@Model.GmailIdNumber">&times;</button>
+                            <button onclick="backToNotPreviewed(this)" type="button" class="close close-button" data-dismiss="modal" data-target="@Model.GmailIdNumber" data-status="@Model.Status.Text">&times;</button>
                         </div>
 
                         <!-- Modal body -->
@@ -61,18 +61,23 @@
                                             <r style="font-weight:bold">@Model.Attachments.Sum(x => x.FileSizeInMb).ToString("0.00")</r> MB
                                         </h7>
                                     </p>
-                                    <p><h7>Subject: <r style="font-weight:bold">@Model.Subject</r></h7></p>
-                                    <div class="mail-body" style="width: 100%; height:300px; overflow-y:scroll;">
+                                    <div class="mail-body-@Model.GmailIdNumber" style="width: 100%; height:300px; overflow-y:scroll;">
                                         <img src="/images/ajax-loader.gif" class="loading-indicator" style="height:150px" />
                                     </div>
                                 </div>
                                 <div class="col-sm-3" style="background-color:lavender;">
                                     <div style="">
                                         <p></p>
-                                        <button type="button" data-dismiss="modal" style="width:160px" class="btn btn-success validation-button" data-messageId="@Model.GmailIdNumber" data-url="/home/validatemail">Valid</button>
+                                        <button onclick="validateEmail(this)" type="button" data-dismiss="modal" style="width:160px" class="btn btn-success validation-button" data-messageId="@Model.GmailIdNumber" data-url="/home/validatemail">Valid</button>
                                         <p></p>
                                         <p></p>
-                                        <button type="button" data-dismiss="modal" style="width:160px" class="btn btn-danger notValid-button" data-messageId="@Model.GmailIdNumber" data-url="/home/notvalidmail">Not Valid</button>
+                                        <button onclick="invalidateEmail(this)" type="button" data-dismiss="modal" style="width:160px" class="btn btn-danger notValid-button" data-messageId="@Model.GmailIdNumber" data-url="/home/notvalidmail">Not Valid</button>
+                                        <p></p>
+                                        <p></p>
+                                        @if (Model.UserIsManager&&Model.Status.Text!= "Not Reviewed")
+                                        {
+                                            <button onclick="backToNotPreviewed(this)" type="button" data-dismiss="modal" style="width:160px" class="btn btn-info close-button" data-target="@Model.GmailIdNumber" data-status="@Model.Status.Text">Not Reviewed</button>
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -94,7 +99,7 @@ if (Model.Status.Text == "New" || /*Model.Status.Text == "Open" && Model.OpenedB
 
         <!-- Process Modal -->
         <!-- Button to Open the Modal -->
-        <button type="button" class="process-button btn btn-success" data-isManager=@Model.UserIsManager data-toggle="modal" data-target="#mails-@Model.GmailIdNumber">
+        <button onclick="processMailButton(this)" type="button" class="process-button btn btn-success" data-isManager=@Model.UserIsManager data-toggle="modal" data-target="#mails-@Model.GmailIdNumber" data-status="@Model.Status.Text">
             <img src="~/images/process.png" height="30" width="30">
         </button>
         <!-- The Modal -->
@@ -105,11 +110,11 @@ if (Model.Status.Text == "New" || /*Model.Status.Text == "Open" && Model.OpenedB
                     <!-- Modal Header -->
                     <div class="modal-header" style="cursor:default">
                         <h6 class="modal-title">@Model.Sender.SenderName, @Model.Sender.SenderEmail</h6>
-                        <button type="button" class="close close-button-open" data-dismiss="modal" data-target="@Model.GmailIdNumber">&times;</button>
+                        @*<button type="button" class="close close-button-open" data-dismiss="modal" data-target="@Model.GmailIdNumber">&times;</button>*@
                     </div>
 
                     <!-- Modal body -->
-                    <div class="modal-body " data-backdrop="true" style="cursor:default">
+                    <div class="modal-body-@Model.GmailIdNumber" data-backdrop="true" style="cursor:default">
                         <div class="row">
                             <div class="col-sm-9" style="background-color:lavender;">
                                 <p><strong>Subject: </strong><r>@Model.Subject</r></p>
@@ -123,19 +128,40 @@ if (Model.Status.Text == "New" || /*Model.Status.Text == "Open" && Model.OpenedB
                                 </div>
                             </div>
                             <div class="col-sm-3" style="background-color:antiquewhite;">
-                                <form class="customer-form" action="/" method="post">
-
-                                    <input asp-for="@Model.GmailIdNumber" type="hidden" name="gmid" id="gmailid" class="form-control" />
+                                <div class="input-form=@Model.GmailIdNumber">
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                     <label>Personal Identification Number:</label>
-                                    <input asp-for="@Model.CustomerEGN " placeholder="Personal Identification Number" name="egn" id="egn" type="text" class="form-control" />
-                                    <label>Phone Number:</label>
-                                    <input asp-for="@Model.CustomerPhoneNumber " placeholder="Phone Number" id="phone" name="phone" type="text" class="form-control" />
 
-                                    <button type="submit" style="width:160px" value="Submit" class="btn btn-success close-application customer-form" formmethod="post" data-url="/home/submitncloseapplication">Submit&Close</button>
-                                </form>
+                                    <input asp-for="@Model.CustomerEGN" placeholder="Personal Identification Number" name="CustomerEGN" id="egnid-@Model.GmailIdNumber" />
+
+                                    <span asp-validation-for="@Model.CustomerEGN" class="text-danger"></span>
+
+                                    <label>Phone Number:</label>
+
+                                    <input asp-for="@Model.CustomerPhoneNumber" placeholder="Phone Number" id="phoneid-@Model.GmailIdNumber" name="CustomerPhoneNumber" />
+
+                                    <span asp-validation-for="@Model.CustomerPhoneNumber" class="text-danger"></span>
+
+
+                                    <button onclick="approveApplicationButton(this)" data-gmailIdNumber="@Model.GmailIdNumber" type="button" style="width:160px" class="btn btn-success" data-dismiss="modal">Submit&Close</button>
+                                </div>
+
+
+                                @*<form id="@Model.GmailIdNumber" class="close-application-aprove @Model.GmailIdNumber "  data-gmailIdNumber="@Model.GmailIdNumber">
+            <input type="hidden" name="GmailIdNumber" value="@Model.GmailIdNumber" id="gmailid" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <label>Personal Identification Number:</label>
+            <input asp-for="@Model.CustomerEGN" placeholder="Personal Identification Number" name="CustomerEGN" id="egnid-@Model.GmailIdNumber" />
+            <span asp-validation-for="@Model.CustomerEGN" class="text-danger"></span>
+            <label>Phone Number:</label>
+            <input asp-for="@Model.CustomerPhoneNumber" placeholder="Phone Number" id="phoneid-@Model.GmailIdNumber" name="CustomerPhoneNumber" />
+            <span asp-validation-for="@Model.CustomerPhoneNumber" class="text-danger"></span>
+
+            <button type="submit" style="width:160px" class="btn btn-success">Submit&Close</button>
+        </form>*@
                                 <br />
                                 <div style="">
-                                    <button type="button" data-dismiss="modal" style="width:160px" class="btn btn-danger notValid-button" data-messageId="@Model.GmailIdNumber" data-url="/home/notvalidmail">Cancel</button>
+                                    <button onclick="rejectApplicationButton(this)" type="button" data-dismiss="modal" style="width:160px" class="btn btn-danger notValid-button" data-messageId="@Model.GmailIdNumber" data-url="/home/submitncloseapplicationrejected">Reject&Close</button>
                                 </div>
                             </div>
                         </div>

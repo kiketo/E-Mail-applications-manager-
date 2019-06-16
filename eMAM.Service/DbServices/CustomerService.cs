@@ -32,14 +32,20 @@ namespace eMAM.Service.DbServices
 
             return customer;
         }
+
         public async Task<Customer> GetCustomerByEGNAsync(string egn)
         {
-            var customer = await this.context.Customers.FirstOrDefaultAsync(c => c.CustomerEGN == egn);
+            var customer = await this.context.Customers
+                                            .Include(c=>c.Emails)
+                                            .FirstOrDefaultAsync(c => c.CustomerEGN == egn);
 
             return customer;
         }
 
-        
-
+        public async Task UpdateAsync(Customer customer)
+        {
+            this.context.Attach(customer).State = EntityState.Modified;
+            await this.context.SaveChangesAsync();
+        }
     }
 }

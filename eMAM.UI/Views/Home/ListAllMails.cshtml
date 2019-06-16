@@ -42,7 +42,9 @@
         @foreach (var mail in Model.SearchResults)
         {
             mail.UserIsManager = Model.UserIsManager;
-            <tr class="row-@mail.GmailIdNumber"><partial name="_AllEmailsPartial" model="mail" /></tr>
+            <tr class="row-@mail.GmailIdNumber">
+                <partial name="_AllEmailsPartial" model="mail" />
+            </tr>
         }
     </tbody>
 </table>
