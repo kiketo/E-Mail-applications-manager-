@@ -10,7 +10,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Google.Apis.Gmail.v1" Version="1.40.0.1572" />
+    <PackageReference Include="CipherObject" Version="2019.6.0" />
+    <PackageReference Include="Google.Apis.Gmail.v1" Version="1.40.2.1613" />
   </ItemGroup>
 
   <ItemGroup>

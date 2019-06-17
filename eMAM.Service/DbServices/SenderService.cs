@@ -1,4 +1,5 @@
-﻿using eMAM.Data;
+﻿using Crypteron.CipherObject;
+using eMAM.Data;
 using eMAM.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -19,7 +20,9 @@ namespace eMAM.Service.DbServices
 
         public Task<Sender> GetSenderAsync(string senderMail, string senderName)
         {
-            return this.context.Senders.FirstOrDefaultAsync(s => s.SenderEmail == senderMail && s.SenderName == senderName);
+            return this.context.Senders
+                        .FirstOrDefaultAsync(s => s.SenderEmail == senderMail && s.SenderName == senderName)
+                        .Unseal();
         }
 
         public async Task<Sender> AddSenderAsync(string senderMail, string senderName)
@@ -29,11 +32,11 @@ namespace eMAM.Service.DbServices
                 SenderEmail = senderMail,
                 SenderName = senderName
             };
-
+            newSender.Seal();
             await this.context.Senders.AddAsync(newSender);
             await this.context.SaveChangesAsync();
 
-            return newSender;
+            return newSender.Unseal();
         }
     }
 }

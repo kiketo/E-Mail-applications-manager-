@@ -1,4 +1,5 @@
-﻿using eMAM.Service.DTO;
+﻿using Crypteron.CipherObject;
+using eMAM.Service.DTO;
 using eMAM.Service.GmailServices.Contracts;
 using Newtonsoft.Json;
 using System;
@@ -26,7 +27,7 @@ namespace eMAM.Service.GmailServices
             {
                 new KeyValuePair<string,string>("client_id","667407283017-hjbtv4a5sjr3garaprkidqo36qs4u7o3.apps.googleusercontent.com"),
                 new KeyValuePair<string,string>("client_secret","cH5tErPh_uqDZDmp1F1aDNIs"),
-                new KeyValuePair<string,string>("refresh_token",refreshToken),
+                new KeyValuePair<string,string>("refresh_token",refreshToken),//.Unseal()),
                 new KeyValuePair<string,string>("grant_type","refresh_token"),
             });
 
@@ -46,9 +47,9 @@ namespace eMAM.Service.GmailServices
         public async Task<GmailMessagesListDTO> DownloadMailsListAsync(string AccessToken)
         {
             var client = new HttpClient();
-            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + AccessToken);
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + AccessToken);//.Unseal());
 
-            var res = await client.GetAsync("https://www.googleapis.com/gmail/v1/users/me/messages?includeSpamTrash=true");
+            var res = await client.GetAsync("https://www.googleapis.com/gmail/v1/users/me/messages?includeSpamTrash=true&maxResults=999999");
 
             var content = await res.Content.ReadAsStringAsync();
             var gmailMessagesList = JsonConvert.DeserializeObject<GmailMessagesListDTO>(await res.Content.ReadAsStringAsync());
@@ -59,7 +60,7 @@ namespace eMAM.Service.GmailServices
         public async Task<GmailMessageDTO> DownloadMail(string messageId, string accessToken)
         {
             var client = new HttpClient();
-            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);//.Unseal());
 
             var str = new StringBuilder("https://www.googleapis.com/gmail/v1/users/me/messages/")
                     .Append(messageId)
@@ -171,7 +172,7 @@ namespace eMAM.Service.GmailServices
         public async Task<GmailMessageDTO> DownloadBodyOfMailAsync(string messageId, string accessToken)
         {
             var client = new HttpClient();
-            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
+            client.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);//.Unseal());
             var str = new StringBuilder("https://www.googleapis.com/gmail/v1/users/me/messages/")
                    .Append(messageId)
                    .Append("?format=full");
