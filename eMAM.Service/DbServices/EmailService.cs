@@ -84,7 +84,10 @@ namespace eMAM.Service.DbServices
                 allMails = this.context.Emails
                                        .Include(e => e.Attachments)
                                        .Include(e => e.Sender)
-                                       .Include(e => e.Status);
+                                       .Include(e => e.Status)
+                                       .Include(e=>e.ClosedBy)
+                                       .Include(e=>e.PreviewedBy)
+                                       .Include(e=>e.OpenedBy);
             }
             else
             {
@@ -92,7 +95,10 @@ namespace eMAM.Service.DbServices
                                            .Where(e => e.WorkInProcess == true && e.WorkingBy == user || e.WorkInProcess == false)
                                            .Include(e => e.Attachments)
                                            .Include(e => e.Sender)
-                                           .Include(e => e.Status);
+                                           .Include(e => e.Status)
+                                           .Include(e => e.ClosedBy)
+                                            .Include(e => e.PreviewedBy)
+                                           .Include(e => e.OpenedBy); 
             }
             return allMails;
         }
@@ -132,6 +138,7 @@ namespace eMAM.Service.DbServices
                                        .Include(e => e.Status)
                                        .Where(e => e.Status.Text == "Aproved" || e.Status.Text == "Rejected")
                                        .Include(e => e.Attachments)
+                                        .Include(e => e.ClosedBy)
                                        .Include(e => e.Sender);
             }
             else
@@ -141,6 +148,7 @@ namespace eMAM.Service.DbServices
                                            .Where(e => e.Status.Text == "Aproved" || e.Status.Text == "Rejected")
                                            .Where(e => e.ClosedBy == user)
                                            .Include(e => e.Attachments)
+                                            .Include(e => e.ClosedBy)
                                            .Include(e => e.Sender);
             }
             return allMails;

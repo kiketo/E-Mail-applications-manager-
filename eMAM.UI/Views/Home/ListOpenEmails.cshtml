@@ -30,7 +30,7 @@
             <th>Date/Time</th>
             <th>Sender</th>
             <th>Subject</th>
-            <th>In current status since</th>
+            <th>Since</th>
             @if (Model.UserIsManager)
             {
                 <th> Opened by</th>
@@ -44,7 +44,7 @@
         {
             mail.UserIsManager = Model.UserIsManager;
             <tr class="row-@mail.GmailIdNumber">
-                <partial name="_AllEmailsPartial" model="mail" />
+                <partial name="_OpenedApplicationsPartial.cshtml" model="mail" />
             </tr>
         }
     </tbody>

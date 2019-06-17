@@ -30,7 +30,6 @@ $('.emailButton')
     });
 
 //validate e-mail & close
-//$('.validation-button').click(
 function validateEmail(button) {
     var $this = $(button);
     debugger;
@@ -214,7 +213,7 @@ function processMailButton(button) {
     var form = $('#__AjaxAntiForgeryForm');
     var token = $('input[name="__RequestVerificationToken"]', form).val();
     var status = $this.attr('data-status');
-    var data1;
+
     if (status == "New") {
         var url1 = '/home/changestatustoopen';
 
@@ -257,8 +256,6 @@ function processMailButton(button) {
                 toastr.error("Ups, e-mail didn't load");
             }
         });
-
-
     } else {
         //read the body from DB
         $.ajax({
@@ -269,49 +266,31 @@ function processMailButton(button) {
                 messageId: messageRequestData
             },
             success: function (response) {
+                debugger;
                 //render the body
                 $(messageId).find('.mail-bodyDB').html(response);
             },
             error: function () {
                 toastr.error("Ups, e-mail didn't load");
+                debugger;
             }
         });
     }
-    //disable modal from closing when clicked outside the modal window?does not work?
-    //$(messageId).modal({
-    //    backdrop: 'static',
-    //    keyboard: false
-    //})
 };
 
 //submit and approve form
 //$('.close-application-aprove').submit(
 function approveApplicationButton(button) {
-    //ev.preventDefault();
-    //ev.stopPropagation();
     var form = $('#__AjaxAntiForgeryForm');
     var token = $('input[name="__RequestVerificationToken"]', form).val();
-    //var data = $(button).serialize() + "&__RequestVerificationToken=" + token;
 
     var gmail = $(button).attr('data-gmailIdNumber');
     var egn = $(button).parent().find('#egnid-' + gmail)[0].value;
-    console.log(egn);
     var number = $(button).parent().find('#phoneid-' + gmail)[0].value;
-
-    //var model = {
-    //    __RequestVerificationToken: token,
-    //    CustomerEGN: egn,
-    //    CustomerPhoneNumber: number,
-    //    GmailIdNumber: gmail
-    //};
     debugger;
     $.ajax({
         type: "POST",
         url: "/home/submitncloseapplicationaproved",
-        //data: {
-        //    
-        //    data: data
-        //},
         data: {
             __RequestVerificationToken: token,
             GmailIdNumber: gmail,
@@ -323,18 +302,14 @@ function approveApplicationButton(button) {
             //change the status in the DOM
             toastr.success("Application was Aproved");
             $('.row-' + gmail).html(response);
-            //window.close();
             debugger;
-            //$("#mails-" + gmail).modal('hide');
-            //$('.modal-body-' + gmail).removeClass('modal-open');
         },
         error: function (res) {
             toastr.error(res.responseText);
+            debugger;
         }
     })
 };
-
-
 
 //reject application
 //$('.rejected-button').click(
@@ -358,8 +333,6 @@ function rejectApplicationButton(button) {
             toastr.warning("Application Rejected");
             //change the status in the DOM
             $('.row-' + gmail).html(response);
-            //$('.row-' + gmail).remove();
-
         },
         error: function (res, as, okijjg) {
             toastr.error(res.responseText);
@@ -368,36 +341,99 @@ function rejectApplicationButton(button) {
     debugger;
 };
 
-//preview open aplication
-$('.preview-open-manager-button').click(function (ev) {
-    var $this = $(this);
-    var messageId = $this.attr('data-messageId'); //??
-    var url = '/home/getbodydb';
-    //disable modal from closing when clicked outside the modal window?does not work?
-    $(messageId).modal({
-        backdrop: 'static',
-        keyboard: false
-    })
+//back to new from closed status
+function backToNewApplicationButton(button) {
+    var $this = $(button);
+    debugger;
+    var messageId = $this.attr('data-messageId');
+    var url = "/home/backtonewstatus";
+
     var form = $('#__AjaxAntiForgeryForm');
     var token = $('input[name="__RequestVerificationToken"]', form).val();
+    /////////////////////
 
+    var url1 = "/home/validatemail";
+
+    //download e-mail body to DB
+    $.ajax({
+        type: "POST",
+        url: url1,
+        //dataType: "html",
+        //cache: true,
+        data: {
+            __RequestVerificationToken: token,
+            messageId: messageId
+        },
+        success: function (data) {
+            //toastr.success("Mail Body in DB");
+            //change the status in the DOM
+           // $('.row-' + messageId).html(data);
+        },
+        error: function (err) {
+            toastr.error(err.responseText);
+        }
+    });
+
+    /////////////////
 
 
     $.ajax({
         type: "POST",
         url: url,
+        dataType: "html",
+        //cache: true,
         data: {
             __RequestVerificationToken: token,
-            messageId: messageRequestData
+            id: messageId
         },
-        success: function (response) {
-            $(messageId).find('.mail-bodyDB').html(response);
-            toastr.success("Preview");
-
+        success: function (data) {
+            toastr.success("Mail back to New");
+            //change the status in the DOM
+            $('.row-' + messageId).html(data);
         },
-        error: function (res) {
-            toastr.error(res.responseText);
+        error: function (err) {
+            toastr.error(err.responseText);
         }
     });
-    debugger;
-});
+};
+
+
+
+
+
+
+
+
+////preview open aplication
+//$('.preview-open-manager-button').click(function (ev) {
+//    var $this = $(this);
+//    var messageId = $this.attr('data-messageId'); //??
+//    var url = '/home/getbodydb';
+//    //disable modal from closing when clicked outside the modal window?does not work?
+//    $(messageId).modal({
+//        backdrop: 'static',
+//        keyboard: false
+//    })
+//    var form = $('#__AjaxAntiForgeryForm');
+//    var token = $('input[name="__RequestVerificationToken"]', form).val();
+
+
+
+//    $.ajax({
+//        type: "POST",
+//        url: url,
+//        data: {
+//            __RequestVerificationToken: token,
+//            messageId: messageRequestData
+//        },
+//        success: function (response) {
+//            $(messageId).find('.mail-bodyDB').html(response);
+//            toastr.success("Preview");
+
+//        },
+//        error: function (res) {
+//            toastr.error(res.responseText);
+//        }
+//    });
+//    debugger;
+//});

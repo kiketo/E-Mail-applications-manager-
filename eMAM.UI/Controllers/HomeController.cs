@@ -54,8 +54,6 @@ namespace eMAM.UI.Controllers
             this.customerService = customerService ?? throw new ArgumentNullException(nameof(customerService));
         }
 
-
-
         [Authorize] // MAnager & Operator
         public async Task<IActionResult> Index()
         {
@@ -65,31 +63,64 @@ namespace eMAM.UI.Controllers
             var model = new HomeViewModel();
             List<Email> listEmails = await this.emailService.ReadAllMailsFromDb(true, user).ToListAsync();
             var modelEmails = listEmails.Select(x => emailViewModelMapper.MapFrom(x));
-            model.NotReviewed = modelEmails.Where(s => s.Status.Text == "Not Reviewed").OrderByDescending(x => x.DateReceived).Take(5).ToList();
-            model.New = modelEmails.Where(s => s.Status.Text == "New").OrderByDescending(x => x.DateReceived).Take(5).ToList();
 
-            if (!User.IsInRole("Manager"))
+            model.NotReviewed = modelEmails.Where(s => s.Status.Text == "Not Reviewed")
+                                         .OrderByDescending(x => x.DateReceived)
+                                         .Take(5)
+                                         .ToList();
+
+            model.New = modelEmails.Where(s => s.Status.Text == "New")
+                                    .OrderByDescending(x => x.DateReceived)
+                                    .Take(5)
+                                    .ToList();
+
+            if (!isManager)
             {
-                model.Open = modelEmails.Where(s => s.Status.Text == "Open").Where(u => u.WorkingBy == user).OrderByDescending(x => x.DateReceived).Take(5).ToList();
-                model.Closed = modelEmails.Where(s => s.Status.Text == "Aproved" || s.Status.Text == "Rejected").OrderBy(x => x.DateReceived).Take(5).ToList();
-                model.UserIsManager = isManager;
+                model.Open = modelEmails.Where(s => s.Status.Text == "Open")
+                                        .Where(u => u.WorkingBy == user)
+                                        .OrderBy(x => x.SetInCurrentStatusOn)
+                                        .Take(5)
+                                        .ToList();
+
+                model.Closed = modelEmails.Where(s => s.Status.Text == "Aproved" || s.Status.Text == "Rejected")
+                                          .OrderBy(x => x.DateReceived)
+                                          .Take(5)
+                                          .ToList();
             }
             else
             {
-            model.Open = modelEmails.Where(s => s.Status.Text == "Open").OrderByDescending(x => x.DateReceived).Take(5).ToList();
-            model.Closed = modelEmails.Where(s => s.Status.Text == "Aproved" || s.Status.Text == "Rejected").OrderBy(x => x.DateReceived).Take(5).ToList();
+                model.Open = modelEmails.Where(s => s.Status.Text == "Open")
+                                         .OrderBy(x => x.SetInCurrentStatusOn)
+                                        .Take(5)
+                                        .ToList();
 
+                model.Closed = modelEmails.Where(s => s.Status.Text == "Aproved" || s.Status.Text == "Rejected")
+                                        .OrderBy(x => x.DateReceived)
+                                        .Take(5)
+                                        .ToList();
             }
+            model.UserIsManager = isManager;
 
             foreach (var mail in model.New)
             {
+                mail.UserIsManager = isManager;
                 mail.InCurrentStatusSince = DateTime.Now - mail.SetInCurrentStatusOn;
             }
             foreach (var mail in model.Open)
             {
+                mail.UserIsManager = isManager;
                 mail.InCurrentStatusSince = DateTime.Now - mail.SetInCurrentStatusOn;
             }
 
+            foreach (var mail in model.Closed)
+            {
+                mail.UserIsManager = isManager;
+            }
+
+            foreach (var mail in model.NotReviewed)
+            {
+                mail.UserIsManager = isManager;
+            }
 
             return View(model);
         }
@@ -111,12 +142,12 @@ namespace eMAM.UI.Controllers
             var user = await this.userManager.GetUserAsync(User);
             var isManager = User.IsInRole("Manager");
             var mails = this.emailService.ReadAllMailsFromDb(isManager, user);
+            mails = mails.OrderByDescending(m => m.DateReceived);
             if (newFilter)
             {
                 mails = mails.Where(e => e.Status.Text == "Invalid Application");
             }
             var page = await PaginatedList<Email>.CreateAsync(mails, pageNumber ?? 1, pageSize);
-            page.Reverse();
 
             EmailViewModel model = new EmailViewModel
             {
@@ -132,6 +163,7 @@ namespace eMAM.UI.Controllers
             {
                 var element = this.emailViewModelMapper.MapFrom(mail);
                 model.SearchResults.Add(element);
+                element.InCurrentStatusSince = DateTime.Now - mail.SetInCurrentStatusOn;
             }
 
             return View(model);
@@ -154,12 +186,13 @@ namespace eMAM.UI.Controllers
             var userIs = await this.userManager.GetUserAsync(User);
             var isManager = User.IsInRole("Manager");
             var mails = this.emailService.ReadOpenMailsFromDb(isManager, userIs);
+            mails = mails.OrderBy(m => m.SetInCurrentStatusOn);
             if (!string.IsNullOrEmpty(user))
             {
                 mails = mails.Where(e => e.OpenedBy.UserName == user);
             }
             var page = await PaginatedList<Email>.CreateAsync(mails, pageNumber ?? 1, pageSize);
-            page.Reverse();
+
 
             EmailViewModel model = new EmailViewModel
             {
@@ -179,6 +212,7 @@ namespace eMAM.UI.Controllers
                 }
 
                 var element = this.emailViewModelMapper.MapFrom(mail);
+                element.InCurrentStatusSince = DateTime.Now - mail.SetInCurrentStatusOn;
                 model.SearchResults.Add(element);
             }
 
@@ -231,7 +265,7 @@ namespace eMAM.UI.Controllers
         public async Task<IActionResult> PreviewMail(string messageId)
         {
             var user = await this.userManager.GetUserAsync(User);
-              await this.emailService.WorkInProcessAsync(user, messageId);//TODO stops PREVIEW
+            await this.emailService.WorkInProcessAsync(user, messageId);//TODO stops PREVIEW
             var userData = await this.gmailUserDataService.GetAsync();
             var mailDTO = await this.gmailApiService.DownloadBodyOfMailAsync(messageId, userData.AccessToken);
             var body = mailDTO.BodyAsString;
@@ -254,6 +288,8 @@ namespace eMAM.UI.Controllers
             mail.SetInCurrentStatusOn = DateTime.Now;
             mail.Body = mailDTO.BodyAsString;
             mail.WorkInProcess = false;
+            mail.WorkingBy = null;
+            mail.PreviewedBy = user;
             await emailService.UpdateAsync(mail);
 
             var model = this.emailViewModelMapper.MapFrom(mail);
@@ -329,8 +365,6 @@ namespace eMAM.UI.Controllers
             return View(managers);
         }
 
-
-
         [Authorize]
         public async Task<IActionResult> ListStatusNew(int? pageNumber) // Accessible to all logged users and managers to see
         {
@@ -339,9 +373,9 @@ namespace eMAM.UI.Controllers
             var user = await this.userManager.GetUserAsync(User);
             var mailStatusNewLst = this.emailService.ReadAllMailsFromDb(isManager, user)
                 .Where(e => e.Status.Text == "New")
-                .OrderByDescending(n=>n.SetInCurrentStatusOn);
+                .OrderBy(n => n.SetInCurrentStatusOn);
             var page = await PaginatedList<Email>.CreateAsync(mailStatusNewLst, pageNumber ?? 1, pageSize);
-            page.Reverse();
+            //page.Reverse();
 
             EmailViewModel model = new EmailViewModel
             {
@@ -359,7 +393,6 @@ namespace eMAM.UI.Controllers
             }
             return View(model);
         }
-
 
         //[HttpPost]
         //public async Task<IActionResult> OpenApplication(string messageId) // Accessible to all logged users and managers to see New->Open
@@ -397,11 +430,11 @@ namespace eMAM.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> ChangeStatusToOpen(string messageId)
         {
-           // var email = await this.emailService.GetEmailByGmailIdAsync(messageId);
+            // var email = await this.emailService.GetEmailByGmailIdAsync(messageId);
             var user = await this.userManager.GetUserAsync(User);
-            var newStatus = await this.statusService.GetStatusAsync("Open");
+            var newStatus = await this.statusService.GetStatusByName("Open");
             //await this.auditLogService.Log(user.UserName, "status change", messageId, newStatus.Text, email.Status.Text);
-            
+
             var mail = await emailService.GetEmailByGmailIdAsync(messageId);
             mail.Status = newStatus;
             mail.WorkInProcess = true;
@@ -432,11 +465,12 @@ namespace eMAM.UI.Controllers
                 {
                     customer = await this.customerService.GetCustomerByEGNAsync(model.CustomerEGN);
                 }
-                    customer.Emails.Add(email);
+                customer.Emails.Add(email);
                 await this.customerService.UpdateAsync(customer);
-                email.Status = await this.statusService.GetStatusAsync("Aproved");
+                email.Status = await this.statusService.GetStatusByName("Aproved");
                 email.ClosedBy = await this.userManager.GetUserAsync(User);
                 email.SetInTerminalStatusOn = DateTime.Now;
+                email.SetInCurrentStatusOn = DateTime.Now;
                 email.WorkInProcess = false;
                 email.WorkingBy = null;
                 await this.emailService.UpdateAsync(email);
@@ -455,9 +489,10 @@ namespace eMAM.UI.Controllers
         {
             var email = await this.emailService.GetEmailByGmailIdAsync(model.GmailIdNumber);
             email.Body = null;
-            email.Status = await this.statusService.GetStatusAsync("Rejected");
+            email.Status = await this.statusService.GetStatusByName("Rejected");
             email.ClosedBy = await this.userManager.GetUserAsync(User);
             email.SetInTerminalStatusOn = DateTime.Now;
+            email.SetInCurrentStatusOn = DateTime.Now;
             email.WorkInProcess = false;
             email.WorkingBy = null;
             await this.emailService.UpdateAsync(email);
@@ -467,26 +502,54 @@ namespace eMAM.UI.Controllers
             return PartialView("_AllEmailsPartial", partModel);
         }
 
-
-        [Authorize(Roles = "Manager")]
-        [ValidateAntiForgeryToken]
+        [AutoValidateAntiforgeryToken]
+        [Authorize]
         [HttpPost]
-        public async Task<IActionResult> ManagerStatusChangeNotReviewed(string messageId)
+        public async Task<IActionResult> BackToNewStatus(string id)
         {
-            var email = await this.emailService.GetEmailByGmailIdAsync(messageId);
             var user = await this.userManager.GetUserAsync(User);
 
-            var newStatus = await this.statusService.GetInitialStatusAsync();
+            var userData = await this.gmailUserDataService.GetAsync();
+            var mailDTO = await this.gmailApiService.DownloadBodyOfMailAsync(id, userData.AccessToken);
 
-            await this.auditLogService.Log(user.UserName, "status change", email.GmailIdNumber, newStatus.Text, email.Status.Text);
-            email.Status = newStatus;
-            email.ClosedBy = null;
-            email.WorkingBy = null;
-            email.WorkInProcess = false;
-            email.Body = null;
-            await this.emailService.UpdateAsync(email);
-            return Ok();
+            var mail = await this.emailService.GetEmailByGmailIdAsync(id);
+            mail.Status = await this.statusService.GetStatusByName("New");
+            mail.WorkInProcess = false;
+            mail.WorkingBy = null;
+            mail.SetInCurrentStatusOn = DateTime.Now;
+            mail.SetInTerminalStatusOn = DateTime.MinValue;
+            mail.ClosedBy = null;
+            mail.OpenedBy = null;
+            mail.Body = mailDTO.BodyAsString;
+
+            await emailService.UpdateAsync(mail);
+
+            var model = this.emailViewModelMapper.MapFrom(mail);
+            model.UserIsManager = User.IsInRole("Manager");
+
+            return PartialView("_AllEmailsPartial", model);
         }
+
+
+        //[Authorize(Roles = "Manager")]
+        //[ValidateAntiForgeryToken]
+        //[HttpPost]
+        //public async Task<IActionResult> ManagerStatusChangeNotReviewed(string messageId)
+        //{
+        //    var email = await this.emailService.GetEmailByGmailIdAsync(messageId);
+        //    var user = await this.userManager.GetUserAsync(User);
+
+        //    var newStatus = await this.statusService.GetInitialStatusAsync();
+
+        //    await this.auditLogService.Log(user.UserName, "status change", email.GmailIdNumber, newStatus.Text, email.Status.Text);
+        //    email.Status = newStatus;
+        //    email.ClosedBy = null;
+        //    email.WorkingBy = null;
+        //    email.WorkInProcess = false;
+        //    email.Body = null;
+        //    await this.emailService.UpdateAsync(email);
+        //    return Ok();
+        //}
 
         //[Authorize(Roles = "Manager, Operator")]
         //[ValidateAntiForgeryToken]
@@ -515,7 +578,7 @@ namespace eMAM.UI.Controllers
             var pageSize = 10;
             var user = await this.userManager.GetUserAsync(User);
             var isManager = User.IsInRole("Manager");
-            var mails = this.emailService.ReadAllMailsFromDb(isManager, user).Where(c=>c.Status.Text == "Aproved" || c.Status.Text == "Rejected");
+            var mails = this.emailService.ReadAllMailsFromDb(isManager, user).Where(c => c.Status.Text == "Aproved" || c.Status.Text == "Rejected");
             var page = await PaginatedList<Email>.CreateAsync(mails, pageNumber ?? 1, pageSize);
 
             EmailViewModel model = new EmailViewModel

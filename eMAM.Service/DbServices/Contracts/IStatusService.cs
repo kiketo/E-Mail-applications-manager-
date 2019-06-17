@@ -12,6 +12,6 @@ namespace eMAM.Service.DbServices.Contracts
 
         Task<Status> GetStatusByName(string statusName);
 
-        Task<Status> GetStatusAsync(string textStatus);
+        //Task<Status> GetStatusAsync(string textStatus);
     }
 }

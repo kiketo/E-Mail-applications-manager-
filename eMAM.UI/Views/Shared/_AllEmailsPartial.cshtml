@@ -6,12 +6,36 @@
 <td>@Model.Sender.SenderName &lt@(Model.Sender.SenderEmail)&gt</td>
 <td>@Model.Subject</td>
 <td class="status-@Model.GmailIdNumber">@Model.Status.Text</td>
+<td>@(Model.InCurrentStatusSince.TotalHours.ToString("N0")):@Model.InCurrentStatusSince.Minutes</td>
+@if (Model.Status.Text == "Open")
+{
+    <td>@Model.OpenedBy.UserName</td>
+}
+else
+{
+    if (Model.Status.Text == "Aproved" || Model.Status.Text == "Rejected")
+    {
+        <td>@Model.ClosedBy.UserName</td>}
+    else
+    {
+        if (Model.Status.Text == "New")
+        {
+            <td>@Model.PreviewedBy.UserName</td>
+        }
+        else
+        {
+            <td></td>
+        }
+    }
+}
+
+
 <td data-label="areAttachments">
     @if (Model.AreAttachments)
     {<img src="~/images/attachment.png" height="42" width="42">}
 </td>
 
-@if (Model.Status.Text == "Not Reviewed" || Model.Status.Text == "Invalid Application")
+@if (Model.Status.Text == "Not Reviewed" || Model.Status.Text == "Invalid Application" || Model.Status.Text == "Rejected")
 {
     if (Model.Status.Text == "Not Reviewed" || Model.UserIsManager)
     {
@@ -68,15 +92,15 @@
                                 <div class="col-sm-3" style="background-color:lavender;">
                                     <div style="">
                                         <p></p>
-                                        <button onclick="validateEmail(this)" type="button" data-dismiss="modal" style="width:160px" class="btn btn-success validation-button" data-messageId="@Model.GmailIdNumber" data-url="/home/validatemail">Valid</button>
+                                        <button onclick="validateEmail(this)" type="button" data-dismiss="modal" style="width:180px" class="btn btn-success validation-button" data-messageId="@Model.GmailIdNumber" data-url="/home/validatemail">Valid</button>
                                         <p></p>
                                         <p></p>
-                                        <button onclick="invalidateEmail(this)" type="button" data-dismiss="modal" style="width:160px" class="btn btn-danger notValid-button" data-messageId="@Model.GmailIdNumber" data-url="/home/notvalidmail">Not Valid</button>
+                                        <button onclick="invalidateEmail(this)" type="button" data-dismiss="modal" style="width:180px" class="btn btn-danger notValid-button" data-messageId="@Model.GmailIdNumber" data-url="/home/notvalidmail">Not Valid</button>
                                         <p></p>
                                         <p></p>
-                                        @if (Model.UserIsManager&&Model.Status.Text!= "Not Reviewed")
+                                        @if (Model.UserIsManager && Model.Status.Text != "Not Reviewed")
                                         {
-                                            <button onclick="backToNotPreviewed(this)" type="button" data-dismiss="modal" style="width:160px" class="btn btn-info close-button" data-target="@Model.GmailIdNumber" data-status="@Model.Status.Text">Not Reviewed</button>
+                                            <button onclick="backToNotPreviewed(this)" type="button" data-dismiss="modal" style="width:180px" class="btn btn-info close-button" data-target="@Model.GmailIdNumber" data-status="@Model.Status.Text">Back to Not Reviewed</button>
                                         }
                                     </div>
                                 </div>
@@ -93,7 +117,7 @@
     }
 }
 else
-if (Model.Status.Text == "New" || /*Model.Status.Text == "Open" && Model.OpenedBy.UserName == User.Identity.Name ||*/ Model.UserIsManager)
+if (Model.Status.Text == "New" || Model.Status.Text == "Open" && Model.OpenedBy.UserName == User.Identity.Name || Model.UserIsManager)
 {
     <td data-label="processModal">
 
@@ -123,7 +147,7 @@ if (Model.Status.Text == "New" || /*Model.Status.Text == "Open" && Model.OpenedB
                                     <r style="font-weight:bold">@Model.Attachments.Count</r> attachment/s, total size:
                                     <r style="font-weight:bold">@Model.Attachments.Sum(x => x.FileSizeInMb).ToString("0.00")</r> MB
                                 </p>
-                                <div class="mail-bodyDB" style="width: 100%; height:300px; overflow-y:scroll;">
+                                <div class="mail-bodyDB" style="width: 100%; height:400px; overflow-y:scroll;">
                                     <img src="/images/ajax-loader.gif" class="loading-indicator" style="height:150px" />
                                 </div>
                             </div>
@@ -151,8 +175,9 @@ if (Model.Status.Text == "New" || /*Model.Status.Text == "Open" && Model.OpenedB
                                     <p></p>
                                     <p></p>
                                     <button type="button" data-dismiss="modal" style="width:160px" class="btn btn-default notValid-button">Cancel</button>
-
-
+                                    <p></p>
+                                    <p></p>
+                                    <button onclick="backToNewApplicationButton(this)" type="button" data-dismiss="modal" style="width:160px" class="btn btn-info notValid-button" data-messageId="@Model.GmailIdNumber">Back to New</button>
 
                                 </div>
                             </div>

@@ -1,102 +1,149 @@
-﻿@model HomeViewModel
-@{
-    ViewData["Title"] = "Home Page";
+﻿@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+{
+    @Html.AntiForgeryToken()
 }
+@model HomeViewModel
 
-<p>Last 5 Opened</p>
+@if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
+{
+    <h3>Стига си чеса лимона, а си намери работа!</h3>
+}
+else if (User.IsInRole("User"))
+{
+    <h3>Dear new employee, please contact you manager for further registration.</h3>
+    <h3>If you succeed in this challenge you may get a raise in the salary!</h3>
+}
+else
+{
+    <table class="table-hover" style="width:100%">
+        <thead class="thead-light" style="background-color: cadetblue">
+            <tr>
+                @if (Model.UserIsManager)
+                {
+                    <th colspan="8" style="font-weight:bolder; text-align: center">Last 5 Opened</th>
+                }
+                else
+                {
+                    <th colspan="7" style="font-weight:bolder; text-align: center">Last 5 Opened</th>
+                }
+            </tr>
+            <tr>
+                <th>ID</th>
+                <th>Date/Time</th>
+                <th>Sender</th>
+                <th>Subject</th>
+                <th>Since</th>
+                @if (Model.UserIsManager)
+                {
+                    <th>Opened by</th>
+                }
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
 
-<table class="table-hover" style="width:100%">
-    <thead class="thead-light" style="background-color: cadetblue">
-        <tr>
-            <th>ID</th>
-            <th>Date/Time</th>
-            <th>Sender</th>
-            <th>Subject</th>
-            <th>Status</th>
-            <th>Open since</th>
-            @if (User.IsInRole("Manager"))
+            @foreach (var mail in Model.Open)
             {
-                <th>Opened by</th>
+                <tr>
+                    <partial name="_OpenedApplicationsPartial.cshtml" model="mail" />
+                </tr>
             }
-        </tr>
-    </thead>
-    <tbody>
-
-        @foreach (var mail in Model.Open)
-        {
-        <tr>
-           @* <partial name="_emailOpen.cshtml" model="mail" />*@
-        </tr>
-    }
 
         </tbody>
     </table>
 
 
 
-<p>Last 5 with status New</p>
-<table class="table-hover" style="width:100%">
-    <thead class="thead-light" style="background-color: cadetblue">
-        <tr>
-            <th>ID</th>
-            <th>Date/Time</th>
-            <th>Sender</th>
-            <th>Subject</th>
-            <th>Time Since Change</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
+    <p>Last 5 with status New</p>
+    <table class="table-hover" style="width:100%">
+        <thead class="thead-light" style="background-color: cadetblue">
 
-        @foreach (var mail in Model.New)
-        {
-            mail.UserIsManager = Model.UserIsManager;
-            <tr class="row-@mail.GmailIdNumber">
-                <partial name="_AllNewEmailsPartial" model="mail" />
+            <tr>
+
+                <th colspan="6" style="font-weight:bolder; text-align: center">Last 5 New</th>
+
             </tr>
-        }
-    </tbody>
-</table>
 
-<p>Last 5 with status Not Reviewed</p>
-<table class="table-hover" style="width:100%">
-    <thead class="thead-light" style="background-color: cadetblue">
-        <tr>
-            <th>Date/Time</th>
-            <th>Sender</th>
-            <th>Subject</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody>
+            <tr>
+                <th>ID</th>
+                <th>Date/Time</th>
+                <th>Sender</th>
+                <th>Subject</th>
+                <th>Time Since Change</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
 
-        @foreach (var mail in Model.NotReviewed)
-        {
-            <partial name="_previewEmail" model="mail" />
-        }
+            @foreach (var mail in Model.New)
+            {
+                mail.UserIsManager = Model.UserIsManager;
+                <tr class="row-@mail.GmailIdNumber">
+                    @*<partial name="_AllNewEmailsPartial" model="mail" />*@
+                </tr>
+            }
+        </tbody>
+    </table>
 
-    </tbody>
-</table>
+    <p>Last 5 with status Not Reviewed</p>
+    <table class="table-hover" style="width:100%">
+        <thead class="thead-light" style="background-color: cadetblue">
+            <tr>
+                @if (Model.UserIsManager)
+                {
+                    <th colspan="4" style="font-weight:bolder; text-align: center">Last 5 Not Reviewed</th>
+                }
+                else
+                {
+                    <th colspan="4" style="font-weight:bolder; text-align: center">Last 5 Not Reviewed</th>
+                }
+            </tr>
+            <tr>
+                <th>Date/Time</th>
+                <th>Sender</th>
+                <th>Subject</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
 
-<p>Last 5 with Closed</p>
-<table class="table-hover" style="width:100%">
-    <thead class="thead-light" style="background-color: cadetblue">
-        <tr>
-            <th>Date/Time</th>
-            <th>Sender</th>
-            <th>Subject</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody>
+            @foreach (var mail in Model.NotReviewed)
+            {
+                <partial name="_AllEmailsPartial" model="mail" />
+            }
 
-        @foreach (var mail in Model.Closed)
-        {
-            @*<partial name="_emailHome" model="mail" />*@
-        }
+        </tbody>
+    </table>
 
-    </tbody>
-</table>
+    <p>Last 5 with Closed</p>
+    <table class="table-hover" style="width:100%">
+        <thead class="thead-light" style="background-color: cadetblue">
+            <tr>
+                @if (Model.UserIsManager)
+                {
+                    <th colspan="4" style="font-weight:bolder; text-align: center">Last 5 Closed</th>
+                }
+                else
+                {
+                    <th colspan="4" style="font-weight:bolder; text-align: center">Last 5 Closed</th>
+                }
+            </tr>
+            <tr>
+                <th>Date/Time</th>
+                <th>Sender</th>
+                <th>Subject</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
 
+            @foreach (var mail in Model.Closed)
+            {
+                @*<partial name="_emailHome" model="mail" />*@
+            }
+
+        </tbody>
+    </table>
+}
 
 
