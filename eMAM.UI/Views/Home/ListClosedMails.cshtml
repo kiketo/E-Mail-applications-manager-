@@ -35,7 +35,7 @@
                     <input type="button" name="filterStatus" value="Aproved Only" class="btn btn-success" checked disabled />
                     <input type="submit" name="filterStatus" value="Rejected Only" class="btn btn-outline-success" />
                 }
-                else if (Model.FilterClosedStatus == "All")
+                else if (Model.FilterClosedStatus == "All" || Model.FilterClosedStatus ==  null)
                 {
 
                     <input type="button" name="filterStatus" value="All" class="btn btn-success" checked disabled />
@@ -84,14 +84,14 @@
 
 <a asp-action="ListClosedMails"
    asp-route-pageNumber="@(Model.PageIndex - 1)"
-   asp-route-currentFilter="@Model.FilterOnlyNotValid"
+   asp-route-currentFilter="@Model.FilterByUser"
    asp-route-currentFilterStatus="@Model.FilterClosedStatus"
    class="btn btn-success @prevDisabled">
     Previous
 </a>
 <a asp-action="ListClosedMails"
    asp-route-pageNumber="@(Model.PageIndex + 1)"
-   asp-route-currentFilter="@Model.FilterOnlyNotValid"
+   asp-route-currentFilter="@Model.FilterByUser"
    asp-route-currentFilterStatus="@Model.FilterClosedStatus"
    class="btn btn-success @nextDisabled">
     Next
