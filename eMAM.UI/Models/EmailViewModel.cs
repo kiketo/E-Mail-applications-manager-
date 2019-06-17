@@ -69,6 +69,7 @@ namespace eMAM.UI.Models
 
         public string Muted { get; set; }
 
+        [MinLength(10)]
         [Required]
         [MinLength(10)]
         public string CustomerEGN { get; set; }

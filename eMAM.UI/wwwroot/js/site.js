@@ -364,7 +364,7 @@ function approveApplicationButton(button) {
             toastr.success("Application was Aproved");
             //edit or delete the row in the DOM
             if (rowShouldBeEdited == "True") {
-                $('.row-' + gmail).html(data);
+                $('.row-' + gmail).html(response);
                 debugger;
             } else {
                 $('.row-' + gmail).remove();
@@ -403,7 +403,7 @@ function rejectApplicationButton(button) {
             toastr.warning("Application Rejected");
             //edit or delete the row in the DOM
             if (rowShouldBeEdited == "True") {
-                $('.row-' + messageId).html(data);
+                $('.row-' + messageId).html(response);
                 debugger;
             } else {
                 $('.row-' + messageId).remove();
@@ -484,7 +484,70 @@ function backToNewApplicationButton(button) {
 
 
 
+function VerifyEGN(button) {
+    var $this = $(button);
+    debugger;
+    var messageId = $this.attr('data-messageId');
+    var url = "/home/VerifyEGN";
 
+    var gmail = $(button).attr('data-gmailIdNumber');
+    var egn = $(button).parent().find('#egnid-' + gmail)[0].value;
+    var number = $(button).parent().find('#isEGNid-' + gmail)[0].value;
+    debugger;
+    var form = $('#__AjaxAntiForgeryForm');
+    var token = $('input[name="__RequestVerificationToken"]', form).val();
+    /////////////////////
+
+    var url1 = "/home/validatemail";
+
+    //download e-mail body to DB
+    $.ajax({
+        type: "POST",
+        url: url1,
+        //dataType: "html",
+        //cache: true,
+        data: {
+            __RequestVerificationToken: token,
+            messageId: messageId
+        },
+        success: function (data) {
+            //toastr.success("Mail Body in DB");
+            //change the status in the DOM
+            // $('.row-' + messageId).html(data);
+        },
+        error: function (err) {
+            toastr.error(err.responseText);
+        }
+    });
+
+    /////////////////
+
+
+    $.ajax({
+        type: "POST",
+        url: url,
+        dataType: "html",
+        //cache: true,
+        data: {
+            __RequestVerificationToken: token,
+            id: messageId
+        },
+        success: function (data) {
+            toastr.success("Mail back to New");
+            //edit or delete the row in the DOM
+            if (rowShouldBeEdited == "True") {
+                $('.row-' + messageId).html(data);
+                debugger;
+            } else {
+                $('.row-' + messageId).remove();
+                debugger;
+            }
+        },
+        error: function (err) {
+            toastr.error(err.responseText);
+        }
+    });
+};
 
 
 

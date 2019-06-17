@@ -54,7 +54,8 @@
     var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 }
-
+<p></p>
+<hr />
 <a asp-action="ListOpenEmails"
    asp-route-pageNumber="@(Model.PageIndex - 1)"
    asp-route-currentFilter="@Model.FilterByUser"

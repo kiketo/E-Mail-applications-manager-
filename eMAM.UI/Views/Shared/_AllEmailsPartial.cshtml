@@ -1,7 +1,7 @@
 ﻿@model EmailViewModel
 @if (Model.Status.Text == "Invalid Application")
 {
-    <tr class="text-muted" >
+    <tr class="text-muted">
 
         <td>@Model.Id</td>
         <td hidden data-gmailIdNumber="@Model.GmailIdNumber">@Model.GmailIdNumber</td>
@@ -40,371 +40,390 @@
             {<img src="~/images/attachment.png" height="42" width="42">}
         </td>
 
-        @if (Model.Status.Text == "Not Reviewed" || Model.Status.Text == "Invalid Application" @*|| Model.Status.Text == "Rejected"*@)
-        {
-            if (Model.Status.Text == "Not Reviewed" || Model.UserIsManager)
-            {
-                <td data-label="previewModal">
-                    <!-- Preview Modal -->
-                    <!-- Button to Open the Modal -->
-                    @if (Model.UserIsManager)
-                    {
-                        <button type="button" onclick="previewMailButton(this)" class="email-button btn btn-success" data-isManager=@Model.UserIsManager data-toggle="modal" data-target="#mails-@Model.GmailIdNumber" data-url="/home/previewmail">
-                            <img src="~/images/preview.png" height="30" width="30">
-                        </button>
-                    }
-                    else if (Model.Status.Text == "Not Reviewed")
-                    {
-                        <button type="button" onclick="previewMailButton(this)" class="email-button btn btn-success" data-toggle="modal" data-target="#mails-@Model.GmailIdNumber" data-url="/home/previewmail">
-                            <img src="~/images/preview.png" height="30" width="30">
-                        </button>
-                    }
+        @if (Model.Status.Text == "Not Reviewed" || Model.Status.Text == "Invalid Application"@*|| Model.Status.Text == "Rejected"*@)
+{
+if (Model.Status.Text == "Not Reviewed" || Model.UserIsManager)
+{
+<td data-label="previewModal">
+    <!-- Preview Modal -->
+    <!-- Button to Open the Modal -->
+    @if (Model.UserIsManager)
+    {
+        <button type="button" onclick="previewMailButton(this)" class="email-button btn btn-success" data-isManager=@Model.UserIsManager data-toggle="modal" data-target="#mails-@Model.GmailIdNumber" data-url="/home/previewmail">
+            <img src="~/images/preview.png" height="30" width="30">
+        </button>
+    }
+    else if (Model.Status.Text == "Not Reviewed")
+    {
+        <button type="button" onclick="previewMailButton(this)" class="email-button btn btn-success" data-toggle="modal" data-target="#mails-@Model.GmailIdNumber" data-url="/home/previewmail">
+            <img src="~/images/preview.png" height="30" width="30">
+        </button>
+    }
 
-                    <!-- The Modal -->
-                    <div class="modal fade bootstrap-modal" id="mails-@Model.GmailIdNumber" data-backdrop="static" data-keyboard="false">
-                        <div class="modal-dialog modal-lg" style="width:100%">
-                            <div class="modal-content">
+    <!-- The Modal -->
+    <div class="modal fade bootstrap-modal" id="mails-@Model.GmailIdNumber" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg" style="width:100%">
+            <div class="modal-content">
 
-                                <!-- Modal Header -->
-                                <div class="modal-header">
-                                    <h6 class="modal-title">@Model.Sender.SenderName, @Model.Sender.SenderEmail</h6>
-                                    <button onclick="backToNotPreviewed(this)" type="button" class="close close-button" data-dismiss="modal" data-target="@Model.GmailIdNumber" data-status="@Model.Status.Text">&times;</button>
-                                </div>
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h6 class="modal-title">@Model.Sender.SenderName, @Model.Sender.SenderEmail</h6>
+                    <button onclick="backToNotPreviewed(this)" type="button" class="close close-button" data-dismiss="modal" data-target="@Model.GmailIdNumber" data-status="@Model.Status.Text">&times;</button>
+                </div>
 
-                                <!-- Modal body -->
-                                <div class="modal-body">
+                <!-- Modal body -->
+                <div class="modal-body">
 
-                                    <div class="row">
-                                        <div class="col-sm-9" style="background-color:lavender;">
-                                            <p><h7>Subject: <r style="font-weight:bold">@Model.Subject</r></h7></p>
-                                            <p><h7>Date/Time received in the mail: <r style="font-weight:bold">@Model.DateReceived</r></h7></p>
-                                            <p>
-                                                <h7>
-                                                    Date/Time of initial registration within the system:
-                                                    <r style="font-weight:bold">@Model.InitialRegistrationInSystemOn</r>
-                                                </h7>
-                                            </p>
-                                            <p>
-                                                <h7>
-                                                    <r style="font-weight:bold">@Model.Attachments.Count</r> attachment/s, total size:
-                                                    <r style="font-weight:bold">@Model.Attachments.Sum(x => x.FileSizeInMb).ToString("0.00")</r> MB
-                                                </h7>
-                                            </p>
-                                            <div class="mail-body-@Model.GmailIdNumber" style="width: 100%; height:300px; overflow-y:scroll;">
-                                                <img src="/images/ajax-loader.gif" class="loading-indicator" style="height:150px" />
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-3" style="background-color:lavender;">
-                                            <div style="">
-                                                <p></p>
-                                                <button onclick="validateEmail(this)" type="button" data-dismiss="modal" style="width:180px" class="btn btn-success validation-button" data-messageId="@Model.GmailIdNumber" data-url="/home/validatemail">Valid</button>
-                                                <p></p>
-                                                <p></p>
-                                                <button onclick="invalidateEmail(this)" type="button" data-dismiss="modal" style="width:180px" class="btn btn-danger notValid-button" data-messageId="@Model.GmailIdNumber" data-url="/home/notvalidmail">Not Valid</button>
-                                                <p></p>
-                                                <p></p>
-                                                @if (Model.UserIsManager && Model.Status.Text != "Not Reviewed")
-                                                {
-                                                    <button onclick="backToNotPreviewed(this)" type="button" data-dismiss="modal" style="width:180px" class="btn btn-info close-button" data-target="@Model.GmailIdNumber" data-status="@Model.Status.Text">Back to Not Reviewed</button>
-                                                }
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                    <div class="row">
+                        <div class="col-sm-9" style="background-color:lavender;">
+                            <p><h7>Subject: <r style="font-weight:bold">@Model.Subject</r></h7></p>
+                            <p><h7>Date/Time received in the mail: <r style="font-weight:bold">@Model.DateReceived</r></h7></p>
+                            <p>
+                                <h7>
+                                    Date/Time of initial registration within the system:
+                                    <r style="font-weight:bold">@Model.InitialRegistrationInSystemOn</r>
+                                </h7>
+                            </p>
+                            <p>
+                                <h7>
+                                    <r style="font-weight:bold">@Model.Attachments.Count</r> attachment/s, total size:
+                                    <r style="font-weight:bold">@Model.Attachments.Sum(x => x.FileSizeInMb).ToString("0.00")</r> MB
+                                </h7>
+                            </p>
+                            <div class="mail-body-@Model.GmailIdNumber" style="width: 100%; height:300px; overflow-y:scroll;">
+                                <img src="/images/ajax-loader.gif" class="loading-indicator" style="height:150px" />
                             </div>
                         </div>
-                    </div>
-                </td>
-            }
-            else
-            {
-                <td></td>
-            }
-        }
-        else
-if (Model.Status.Text == "New" || (Model.Status.Text == "Open" && Model.OpenedBy.UserName == User.Identity.Name) || Model.UserIsManager)
-        {
-            <td data-label="processModal">
-
-                <!-- Process Modal -->
-                <!-- Button to Open the Modal -->
-                <button onclick="processMailButton(this)" type="button" class="process-button btn btn-success" data-isManager=@Model.UserIsManager data-toggle="modal" data-target="#mails-@Model.GmailIdNumber" data-status="@Model.Status.Text">
-                    <img src="~/images/process.png" height="30" width="30">
-                </button>
-                <!-- The Modal -->
-                <div class="modal fade bootstrap-modal" id="mails-@Model.GmailIdNumber" data-backdrop="static" data-keyboard="false">
-                    <div class="modal-dialog modal-xl">
-                        <div class="modal-content">
-
-                            <!-- Modal Header -->
-                            <div class="modal-header" style="cursor:default">
-                                <h6 class="modal-title">@Model.Sender.SenderName, @Model.Sender.SenderEmail</h6>
-                                @*<button type="button" class="close close-button-open" data-dismiss="modal" data-target="@Model.GmailIdNumber">&times;</button>*@
-                            </div>
-
-                            <!-- Modal body -->
-                            <div class="modal-body-@Model.GmailIdNumber" data-backdrop="true" style="cursor:default">
-                                <div class="row">
-                                    <div class="col-sm-9" style="background-color:lavender;">
-                                        <p><strong>Subject: </strong><r>@Model.Subject</r></p>
-                                        <p><strong>Received At: </strong> <r>@Model.DateReceived</r></p>
-                                        <p>
-                                            <r style="font-weight:bold">@Model.Attachments.Count</r> attachment/s, total size:
-                                            <r style="font-weight:bold">@Model.Attachments.Sum(x => x.FileSizeInMb).ToString("0.00")</r> MB
-                                        </p>
-                                        <div class="mail-bodyDB" style="width: 100%; height:400px; overflow-y:scroll;">
-                                            <img src="/images/ajax-loader.gif" class="loading-indicator" style="height:150px" />
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-3" style="background-color:antiquewhite;">
-                                        <div class="input-form=@Model.GmailIdNumber">
-                                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                            <label>Personal Identification Number:</label>
-
-                                            <input asp-for="@Model.CustomerEGN" placeholder="Personal Identification Number" name="CustomerEGN" id="egnid-@Model.GmailIdNumber" />
-
-                                            <span asp-validation-for="@Model.CustomerEGN" class="text-danger"></span>
-
-                                            <label>Phone Number:</label>
-
-                                            <input asp-for="@Model.CustomerPhoneNumber" placeholder="Phone Number" id="phoneid-@Model.GmailIdNumber" name="CustomerPhoneNumber" />
-
-                                            <span asp-validation-for="@Model.CustomerPhoneNumber" class="text-danger"></span>
-
-
-                                            <button onclick="approveApplicationButton(this)" data-gmailIdNumber="@Model.GmailIdNumber" type="button" style="width:160px" class="btn btn-success" data-dismiss="modal">Submit&Close</button>
-                                        </div>
-                                        <br />
-                                        <div style="">
-                                            <button onclick="rejectApplicationButton(this)" type="button" data-dismiss="modal" style="width:160px" class="btn btn-danger notValid-button" data-messageId="@Model.GmailIdNumber" data-url="/home/submitncloseapplicationrejected">Reject&Close</button>
-                                            <p></p>
-                                            <p></p>
-                                            <button type="button" data-dismiss="modal" style="width:160px" class="btn btn-default notValid-button">Cancel</button>
-                                            <p></p>
-                                            <p></p>
-                                            <button onclick="backToNewApplicationButton(this)" type="button" data-dismiss="modal" style="width:160px" class="btn btn-info notValid-button" data-messageId="@Model.GmailIdNumber">Back to New</button>
-
-                                        </div>
-                                    </div>
-                                </div>
-
+                        <div class="col-sm-3" style="background-color:lavender;">
+                            <div style="">
+                                <p></p>
+                                <button onclick="validateEmail(this)" type="button" data-dismiss="modal" style="width:180px" class="btn btn-success validation-button" data-messageId="@Model.GmailIdNumber" data-url="/home/validatemail">Valid</button>
+                                <p></p>
+                                <p></p>
+                                <button onclick="invalidateEmail(this)" type="button" data-dismiss="modal" style="width:180px" class="btn btn-danger notValid-button" data-messageId="@Model.GmailIdNumber" data-url="/home/notvalidmail">Not Valid</button>
+                                <p></p>
+                                <p></p>
+                                @if (Model.UserIsManager && Model.Status.Text != "Not Reviewed")
+                                {
+                                    <button onclick="backToNotPreviewed(this)" type="button" data-dismiss="modal" style="width:180px" class="btn btn-info close-button" data-target="@Model.GmailIdNumber" data-status="@Model.Status.Text">Back to Not Reviewed</button>
+                                }
                             </div>
                         </div>
                     </div>
                 </div>
-            </td>
-        }
-        else
-        {
-            <td></td>
-        }
+            </div>
+        </div>
+    </div>
+</td>
+}
+else
+{
+<td></td>
+}
+}
+else
+if (Model.Status.Text == "New" || (Model.Status.Text == "Open" && Model.OpenedBy.UserName == User.Identity.Name) || Model.UserIsManager)
+{
+<td data-label="processModal">
+
+    <!-- Process Modal -->
+    <!-- Button to Open the Modal -->
+    <button onclick="processMailButton(this)" type="button" class="process-button btn btn-success" data-isManager=@Model.UserIsManager data-toggle="modal" data-target="#mails-@Model.GmailIdNumber" data-status="@Model.Status.Text">
+        <img src="~/images/process.png" height="30" width="30">
+    </button>
+    <!-- The Modal -->
+    <div class="modal fade bootstrap-modal" id="mails-@Model.GmailIdNumber" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header" style="cursor:default">
+                    <h6 class="modal-title">@Model.Sender.SenderName, @Model.Sender.SenderEmail</h6>
+                    @*<button type="button" class="close close-button-open" data-dismiss="modal" data-target="@Model.GmailIdNumber">&times;</button>*@
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body-@Model.GmailIdNumber" data-backdrop="true" style="cursor:default">
+                    <div class="row">
+                        <div class="col-sm-9" style="background-color:lavender;">
+                            <p><strong>Subject: </strong><r>@Model.Subject</r></p>
+                            <p><strong>Received At: </strong> <r>@Model.DateReceived</r></p>
+                            <p>
+                                <r style="font-weight:bold">@Model.Attachments.Count</r> attachment/s, total size:
+                                <r style="font-weight:bold">@Model.Attachments.Sum(x => x.FileSizeInMb).ToString("0.00")</r> MB
+                            </p>
+                            <div class="mail-bodyDB" style="width: 100%; height:400px; overflow-y:scroll;">
+                                <img src="/images/ajax-loader.gif" class="loading-indicator" style="height:150px" />
+                            </div>
+                        </div>
+                        <div class="col-sm-3" style="background-color:antiquewhite;">
+                            <div class="input-form=@Model.GmailIdNumber">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <label>Personal Identification Number:</label>
+
+                                <input asp-for="@Model.CustomerEGN" placeholder="Personal Identification Number" name="CustomerEGN" id="egnid-@Model.GmailIdNumber" />
+
+                                <span asp-validation-for="@Model.CustomerEGN" class="text-danger"></span>
+
+                                <label>Phone Number:</label>
+
+                                <input asp-for="@Model.CustomerPhoneNumber" placeholder="Phone Number" id="phoneid-@Model.GmailIdNumber" name="CustomerPhoneNumber" />
+
+                                <span asp-validation-for="@Model.CustomerPhoneNumber" class="text-danger"></span>
+
+                                @*<p><input type="checkbox" id="isEGNid-@Model.GmailIdNumber" onclick="myFunction(); VerifyEGN(button)"> Tick if PIN is not EGN
+
+                                <p id="text" style="display:none">PIN is not of EGN type!</p>
+                                </p>*@
+
+
+                                <button onclick="approveApplicationButton(this)" data-gmailIdNumber="@Model.GmailIdNumber" type="button" style="width:160px" class="btn btn-success" data-dismiss="modal">Submit&Close</button>
+                            </div>
+                            <br />
+                            <div style="">
+                                <button onclick="rejectApplicationButton(this)" type="button" data-dismiss="modal" style="width:160px" class="btn btn-danger notValid-button" data-messageId="@Model.GmailIdNumber" data-url="/home/submitncloseapplicationrejected">Reject&Close</button>
+                                <p></p>
+                                <p></p>
+                                <button type="button" data-dismiss="modal" style="width:160px" class="btn btn-default notValid-button">Cancel</button>
+                                <p></p>
+                                <p></p>
+                                <button onclick="backToNewApplicationButton(this)" type="button" data-dismiss="modal" style="width:160px" class="btn btn-info notValid-button" data-messageId="@Model.GmailIdNumber">Back to New</button>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</td>
+}
+else
+{
+<td></td>
+}
 
 
     </tr>
-@*</abs>*@
+    @*</abs>*@
 }
 else
 {
     @*<abs class="row-@Model.GmailIdNumber">*@
-        <tr >
+    <tr>
 
-            <td>@Model.Id</td>
-            <td hidden data-gmailIdNumber="@Model.GmailIdNumber">@Model.GmailIdNumber</td>
-            <td>@Model.DateReceived</td>
-            <td>@Model.Sender.SenderName &lt@(Model.Sender.SenderEmail)&gt</td>
-            <td>@Model.Subject</td>
-            <td class="status-@Model.GmailIdNumber">@Model.Status.Text</td>
-            <td>@(Model.InCurrentStatusSince.TotalHours.ToString("N0")):@Model.InCurrentStatusSince.Minutes</td>
-            @if (Model.UserIsManager)
+        <td>@Model.Id</td>
+        <td hidden data-gmailIdNumber="@Model.GmailIdNumber">@Model.GmailIdNumber</td>
+        <td>@Model.DateReceived</td>
+        <td>@Model.Sender.SenderName &lt@(Model.Sender.SenderEmail)&gt</td>
+        <td>@Model.Subject</td>
+        <td class="status-@Model.GmailIdNumber">@Model.Status.Text</td>
+        <td>@(Model.InCurrentStatusSince.TotalHours.ToString("N0")):@Model.InCurrentStatusSince.Minutes</td>
+        @if (Model.UserIsManager)
+        {
+            if (Model.Status.Text == "Open")
             {
-                if (Model.Status.Text == "Open")
+                <td>@Model.OpenedBy.UserName</td>
+            }
+            else
+            {
+                if (Model.Status.Text == "Aproved" || Model.Status.Text == "Rejected")
                 {
-                    <td>@Model.OpenedBy.UserName</td>
-                }
+                    <td>@Model.ClosedBy.UserName</td>}
                 else
                 {
-                    if (Model.Status.Text == "Aproved" || Model.Status.Text == "Rejected")
+                    if (Model.Status.Text == "New")
                     {
-                        <td>@Model.ClosedBy.UserName</td>}
+                        <td>@Model.PreviewedBy.UserName</td>
+                    }
                     else
                     {
-                        if (Model.Status.Text == "New")
-                        {
-                            <td>@Model.PreviewedBy.UserName</td>
-                        }
-                        else
-                        {
-                            <td></td>
-                        }
+                        <td></td>
                     }
                 }
             }
+        }
 
-            <td data-label="areAttachments">
-                @if (Model.AreAttachments)
-                {<img src="~/images/attachment.png" height="42" width="42">}
-            </td>
+        <td data-label="areAttachments">
+            @if (Model.AreAttachments)
+            {<img src="~/images/attachment.png" height="42" width="42">}
+        </td>
 
-            @if (Model.Status.Text == "Not Reviewed" || Model.Status.Text == "Invalid Application" @*|| Model.Status.Text == "Rejected"*@)
-            {
-                if (Model.Status.Text == "Not Reviewed" || Model.UserIsManager)
-                {
-                    <td data-label="previewModal">
-                        <!-- Preview Modal -->
-                        <!-- Button to Open the Modal -->
-                        @if (Model.UserIsManager)
-                        {
-                            <button type="button" onclick="previewMailButton(this)" class="email-button btn btn-success" data-isManager=@Model.UserIsManager data-toggle="modal" data-target="#mails-@Model.GmailIdNumber" data-url="/home/previewmail">
-                                <img src="~/images/preview.png" height="30" width="30">
-                            </button>
-                        }
-                        else if (Model.Status.Text == "Not Reviewed")
-                        {
-                            <button type="button" onclick="previewMailButton(this)" class="email-button btn btn-success" data-toggle="modal" data-target="#mails-@Model.GmailIdNumber" data-url="/home/previewmail">
-                                <img src="~/images/preview.png" height="30" width="30">
-                            </button>
-                        }
+        @if (Model.Status.Text == "Not Reviewed" || Model.Status.Text == "Invalid Application"@*|| Model.Status.Text == "Rejected"*@)
+{
+if (Model.Status.Text == "Not Reviewed" || Model.UserIsManager)
+{
+<td data-label="previewModal">
+    <!-- Preview Modal -->
+    <!-- Button to Open the Modal -->
+    @if (Model.UserIsManager)
+    {
+        <button type="button" onclick="previewMailButton(this)" class="email-button btn btn-success" data-isManager=@Model.UserIsManager data-toggle="modal" data-target="#mails-@Model.GmailIdNumber" data-url="/home/previewmail">
+            <img src="~/images/preview.png" height="30" width="30">
+        </button>
+    }
+    else if (Model.Status.Text == "Not Reviewed")
+    {
+        <button type="button" onclick="previewMailButton(this)" class="email-button btn btn-success" data-toggle="modal" data-target="#mails-@Model.GmailIdNumber" data-url="/home/previewmail">
+            <img src="~/images/preview.png" height="30" width="30">
+        </button>
+    }
 
-                        <!-- The Modal -->
-                        <div class="modal fade bootstrap-modal" id="mails-@Model.GmailIdNumber" data-backdrop="static" data-keyboard="false">
-                            <div class="modal-dialog modal-lg" style="width:100%">
-                                <div class="modal-content">
+    <!-- The Modal -->
+    <div class="modal fade bootstrap-modal" id="mails-@Model.GmailIdNumber" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg" style="width:100%">
+            <div class="modal-content">
 
-                                    <!-- Modal Header -->
-                                    <div class="modal-header">
-                                        <h6 class="modal-title">@Model.Sender.SenderName, @Model.Sender.SenderEmail</h6>
-                                        <button onclick="backToNotPreviewed(this)" type="button" class="close close-button" data-dismiss="modal" data-target="@Model.GmailIdNumber" data-status="@Model.Status.Text">&times;</button>
-                                    </div>
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h6 class="modal-title">@Model.Sender.SenderName, @Model.Sender.SenderEmail</h6>
+                    <button onclick="backToNotPreviewed(this)" type="button" class="close close-button" data-dismiss="modal" data-target="@Model.GmailIdNumber" data-status="@Model.Status.Text">&times;</button>
+                </div>
 
-                                    <!-- Modal body -->
-                                    <div class="modal-body">
+                <!-- Modal body -->
+                <div class="modal-body">
 
-                                        <div class="row">
-                                            <div class="col-sm-9" style="background-color:lavender;">
-                                                <p><h7>Subject: <r style="font-weight:bold">@Model.Subject</r></h7></p>
-                                                <p><h7>Date/Time received in the mail: <r style="font-weight:bold">@Model.DateReceived</r></h7></p>
-                                                <p>
-                                                    <h7>
-                                                        Date/Time of initial registration within the system:
-                                                        <r style="font-weight:bold">@Model.InitialRegistrationInSystemOn</r>
-                                                    </h7>
-                                                </p>
-                                                <p>
-                                                    <h7>
-                                                        <r style="font-weight:bold">@Model.Attachments.Count</r> attachment/s, total size:
-                                                        <r style="font-weight:bold">@Model.Attachments.Sum(x => x.FileSizeInMb).ToString("0.00")</r> MB
-                                                    </h7>
-                                                </p>
-                                                <div class="mail-body-@Model.GmailIdNumber" style="width: 100%; height:300px; overflow-y:scroll;">
-                                                    <img src="/images/ajax-loader.gif" class="loading-indicator" style="height:150px" />
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-3" style="background-color:lavender;">
-                                                <div style="">
-                                                    <p></p>
-                                                    <button onclick="validateEmail(this)" type="button" data-dismiss="modal" style="width:180px" class="btn btn-success validation-button" data-messageId="@Model.GmailIdNumber" data-url="/home/validatemail">Valid</button>
-                                                    <p></p>
-                                                    <p></p>
-                                                    <button onclick="invalidateEmail(this)" type="button" data-dismiss="modal" style="width:180px" class="btn btn-danger notValid-button" data-messageId="@Model.GmailIdNumber" data-url="/home/notvalidmail">Not Valid</button>
-                                                    <p></p>
-                                                    <p></p>
-                                                    @if (Model.UserIsManager && Model.Status.Text != "Not Reviewed")
-                                                    {
-                                                        <button onclick="backToNotPreviewed(this)" type="button" data-dismiss="modal" style="width:180px" class="btn btn-info close-button" data-target="@Model.GmailIdNumber" data-status="@Model.Status.Text">Back to Not Reviewed</button>
-                                                    }
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                    <div class="row">
+                        <div class="col-sm-9" style="background-color:lavender;">
+                            <p><h7>Subject: <r style="font-weight:bold">@Model.Subject</r></h7></p>
+                            <p><h7>Date/Time received in the mail: <r style="font-weight:bold">@Model.DateReceived</r></h7></p>
+                            <p>
+                                <h7>
+                                    Date/Time of initial registration within the system:
+                                    <r style="font-weight:bold">@Model.InitialRegistrationInSystemOn</r>
+                                </h7>
+                            </p>
+                            <p>
+                                <h7>
+                                    <r style="font-weight:bold">@Model.Attachments.Count</r> attachment/s, total size:
+                                    <r style="font-weight:bold">@Model.Attachments.Sum(x => x.FileSizeInMb).ToString("0.00")</r> MB
+                                </h7>
+                            </p>
+                            <div class="mail-body-@Model.GmailIdNumber" style="width: 100%; height:300px; overflow-y:scroll;">
+                                <img src="/images/ajax-loader.gif" class="loading-indicator" style="height:150px" />
                             </div>
                         </div>
-                    </td>
-                }
-                else
-                {
-                    <td></td>
-                }
-            }
-            else
-   if (Model.Status.Text == "New" || Model.Status.Text == "Open" && Model.OpenedBy.UserName == User.Identity.Name || Model.UserIsManager)
-            {
-                <td data-label="processModal">
-
-                    <!-- Process Modal -->
-                    <!-- Button to Open the Modal -->
-                    <button onclick="processMailButton(this)" type="button" class="process-button btn btn-success" data-isManager=@Model.UserIsManager data-toggle="modal" data-target="#mails-@Model.GmailIdNumber" data-status="@Model.Status.Text">
-                        <img src="~/images/process.png" height="30" width="30">
-                    </button>
-                    <!-- The Modal -->
-                    <div class="modal fade bootstrap-modal" id="mails-@Model.GmailIdNumber" data-backdrop="static" data-keyboard="false">
-                        <div class="modal-dialog modal-xl">
-                            <div class="modal-content">
-
-                                <!-- Modal Header -->
-                                <div class="modal-header" style="cursor:default">
-                                    <h6 class="modal-title">@Model.Sender.SenderName, @Model.Sender.SenderEmail</h6>
-                                    @*<button type="button" class="close close-button-open" data-dismiss="modal" data-target="@Model.GmailIdNumber">&times;</button>*@
-                                </div>
-
-                                <!-- Modal body -->
-                                <div class="modal-body-@Model.GmailIdNumber" data-backdrop="true" style="cursor:default">
-                                    <div class="row">
-                                        <div class="col-sm-9" style="background-color:lavender;">
-                                            <p><strong>Subject: </strong><r>@Model.Subject</r></p>
-                                            <p><strong>Received At: </strong> <r>@Model.DateReceived</r></p>
-                                            <p>
-                                                <r style="font-weight:bold">@Model.Attachments.Count</r> attachment/s, total size:
-                                                <r style="font-weight:bold">@Model.Attachments.Sum(x => x.FileSizeInMb).ToString("0.00")</r> MB
-                                            </p>
-                                            <div class="mail-bodyDB" style="width: 100%; height:400px; overflow-y:scroll;">
-                                                <img src="/images/ajax-loader.gif" class="loading-indicator" style="height:150px" />
-                                            </div>
-                                        </div>
-                                        <div class="col-sm-3" style="background-color:antiquewhite;">
-                                            <div class="input-form=@Model.GmailIdNumber">
-                                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                                <label>Personal Identification Number:</label>
-
-                                                <input asp-for="@Model.CustomerEGN" placeholder="Personal Identification Number" name="CustomerEGN" id="egnid-@Model.GmailIdNumber" />
-
-                                                <span asp-validation-for="@Model.CustomerEGN" class="text-danger"></span>
-
-                                                <label>Phone Number:</label>
-
-                                                <input asp-for="@Model.CustomerPhoneNumber" placeholder="Phone Number" id="phoneid-@Model.GmailIdNumber" name="CustomerPhoneNumber" />
-
-                                                <span asp-validation-for="@Model.CustomerPhoneNumber" class="text-danger"></span>
-
-
-                                                <button onclick="approveApplicationButton(this)" data-gmailIdNumber="@Model.GmailIdNumber" type="button" style="width:160px" class="btn btn-success" data-dismiss="modal">Submit&Close</button>
-                                            </div>
-                                            <br />
-                                            <div style="">
-                                                <button onclick="rejectApplicationButton(this)" type="button" data-dismiss="modal" style="width:160px" class="btn btn-danger notValid-button" data-messageId="@Model.GmailIdNumber" data-url="/home/submitncloseapplicationrejected">Reject&Close</button>
-                                                <p></p>
-                                                <p></p>
-                                                <button type="button" data-dismiss="modal" style="width:160px" class="btn btn-default notValid-button">Cancel</button>
-                                                <p></p>
-                                                <p></p>
-                                                <button onclick="backToNewApplicationButton(this)" type="button" data-dismiss="modal" style="width:160px" class="btn btn-info notValid-button" data-messageId="@Model.GmailIdNumber">Back to New</button>
-
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
+                        <div class="col-sm-3" style="background-color:lavender;">
+                            <div style="">
+                                <p></p>
+                                <button onclick="validateEmail(this)" type="button" data-dismiss="modal" style="width:180px" class="btn btn-success validation-button" data-messageId="@Model.GmailIdNumber" data-url="/home/validatemail">Valid</button>
+                                <p></p>
+                                <p></p>
+                                <button onclick="invalidateEmail(this)" type="button" data-dismiss="modal" style="width:180px" class="btn btn-danger notValid-button" data-messageId="@Model.GmailIdNumber" data-url="/home/notvalidmail">Not Valid</button>
+                                <p></p>
+                                <p></p>
+                                @if (Model.UserIsManager && Model.Status.Text != "Not Reviewed")
+                                {
+                                    <button onclick="backToNotPreviewed(this)" type="button" data-dismiss="modal" style="width:180px" class="btn btn-info close-button" data-target="@Model.GmailIdNumber" data-status="@Model.Status.Text">Back to Not Reviewed</button>
+                                }
                             </div>
                         </div>
                     </div>
-                </td>
-            }
-            else
-            {
-                <td></td>
-            }
+                </div>
+            </div>
+        </div>
+    </div>
+</td>
+}
+else
+{
+<td></td>
+}
+}
+else
+if (Model.Status.Text == "New" || Model.Status.Text == "Open" && Model.OpenedBy.UserName == User.Identity.Name || Model.UserIsManager)
+{
+<td data-label="processModal">
+
+    <!-- Process Modal -->
+    <!-- Button to Open the Modal -->
+    <button onclick="processMailButton(this)" type="button" class="process-button btn btn-success" data-isManager=@Model.UserIsManager data-toggle="modal" data-target="#mails-@Model.GmailIdNumber" data-status="@Model.Status.Text">
+        <img src="~/images/process.png" height="30" width="30">
+    </button>
+    <!-- The Modal -->
+    <div class="modal fade bootstrap-modal" id="mails-@Model.GmailIdNumber" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header" style="cursor:default">
+                    <h6 class="modal-title">@Model.Sender.SenderName, @Model.Sender.SenderEmail</h6>
+                    @*<button type="button" class="close close-button-open" data-dismiss="modal" data-target="@Model.GmailIdNumber">&times;</button>*@
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body-@Model.GmailIdNumber" data-backdrop="true" style="cursor:default">
+                    <div class="row">
+                        <div class="col-sm-9" style="background-color:lavender;">
+                            <p><strong>Subject: </strong><r>@Model.Subject</r></p>
+                            <p><strong>Received At: </strong> <r>@Model.DateReceived</r></p>
+                            <p>
+                                <r style="font-weight:bold">@Model.Attachments.Count</r> attachment/s, total size:
+                                <r style="font-weight:bold">@Model.Attachments.Sum(x => x.FileSizeInMb).ToString("0.00")</r> MB
+                            </p>
+                            <div class="mail-bodyDB" style="width: 100%; height:400px; overflow-y:scroll;">
+                                <img src="/images/ajax-loader.gif" class="loading-indicator" style="height:150px" />
+                            </div>
+                        </div>
+                        <div class="col-sm-3" style="background-color:antiquewhite;">
+                            <div class="input-form=@Model.GmailIdNumber">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <label>Personal Identification Number:</label>
+
+                                <input asp-for="@Model.CustomerEGN" placeholder="Personal Identification Number" name="CustomerEGN" id="egnid-@Model.GmailIdNumber" />
+
+                                <span asp-validation-for="@Model.CustomerEGN" class="text-danger"></span>
+
+                                <label>Phone Number:</label>
+
+                                <input asp-for="@Model.CustomerPhoneNumber" placeholder="Phone Number" id="phoneid-@Model.GmailIdNumber" name="CustomerPhoneNumber" />
+
+                                <span asp-validation-for="@Model.CustomerPhoneNumber" class="text-danger"></span>
+                                @*<p><input type="checkbox" id="isEGNid-@Model.GmailIdNumber" onclick="myFunction(); VerifyEGN(button)"> Tick if PIN is not EGN 
+
+                                <p id="text" style="display:none">PIN is not of EGN type!</p>
+                                </p>*@
+
+                                <button onclick="approveApplicationButton(this)" data-gmailIdNumber="@Model.GmailIdNumber" type="button" style="width:160px" class="btn btn-success" data-dismiss="modal">Submit&Close</button>
+                            </div>
+                            <br />
+                            <div style="">
+                                <button onclick="rejectApplicationButton(this)" type="button" data-dismiss="modal" style="width:160px" class="btn btn-danger notValid-button" data-messageId="@Model.GmailIdNumber" data-url="/home/submitncloseapplicationrejected">Reject&Close</button>
+                                <p></p>
+                                <p></p>
+                                <button type="button" data-dismiss="modal" style="width:160px" class="btn btn-default notValid-button">Cancel</button>
+                                <p></p>
+                                <p></p>
+                                <button onclick="backToNewApplicationButton(this)" type="button" data-dismiss="modal" style="width:160px" class="btn btn-info notValid-button" data-messageId="@Model.GmailIdNumber">Back to New</button>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</td>
+}
+else
+{
+<td></td>
+}
 
 
-        </tr>
+    </tr>
     @*</abs>*@
 }
+@*<script>
+function myFunction() {
+  var checkBox = document.getElementById("myCheck");
+  var text = document.getElementById("text");
+  if (checkBox.checked == true){
+    text.style.display = "block";
+  } else {
+     text.style.display = "none";
+  }
+}
+</script>*@

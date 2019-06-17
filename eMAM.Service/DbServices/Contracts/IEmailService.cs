@@ -17,7 +17,7 @@ namespace eMAM.Service.DbServices.Contracts
 
         Task<Email> AddEmailAsync(DateTime dateReceived, List<Attachment> attachments, string gmailIdNumber, Sender sender, Status status, string subject);
 
-        Task ValidateEmail(Email mail, string body, Status newStatus, User user);
+        //Task ValidateEmail(Email mail, string body, Status newStatus, User user);
 
         IQueryable<Email> ReadAllMailsFromDb(bool isManager, User user);
 
