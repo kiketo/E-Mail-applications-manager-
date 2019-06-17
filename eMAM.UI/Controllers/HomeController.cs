@@ -319,7 +319,7 @@ namespace eMAM.UI.Controllers
             var mailDTO = await this.gmailApiService.DownloadBodyOfMailAsync(messageId, userData.AccessToken);
             var mail = await this.emailService.GetEmailByGmailIdAsync(messageId);
             var validStatus = await this.statusService.GetStatusByName("New");
-            //await this.auditLogService.Log(user.UserName, "status change", messageId, validStatus.Text, mail.Status.Text);
+            await this.auditLogService.Log(user.UserName, "status change", messageId, validStatus.Text, mail.Status.Text); // notreviewed to new
             mail.Status = validStatus;
             mail.SetInCurrentStatusOn = DateTime.Now;
             mail.Body = mailDTO.BodyAsString;
@@ -346,6 +346,7 @@ namespace eMAM.UI.Controllers
             //var mailDTO = await this.gmailApiService.DownloadBodyOfMailAsync(messageId, userData.AccessToken);
             var mail = await this.emailService.GetEmailByGmailIdAsync(messageId);
             var invalidStatus = await this.statusService.GetStatusByName("Invalid Application");
+            await this.auditLogService.Log(user.UserName, "status change", messageId, invalidStatus.Text, mail.Status.Text); // not reviewed to invalid
             mail.Status = invalidStatus;
             mail.WorkInProcess = false;
             mail.WorkingBy = null;
@@ -368,6 +369,7 @@ namespace eMAM.UI.Controllers
             //var mailDTO = await this.gmailApiService.DownloadBodyOfMailAsync(messageId, userData.AccessToken);
             var mail = await this.emailService.GetEmailByGmailIdAsync(id);
             var notPreviewedStatus = await this.statusService.GetInitialStatusAsync();
+            await this.auditLogService.Log(user.UserName, "status change", mail.GmailIdNumber, notPreviewedStatus.Text, mail.Status.Text);
             mail.Status = notPreviewedStatus;
             mail.WorkInProcess = false;
             mail.WorkingBy = null;
@@ -452,6 +454,8 @@ namespace eMAM.UI.Controllers
         {
             var body = await this.emailService.GetEmailBodyAsync(messageId);
             var email = await this.emailService.GetEmailByGmailIdAsync(messageId);
+            var user = await this.userManager.GetUserAsync(User);
+           // await this.auditLogService.Log(user.UserName, "status change", email.GmailIdNumber, notPreviewedStatus.Text, email.Status.Text); // Log
             //email.Status = await this.statusService.GetStatusAsync("Open");
             //email.WorkInProcess = true;
             //email.WorkingBy = await userManager.GetUserAsync(User);
@@ -472,6 +476,7 @@ namespace eMAM.UI.Controllers
             //await this.auditLogService.Log(user.UserName, "status change", messageId, newStatus.Text, email.Status.Text);
 
             var mail = await emailService.GetEmailByGmailIdAsync(messageId);
+            await this.auditLogService.Log(user.UserName, "status change", mail.GmailIdNumber, newStatus.Text, mail.Status.Text);
             mail.Status = newStatus;
             mail.WorkInProcess = true;
             mail.WorkingBy = user;
@@ -503,6 +508,9 @@ namespace eMAM.UI.Controllers
                 }
                 customer.Emails.Add(email);
                 await this.customerService.UpdateAsync(customer);
+                var newStatus = await this.statusService.GetStatusByName("Aproved");
+                var user = await this.userManager.GetUserAsync(User);
+                await this.auditLogService.Log(user.UserName, "status change", email.GmailIdNumber, newStatus.Text, email.Status.Text);
                 email.Status = await this.statusService.GetStatusByName("Aproved");
                 email.ClosedBy = await this.userManager.GetUserAsync(User);
                 email.SetInTerminalStatusOn = DateTime.Now;
@@ -525,7 +533,10 @@ namespace eMAM.UI.Controllers
         {
             var email = await this.emailService.GetEmailByGmailIdAsync(model.GmailIdNumber);
             email.Body = null;
-            email.Status = await this.statusService.GetStatusByName("Rejected");
+            var newStatus = await this.statusService.GetStatusByName("Rejected");
+            var user = await this.userManager.GetUserAsync(User);
+            await this.auditLogService.Log(user.UserName, "status change", email.GmailIdNumber, newStatus.Text, email.Status.Text);
+            email.Status = newStatus;
             email.ClosedBy = await this.userManager.GetUserAsync(User);
             email.SetInTerminalStatusOn = DateTime.Now;
             email.SetInCurrentStatusOn = DateTime.Now;
@@ -549,7 +560,9 @@ namespace eMAM.UI.Controllers
             var mailDTO = await this.gmailApiService.DownloadBodyOfMailAsync(id, userData.AccessToken);
 
             var mail = await this.emailService.GetEmailByGmailIdAsync(id);
-            mail.Status = await this.statusService.GetStatusByName("New");
+            var newStatus = await this.statusService.GetStatusByName("New");
+            await this.auditLogService.Log(user.UserName, "status change", mail.GmailIdNumber, newStatus.Text, mail.Status.Text);
+            mail.Status = newStatus;
             mail.WorkInProcess = false;
             mail.WorkingBy = null;
             mail.SetInCurrentStatusOn = DateTime.Now;

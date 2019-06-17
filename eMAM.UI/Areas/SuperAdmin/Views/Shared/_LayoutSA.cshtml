@@ -21,12 +21,12 @@
                 <ul class="navbar-nav flex-grow-1">
                     <li class="nav-item"><a class="nav-link text-dark" asp-area="SuperAdmin" asp-controller="Dashboard" asp-action="Users">Users</a></li>
                     <li class="nav-item"><a class="nav-link text-dark" asp-area="SuperAdmin" asp-controller="Dashboard" asp-action="GoogleLogin">GoogleLogin</a></li>
-                    <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ContactManager">Contact Manager</a></li>
+                    <li class="nav-item"><a class="nav-link text-dark" asp-area="SuperAdmin" asp-controller="Dashboard" asp-action="Logging">Audit Logs</a></li>
                 </ul>
             </div>
         </div>
     </nav>
-    <div class="container body-content">
+    <div class="container body-content-custom">
         @RenderBody()
         <hr />
         <footer>
