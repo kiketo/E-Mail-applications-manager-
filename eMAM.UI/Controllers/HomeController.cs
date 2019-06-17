@@ -234,7 +234,7 @@ namespace eMAM.UI.Controllers
             else
             {
                 selectedUser = currentFilter;
-                
+
             }
             if (!string.IsNullOrEmpty(filterStatus))
             {
@@ -243,8 +243,8 @@ namespace eMAM.UI.Controllers
             }
             else
             {
-                filterStatus= currentFilterStatus;
-                
+                filterStatus = currentFilterStatus;
+
             }
             var pageSize = 10;
             var userIs = await this.userManager.GetUserAsync(User);
@@ -273,7 +273,7 @@ namespace eMAM.UI.Controllers
 
             }
             var page = await PaginatedList<Email>.CreateAsync(mails, pageNumber ?? 1, pageSize);
-           // page.Reverse();
+            // page.Reverse();
 
             EmailViewModel model = new EmailViewModel
             {
@@ -461,7 +461,7 @@ namespace eMAM.UI.Controllers
             var body = await this.emailService.GetEmailBodyAsync(messageId);
             var email = await this.emailService.GetEmailByGmailIdAsync(messageId);
             var user = await this.userManager.GetUserAsync(User);
-           // await this.auditLogService.Log(user.UserName, "status change", email.GmailIdNumber, notPreviewedStatus.Text, email.Status.Text); // Log
+            // await this.auditLogService.Log(user.UserName, "status change", email.GmailIdNumber, notPreviewedStatus.Text, email.Status.Text); // Log
             //email.Status = await this.statusService.GetStatusAsync("Open");
             //email.WorkInProcess = true;
             //email.WorkingBy = await userManager.GetUserAsync(User);
@@ -626,57 +626,60 @@ namespace eMAM.UI.Controllers
         //    return Ok();
         //}
 
-            /*
-        [AutoValidateAntiforgeryToken]
-        [Authorize]
-        public async Task<IActionResult> ListClosedEmails(
-            int? pageNumber, 
-            string currentFilter, 
-            string newFilter = "No Filter", 
-            string currentFilterUser = null, 
-            string newFilterUser = null)
+        /*
+    [AutoValidateAntiforgeryToken]
+    [Authorize]
+    public async Task<IActionResult> ListClosedEmails(
+        int? pageNumber, 
+        string currentFilter, 
+        string newFilter = "No Filter", 
+        string currentFilterUser = null, 
+        string newFilterUser = null)
+    {
+        var pageSize = 10;
+        var user = await this.userManager.GetUserAsync(User);
+        var isManager = User.IsInRole("Manager");
+        var mails = this.emailService.ReadAllMailsFromDb(isManager, user).Where(c => c.Status.Text == "Aproved" || c.Status.Text == "Rejected");
+        var page = await PaginatedList<Email>.CreateAsync(mails, pageNumber ?? 1, pageSize);
+        if (String.IsNullOrEmpty(newFilterUser))
         {
-            var pageSize = 10;
-            var user = await this.userManager.GetUserAsync(User);
-            var isManager = User.IsInRole("Manager");
-            var mails = this.emailService.ReadAllMailsFromDb(isManager, user).Where(c => c.Status.Text == "Aproved" || c.Status.Text == "Rejected");
-            var page = await PaginatedList<Email>.CreateAsync(mails, pageNumber ?? 1, pageSize);
-            if (String.IsNullOrEmpty(newFilterUser))
-            {
-                pageNumber = 1;
-                mails = mails.Where(e => e.Status.Text == "Invalid Application");
-            }
-            else
-            {
-                newFilterUser = currentFilterUser;
-            }
-
-
-            //mails = mails.Where(e => e.Status.Text == "Aproved");
-
-
-            EmailViewModel model = new EmailViewModel
-            {
-                HasNextPage = page.HasNextPage,
-                HasPreviousPage = page.HasPreviousPage,
-                PageIndex = page.PageIndex,
-                TotalPages = page.TotalPages,
-                UserIsManager = isManager
-               // FilterOnlyAproved = newFilter
-            };
-
-            foreach (var mail in page)
-            {
-                var element = this.emailViewModelMapper.MapFrom(mail);
-                model.SearchResults.Add(element);
-            }
-
-
-            return View(model);
+            pageNumber = 1;
+            mails = mails.Where(e => e.Status.Text == "Invalid Application");
+        }
+        else
+        {
+            newFilterUser = currentFilterUser;
         }
 
-    */
 
+        //mails = mails.Where(e => e.Status.Text == "Aproved");
+
+
+        EmailViewModel model = new EmailViewModel
+        {
+            HasNextPage = page.HasNextPage,
+            HasPreviousPage = page.HasPreviousPage,
+            PageIndex = page.PageIndex,
+            TotalPages = page.TotalPages,
+            UserIsManager = isManager
+           // FilterOnlyAproved = newFilter
+        };
+
+        foreach (var mail in page)
+        {
+            var element = this.emailViewModelMapper.MapFrom(mail);
+            model.SearchResults.Add(element);
+        }
+
+
+        return View(model);
+    }
+
+*/
+        public IActionResult VerifyEGN()
+        {
+            return View();
+        }
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
