@@ -86,5 +86,7 @@ namespace eMAM.UI.Models
         public string FilterClosedStatus { get; set; }
 
         public List<string> FilterClosedStatusList { get; set; }
+
+        public bool RowShouldBeEdited { get; set; }
     }
 }

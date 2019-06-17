@@ -162,8 +162,9 @@ namespace eMAM.UI.Controllers
             foreach (var mail in page)
             {
                 var element = this.emailViewModelMapper.MapFrom(mail);
-                model.SearchResults.Add(element);
                 element.InCurrentStatusSince = DateTime.Now - mail.SetInCurrentStatusOn;
+                element.RowShouldBeEdited = true;
+                model.SearchResults.Add(element);
             }
 
             return View(model);

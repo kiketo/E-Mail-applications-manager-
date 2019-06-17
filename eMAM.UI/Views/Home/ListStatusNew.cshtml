@@ -13,7 +13,11 @@
             <th>Date/Time</th>
             <th>Sender</th>
             <th>Subject</th>
-            <th>Time Since Change</th>
+            <th style="text-align: center"> Since</th>
+            @if (Model.UserIsManager)
+            {
+                <th style="text-align: center">Blame</th>
+            }
             <th></th>
         </tr>
     </thead>
@@ -22,7 +26,7 @@
         @foreach (var mail in Model.SearchResults)
         {
             mail.UserIsManager = Model.UserIsManager;
-            <tr class="row-@mail.GmailIdNumber">
+            <tr class="row-@mail.GmailIdNumber"  data-rowShouldEdit="@mail.RowShouldBeEdited">
                 <partial name="_AllNewEmailsPartial" model="mail" />
             </tr>
         }

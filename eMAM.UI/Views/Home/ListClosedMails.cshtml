@@ -59,10 +59,11 @@
             <th>Sender</th>
             <th>Subject</th>
             <th>Status</th>
-            @if (User.IsInRole("Manager"))
+            @if (Model.UserIsManager)
             {
-                <th>Closed by</th>
+                <th style="text-align: center">Blame</th>
             }
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -70,7 +71,7 @@
         @foreach (var mail in Model.SearchResults)
         {
             mail.UserIsManager = Model.UserIsManager;
-            <tr class="row-@mail.GmailIdNumber">
+            <tr class="row-@mail.GmailIdNumber"  data-rowShouldEdit="@mail.RowShouldBeEdited">
                 <partial name="_AllClosedEmailsPartial" model="mail" />
             </tr>
         }

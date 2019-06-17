@@ -33,7 +33,7 @@
             <th>Since</th>
             @if (Model.UserIsManager)
             {
-                <th> Opened by</th>
+                <th style="text-align: center">Blame</th>
             }
             <th> </th>
         </tr>
@@ -43,7 +43,7 @@
         @foreach (var mail in Model.SearchResults)
         {
             mail.UserIsManager = Model.UserIsManager;
-            <tr class="row-@mail.GmailIdNumber">
+            <tr class="row-@mail.GmailIdNumber" data-rowShouldEdit="@mail.RowShouldBeEdited">
                 <partial name="_OpenedApplicationsPartial.cshtml" model="mail" />
             </tr>
         }

@@ -229,7 +229,16 @@ namespace eMAM.Service.GmailServices
 
         private GmailMessageDTO ParseHtmlMail(GmailMessageDTO message)
         {
-            var mailData = message.Payload.Parts[1].Body.Data;
+
+            string mailData;// = message.Payload;//.Parts[1].Body.Data;
+            if (message.Payload.Parts.Count==2)
+            {
+                mailData = message.Payload.Parts[1].Body.Data;
+            }
+            else
+            {
+                mailData = message.Payload.Parts[0].Body.Data;
+            }
             message.BodyAsString = Encoding.UTF8.GetString(FromBase64ForUrlString(mailData));
 
             return message;

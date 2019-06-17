@@ -34,22 +34,27 @@
             <th>Subject</th>
             <th>Status</th>
             <th style="text-align: center"> Since</th>
-            <th style="text-align: center"> Blame</th>
+            @if (Model.UserIsManager)
+            {
+                <th style="text-align: center">Blame</th>
+            }
 
+            <th> </th>
             <th> </th>
             <th> </th>
         </tr>
     </thead>
-    <tbody>
+   
 
         @foreach (var mail in Model.SearchResults)
         {
             mail.UserIsManager = Model.UserIsManager;
-            <tr class="row-@mail.GmailIdNumber">
+
+            <tbody class="row-@mail.GmailIdNumber" data-rowShouldEdit="@mail.RowShouldBeEdited">
                 <partial name="_AllEmailsPartial" model="mail" />
-            </tr>
+            </tbody>
         }
-    </tbody>
+    
 </table>
 
 @{
