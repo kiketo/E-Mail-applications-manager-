@@ -5,11 +5,11 @@
 <td>@Model.Sender.SenderName &lt@(Model.Sender.SenderEmail)&gt</td>
 <td>@Model.Subject</td>
 <td data-label="status">@Model.Status.Text</td>
-<th>Preview</th>
 @if (true)
 {
     <th>@Model.ClosedBy.UserName</th>
 }
+<th></th>
 
 @if (Model.Status.Text == "Not Reviewed" || Model.Status.Text == "Invalid Application")
 {

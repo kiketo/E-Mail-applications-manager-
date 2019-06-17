@@ -82,5 +82,9 @@ namespace eMAM.UI.Models
         public string FilterByUser { get; set; }
 
         public ICollection<string> UserNames { get; set; } = new List<string>();
+
+        public string FilterClosedStatus { get; set; }
+
+
     }
 }

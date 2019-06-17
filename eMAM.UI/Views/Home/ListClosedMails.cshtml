@@ -4,25 +4,55 @@
 }
 @model EmailViewModel
 
-<h3 style="display:inline">All Mails</h3>
+<h3 style="display:inline">Closed Mails</h3>
 
-<form asp-action="ListAllMails" method="post" style="display:inline; float:right">
-    <div class="form-actions no-color">
-        <p>
-            @if (Model.FilterOnlyNotValid)
-            {
-                <input type="submit" value="Not Valid Only" class="btn btn-success" disabled />
-                <a asp-action="ListAllMails" class="btn btn-outline-success">Full List</a>
-            }
-            else
-            {
-                <input type="checkbox" name="newFilter" value="true" checked hidden />
-                <input type="submit" value="Not Valid Only" class="btn btn-outline-success" />
-                <a asp-action="" class="btn btn-success disabled">Full List</a>
-            }
-        </p>
-    </div>
-</form>
+@if (Model.UserIsManager)
+{
+    <form asp-action="ListClosedMails" method="post" style="display:inline; float:right">
+        <div class="form-actions no-color">
+            <input list="users" name="selectedUser" value="@Model.FilterByUser">
+            <datalist id="users">
+                @foreach (var user in Model.UserNames)
+                {
+                    <option value="@user"></option>
+                }
+            </datalist>
+            <input type="submit" value="Filter by user" class="btn btn-success">
+        </div>
+    </form>
+    <form asp-action="ListClosedMails" method="post" style="display:inline; float:right">
+        <div class="form-actions no-color">
+            <p>
+                @if (Model.FilterClosedStatus == "Rejected Only")
+                {
+                    <input type="checkbox" name="filterStatus" value="All Closed" checked hidden />
+                    <input type="submit" value="All Closed" class="btn btn-outline-success" />
+                    <a asp-action="" class="btn btn-success disabled">Rejected Only</a>
+                    <input type="checkbox" name="filterStatus" value="Aproved Only" checked hidden />
+                    <input type="submit" value="Aproved Only" class="btn btn-outline-success" />
+                }
+                else if (Model.FilterClosedStatus == "Aproved Only")
+                {
+                    <a asp-action="" class="btn btn-success disabled">All Closed</a>
+                    <input type="checkbox" name="filterStatus" value="Rejected Only" checked hidden />
+                    <input type="submit" value="Rejected Only" class="btn btn-outline-success" />
+                    <input type="checkbox" name="filterStatus" value="Aproved Only" checked hidden />
+                    <input type="submit" value="Aproved Only" class="btn btn-outline-success" />
+                }
+                else
+                {
+                    <input type="checkbox" name="filterStatus" value="All Closed" checked hidden />
+                    <input type="submit" value="All Closed" class="btn btn-outline-success" />
+                    <input type="checkbox" name="filterStatus" value="Rejected Only" checked hidden />
+                    <input type="submit" value="Rejected Only" class="btn btn-outline-success" />
+                    <a asp-action="" class="btn btn-success disabled">Aproved Only</a>
+
+                }
+            </p>
+        </div>
+    </form>
+
+}
 
 <table class="table-hover" style="width:100%">
     <thead class="thead-light" style="background-color: cadetblue">
