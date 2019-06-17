@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Crypteron;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -14,19 +15,22 @@ namespace eMAM.Data.Models
 
         public Status Status { get; set; }
 
-        //TODO: to be encrypted
+        [Secure]
         public string Body { get; set; }
 
         public int SenderId { get; set; }
+
         public Sender Sender { get; set; }
 
         public DateTime DateReceived { get; set; }
 
+        [Secure]
         public string Subject { get; set; }
 
         public ICollection<Attachment> Attachments { get; set; }
 
         public int? CustomerId { get; set; }
+
         public Customer Customer { get; set; }
 
         public bool MissingApplication { get; set; }
@@ -54,6 +58,5 @@ namespace eMAM.Data.Models
         public string PreviewedById { get; set; }
 
         public User PreviewedBy { get; set; }
-
     }
 }

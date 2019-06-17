@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Crypteron;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -8,10 +9,10 @@ namespace eMAM.Data.Models
     {
         public int Id { get; set; }
 
-        //TODO: to be encrypted
+        [Secure]
         public string CustomerEGN { get; set; }
 
-        //TODO: to be encrypted
+        [Secure]
         public string CustomerPhoneNumber { get; set; }
 
         public ICollection<Email> Emails { get; set; }

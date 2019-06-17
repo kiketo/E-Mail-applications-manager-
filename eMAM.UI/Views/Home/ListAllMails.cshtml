@@ -44,24 +44,25 @@
             <th> </th>
         </tr>
     </thead>
-   
 
-        @foreach (var mail in Model.SearchResults)
-        {
-            mail.UserIsManager = Model.UserIsManager;
 
-            <tbody class="row-@mail.GmailIdNumber" data-rowShouldEdit="@mail.RowShouldBeEdited">
-                <partial name="_AllEmailsPartial" model="mail" />
-            </tbody>
-        }
-    
+    @foreach (var mail in Model.SearchResults)
+    {
+        mail.UserIsManager = Model.UserIsManager;
+
+        <tbody class="row-@mail.GmailIdNumber" data-rowShouldEdit="@mail.RowShouldBeEdited">
+            <partial name="_AllEmailsPartial" model="mail" />
+        </tbody>
+    }
+
 </table>
 
 @{
     var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 }
-
+<p></p>
+<hr />
 <a asp-action="ListAllMails"
    asp-route-pageNumber="@(Model.PageIndex - 1)"
    asp-route-currentFilter="@Model.FilterOnlyNotValid"

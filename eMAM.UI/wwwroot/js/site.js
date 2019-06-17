@@ -363,7 +363,7 @@ function approveApplicationButton(button) {
             toastr.success("Application was Aproved");
             //edit or delete the row in the DOM
             if (rowShouldBeEdited == "True") {
-                $('.row-' + gmail).html(data);
+                $('.row-' + gmail).html(response);
                 debugger;
             } else {
                 $('.row-' + gmail).remove();
@@ -402,7 +402,7 @@ function rejectApplicationButton(button) {
             toastr.warning("Application Rejected");
             //edit or delete the row in the DOM
             if (rowShouldBeEdited == "True") {
-                $('.row-' + messageId).html(data);
+                $('.row-' + messageId).html(response);
                 debugger;
             } else {
                 $('.row-' + messageId).remove();

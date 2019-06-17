@@ -1,4 +1,5 @@
-﻿using eMAM.Data;
+﻿using Crypteron.CipherObject;
+using eMAM.Data;
 using eMAM.Data.Models;
 using eMAM.Service.DbServices.Contracts;
 using Microsoft.EntityFrameworkCore;
@@ -27,10 +28,12 @@ namespace eMAM.Service.DbServices
                         .Include(x => x.Sender)
                         .Include(x => x.Status)
                         .FirstOrDefaultAsync(x => x.GmailIdNumber == id);
+
             if (mail == null)
             {
                 throw new ArgumentException($"There is no mail with Gmail ID:{id}");
             }
+            mail.Unseal();
             return mail;
         }
 
@@ -57,24 +60,25 @@ namespace eMAM.Service.DbServices
                 SetInCurrentStatusOn = DateTime.Now,
                 Subject = subject
             };
+            newEmail.Seal();
             await this.context.Emails.AddAsync(newEmail);
             await this.context.SaveChangesAsync();
 
             return newEmail;
         }
 
-        public async Task ValidateEmail(Email mail, string body, Status newStatus, User user)
-        {
-            mail.Body = body;
-            mail.Status = newStatus;
-            mail.SetInCurrentStatusOn = DateTime.Now;
-            mail.WorkInProcess = false;
-            mail.WorkingBy = null;
-            mail.WorkingById = null;
-            mail.PreviewedBy = user;
+        //public async Task ValidateEmail(Email mail, string body, Status newStatus, User user)
+        //{
+        //    mail.Body = body;
+        //    mail.Status = newStatus;
+        //    mail.SetInCurrentStatusOn = DateTime.Now;
+        //    mail.WorkInProcess = false;
+        //    mail.WorkingBy = null;
+        //    mail.WorkingById = null;
+        //    mail.PreviewedBy = user;
 
-            await this.context.SaveChangesAsync();
-        }
+        //    await this.context.SaveChangesAsync();
+        //}
 
         public IQueryable<Email> ReadAllMailsFromDb(bool isManager, User user)
         {
@@ -100,6 +104,7 @@ namespace eMAM.Service.DbServices
                                             .Include(e => e.PreviewedBy)
                                            .Include(e => e.OpenedBy); 
             }
+            allMails.Unseal();
             return allMails;
         }
 
@@ -126,6 +131,7 @@ namespace eMAM.Service.DbServices
                                            .Include(e => e.Status).OrderBy(e => e.SetInCurrentStatusOn);
 
             }
+            allMails.Unseal();
             return allMails;
         }
 
@@ -151,23 +157,30 @@ namespace eMAM.Service.DbServices
                                             .Include(e => e.ClosedBy)
                                            .Include(e => e.Sender);
             }
+            allMails.Unseal();
             return allMails;
         }
 
         public async Task<Email> GetEmailByIdAsync(int id)
         {
-            return await this.context.Emails.FirstOrDefaultAsync(e => e.Id == id);
+            return await this.context.Emails
+                            .FirstOrDefaultAsync(e => e.Id == id)
+                            .Unseal();
         }
 
         public async Task UpdateAsync(Email newEmail)
         {
+            newEmail.Seal();
             this.context.Attach(newEmail).State = EntityState.Modified;
             await this.context.SaveChangesAsync();
+            newEmail.Unseal();
         }
 
         public async Task<string> GetEmailBodyAsync(string mailId)
         {
-            var mail = await this.context.Emails.FirstOrDefaultAsync(e => e.GmailIdNumber == mailId);
+            var mail = await this.context.Emails
+                                .FirstOrDefaultAsync(e => e.GmailIdNumber == mailId)
+                                .Unseal();
 
             return mail.Body;
         }
@@ -177,8 +190,10 @@ namespace eMAM.Service.DbServices
             var mail = await this.GetEmailByGmailIdAsync(messageId);
             mail.WorkInProcess = true;
             mail.WorkingBy = user;
+            mail.Seal();
             await this.context.SaveChangesAsync();
 
+            mail.Unseal();
             return mail;
         }
 
@@ -187,8 +202,10 @@ namespace eMAM.Service.DbServices
             var mail = await this.GetEmailByGmailIdAsync(messageId);
             mail.WorkInProcess = false;
             mail.WorkingBy = null;
+            mail.Seal();
             await this.context.SaveChangesAsync();
 
+            mail.Unseal();
             return mail;
         }
 
@@ -202,7 +219,7 @@ namespace eMAM.Service.DbServices
                                            .Include(e => e.Attachments)
                                            .Include(e => e.Sender)
                                            .Include(e => e.Status);
-            
+            allMails.Unseal();
             return allMails;
         }
     }
