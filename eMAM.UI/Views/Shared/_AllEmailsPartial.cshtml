@@ -201,11 +201,9 @@ if (Model.Status.Text == "New" || (Model.Status.Text == "Open" && Model.OpenedBy
 
 
     </tr>
-@*</abs>*@
 }
 else
 {
-    @*<abs class="row-@Model.GmailIdNumber">*@
         <tr >
 
             <td>@Model.Id</td>
@@ -344,7 +342,6 @@ else
                                 <!-- Modal Header -->
                                 <div class="modal-header" style="cursor:default">
                                     <h6 class="modal-title">@Model.Sender.SenderName, @Model.Sender.SenderEmail</h6>
-                                    @*<button type="button" class="close close-button-open" data-dismiss="modal" data-target="@Model.GmailIdNumber">&times;</button>*@
                                 </div>
 
                                 <!-- Modal body -->
@@ -406,5 +403,4 @@ else
 
 
         </tr>
-    @*</abs>*@
 }

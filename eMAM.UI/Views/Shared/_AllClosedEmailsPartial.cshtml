@@ -92,7 +92,7 @@
     }
 }
 else
-if (Model.Status.Text == "New" || /*Model.Status.Text == "Open" && Model.OpenedBy.UserName == User.Identity.Name ||*/ Model.UserIsManager)
+if (Model.Status.Text == "New" || Model.UserIsManager)
 {
     <td data-label="processModal">
 
@@ -109,7 +109,6 @@ if (Model.Status.Text == "New" || /*Model.Status.Text == "Open" && Model.OpenedB
                     <!-- Modal Header -->
                     <div class="modal-header" style="cursor:default">
                         <h6 class="modal-title">@Model.Sender.SenderName, @Model.Sender.SenderEmail</h6>
-                        @*<button type="button" class="close close-button-open" data-dismiss="modal" data-target="@Model.GmailIdNumber">&times;</button>*@
                     </div>
 
                     <!-- Modal body -->

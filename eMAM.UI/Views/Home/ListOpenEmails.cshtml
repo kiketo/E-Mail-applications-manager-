@@ -10,7 +10,7 @@
 {
     <form asp-action="ListOpenEmails" method="post" style="display:inline; float:right">
         <div class="form-actions no-color">
-            <input list="users" name="user" value="@Model.FilterByUser">
+            <input list="users" name="user" value="@Model.FilterByUser" autocomplete="off">
             <datalist id="users">
                 @foreach (var user in Model.UserNames)
                 {
