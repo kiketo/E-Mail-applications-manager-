@@ -1,5 +1,4 @@
-**e-Mail Applications Manager**
-
+[**e-Mail Applications Manager**](https://emamweb.azurewebsites.net/)
 
 Requirements
 
