@@ -111,11 +111,15 @@
 
 <a asp-action="ListOpenMails"
    asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@Model.FilterOnlyNotValid"
+   asp-route-currentFilterStatus="@Model.FilterClosedStatus"
    class="btn btn-default @prevDisabled">
     Previous
 </a>
 <a asp-action="ListOpenMails"
    asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@Model.FilterOnlyNotValid"
+   asp-route-currentFilterStatus="@Model.FilterClosedStatus"
    class="btn btn-default @nextDisabled">
     Next
 </a>

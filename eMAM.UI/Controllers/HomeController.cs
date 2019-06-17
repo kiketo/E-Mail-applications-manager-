@@ -219,26 +219,54 @@ namespace eMAM.UI.Controllers
             return View(model);
         }
 
-        [AutoValidateAntiforgeryToken]
-        [Authorize]
-        public async Task<IActionResult> ListClosedMails(int? pageNumber, string currentFilterUser = null, string newFilterUser
-            = null)
+        public async Task<IActionResult> ListClosedMails(int? pageNumber, string currentFilter, string selectedUser, string currentFilterStatus, string filterStatus = "All")
         {
-            var pageSize = 10;
-            var user = await this.userManager.GetUserAsync(User);
-            var isManager = User.IsInRole("Manager");
-            var mails = this.emailService.ReadAllMailsFromDb(isManager, user);
-            if (String.IsNullOrEmpty(newFilterUser))
+            if (!string.IsNullOrEmpty(selectedUser))
             {
                 pageNumber = 1;
-                mails = mails.Where(e => e.Status.Text == "Invalid Application");
             }
             else
             {
-                newFilterUser = currentFilterUser;
+                selectedUser = currentFilter;
+                currentFilterStatus = filterStatus;
             }
+            if (filterStatus == "All")
+            {
 
+                pageNumber = 1;
+            }
+            else
+            {
+                currentFilterStatus = filterStatus;
+                selectedUser = currentFilter;
+            }
+            var pageSize = 10;
+            var userIs = await this.userManager.GetUserAsync(User);
+            var isManager = User.IsInRole("Manager");
+            var mails = this.emailService.ReadAllMailsFromDb(isManager, userIs).Where(c => c.Status.Text == "Aproved" || c.Status.Text == "Rejected");
+            if (!string.IsNullOrEmpty(selectedUser))
+            {
+                mails = mails.Where(e => e.ClosedBy.UserName == selectedUser).OrderByDescending(x => x.DateReceived);
+            }
+            if (!string.IsNullOrEmpty(filterStatus))
+            {
+                if (filterStatus == "Rejected Only")
+                {
+                    mails = mails.Where(x => x.Status.Text == "Rejected");
+
+                }
+                else if (filterStatus == "Aproved Only")
+                {
+                    mails = mails.Where(x => x.Status.Text == "Aproved");
+
+                }
+                else if (filterStatus == "All")
+                {
+
+                }
+            }
             var page = await PaginatedList<Email>.CreateAsync(mails, pageNumber ?? 1, pageSize);
+           // page.Reverse();
 
             EmailViewModel model = new EmailViewModel
             {
@@ -247,11 +275,18 @@ namespace eMAM.UI.Controllers
                 PageIndex = page.PageIndex,
                 TotalPages = page.TotalPages,
                 UserIsManager = isManager,
-                FilterByUser = newFilterUser
+                FilterByUser = selectedUser,
+                FilterClosedStatus = currentFilterStatus
+                
             };
 
             foreach (var mail in page)
             {
+                if (!model.UserNames.Contains(mail.ClosedBy.UserName))
+                {
+                    model.UserNames.Add(mail.ClosedBy.UserName);
+                }
+
                 var element = this.emailViewModelMapper.MapFrom(mail);
                 model.SearchResults.Add(element);
             }
@@ -571,15 +606,34 @@ namespace eMAM.UI.Controllers
         //    return Ok();
         //}
 
+            /*
         [AutoValidateAntiforgeryToken]
         [Authorize]
-        public async Task<IActionResult> ListClosedEmails(int? pageNumber)
+        public async Task<IActionResult> ListClosedEmails(
+            int? pageNumber, 
+            string currentFilter, 
+            string newFilter = "No Filter", 
+            string currentFilterUser = null, 
+            string newFilterUser = null)
         {
             var pageSize = 10;
             var user = await this.userManager.GetUserAsync(User);
             var isManager = User.IsInRole("Manager");
             var mails = this.emailService.ReadAllMailsFromDb(isManager, user).Where(c => c.Status.Text == "Aproved" || c.Status.Text == "Rejected");
             var page = await PaginatedList<Email>.CreateAsync(mails, pageNumber ?? 1, pageSize);
+            if (String.IsNullOrEmpty(newFilterUser))
+            {
+                pageNumber = 1;
+                mails = mails.Where(e => e.Status.Text == "Invalid Application");
+            }
+            else
+            {
+                newFilterUser = currentFilterUser;
+            }
+
+
+            //mails = mails.Where(e => e.Status.Text == "Aproved");
+
 
             EmailViewModel model = new EmailViewModel
             {
@@ -588,6 +642,7 @@ namespace eMAM.UI.Controllers
                 PageIndex = page.PageIndex,
                 TotalPages = page.TotalPages,
                 UserIsManager = isManager
+               // FilterOnlyAproved = newFilter
             };
 
             foreach (var mail in page)
@@ -596,10 +651,11 @@ namespace eMAM.UI.Controllers
                 model.SearchResults.Add(element);
             }
 
+
             return View(model);
         }
 
-
+    */
 
         public IActionResult Error()
         {
