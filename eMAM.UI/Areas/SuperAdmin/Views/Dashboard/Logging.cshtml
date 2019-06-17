@@ -1,0 +1,23 @@
+﻿@using eMAM.UI.Areas.SuperAdmin.Models
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+{
+    @Html.AntiForgeryToken()
+}
+@model List<string>
+
+<table class="table-hover" style="width:100%">
+    <thead class="thead-light" style="background-color: cadetblue">
+        <tr> <th colspan="8" style="font-weight:bolder; text-align: center">Audit Log</th></tr>
+    </thead>
+    <tbody>
+
+        @foreach (var log in Model)
+        {
+            <tr><td>@log</td></tr>
+
+        }
+
+    </tbody>
+</table>
+
+

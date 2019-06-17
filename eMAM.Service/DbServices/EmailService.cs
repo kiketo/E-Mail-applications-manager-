@@ -1,4 +1,5 @@
-﻿using eMAM.Data;
+﻿using Crypteron.CipherObject;
+using eMAM.Data;
 using eMAM.Data.Models;
 using eMAM.Service.DbServices.Contracts;
 using Microsoft.EntityFrameworkCore;
@@ -27,10 +28,12 @@ namespace eMAM.Service.DbServices
                         .Include(x => x.Sender)
                         .Include(x => x.Status)
                         .FirstOrDefaultAsync(x => x.GmailIdNumber == id);
+
             if (mail == null)
             {
                 throw new ArgumentException($"There is no mail with Gmail ID:{id}");
             }
+            mail.Unseal();
             return mail;
         }
 
@@ -57,24 +60,25 @@ namespace eMAM.Service.DbServices
                 SetInCurrentStatusOn = DateTime.Now,
                 Subject = subject
             };
+            newEmail.Seal();
             await this.context.Emails.AddAsync(newEmail);
             await this.context.SaveChangesAsync();
 
             return newEmail;
         }
 
-        public async Task ValidateEmail(Email mail, string body, Status newStatus, User user)
-        {
-            mail.Body = body;
-            mail.Status = newStatus;
-            mail.SetInCurrentStatusOn = DateTime.Now;
-            mail.WorkInProcess = false;
-            mail.WorkingBy = null;
-            mail.WorkingById = null;
-            mail.PreviewedBy = user;
+        //public async Task ValidateEmail(Email mail, string body, Status newStatus, User user)
+        //{
+        //    mail.Body = body;
+        //    mail.Status = newStatus;
+        //    mail.SetInCurrentStatusOn = DateTime.Now;
+        //    mail.WorkInProcess = false;
+        //    mail.WorkingBy = null;
+        //    mail.WorkingById = null;
+        //    mail.PreviewedBy = user;
 
-            await this.context.SaveChangesAsync();
-        }
+        //    await this.context.SaveChangesAsync();
+        //}
 
         public IQueryable<Email> ReadAllMailsFromDb(bool isManager, User user)
         {
@@ -84,33 +88,99 @@ namespace eMAM.Service.DbServices
                 allMails = this.context.Emails
                                        .Include(e => e.Attachments)
                                        .Include(e => e.Sender)
-                                       .Include(e => e.Status);
+                                       .Include(e => e.Status)
+                                       .Include(e=>e.ClosedBy)
+                                       .Include(e=>e.PreviewedBy)
+                                       .Include(e=>e.OpenedBy);
             }
             else
             {
                 allMails = this.context.Emails
-                                           .Where(e => e.WorkInProcess == true && e.WorkingBy == user|| e.WorkInProcess == false)
+                                           .Where(e => e.WorkInProcess == true && e.WorkingBy == user || e.WorkInProcess == false)
                                            .Include(e => e.Attachments)
                                            .Include(e => e.Sender)
-                                           .Include(e => e.Status);
+                                           .Include(e => e.Status)
+                                           .Include(e => e.ClosedBy)
+                                            .Include(e => e.PreviewedBy)
+                                           .Include(e => e.OpenedBy); 
             }
+            allMails.Unseal();
+            return allMails;
+        }
+
+        public IQueryable<Email> ReadOpenMailsFromDb(bool isManager, User user)
+        {
+            IQueryable<Email> allMails;
+            if (isManager)
+            {
+                allMails = this.context.Emails
+                                       .Where(e => e.Status.Text == "Open")
+                                       .Include(e => e.OpenedBy)
+                                       .Include(e => e.Attachments)
+                                       .Include(e => e.Sender)
+                                       .Include(e => e.Status).OrderBy(e=>e.SetInCurrentStatusOn);
+                                       
+            }
+            else
+            {
+                allMails = this.context.Emails
+                                           .Where(e => e.Status.Text == "Open")
+                                           .Where(e => e.WorkInProcess == true && e.WorkingBy == user || e.WorkInProcess == false)
+                                           .Include(e => e.Attachments)
+                                           .Include(e => e.Sender)
+                                           .Include(e => e.Status).OrderBy(e => e.SetInCurrentStatusOn);
+
+            }
+            allMails.Unseal();
+            return allMails;
+        }
+
+        public IQueryable<Email> ReadClosedMailsFromDb(bool isManager, User user)
+        {
+            IQueryable<Email> allMails;
+            if (isManager)
+            {
+                allMails = this.context.Emails
+                                       .Include(e => e.Status)
+                                       .Where(e => e.Status.Text == "Aproved" || e.Status.Text == "Rejected")
+                                       .Include(e => e.Attachments)
+                                        .Include(e => e.ClosedBy)
+                                       .Include(e => e.Sender);
+            }
+            else
+            {
+                allMails = this.context.Emails
+                                           .Include(e => e.Status)
+                                           .Where(e => e.Status.Text == "Aproved" || e.Status.Text == "Rejected")
+                                           .Where(e => e.ClosedBy == user)
+                                           .Include(e => e.Attachments)
+                                            .Include(e => e.ClosedBy)
+                                           .Include(e => e.Sender);
+            }
+            allMails.Unseal();
             return allMails;
         }
 
         public async Task<Email> GetEmailByIdAsync(int id)
         {
-            return await this.context.Emails.FirstOrDefaultAsync(e => e.Id == id);
+            return await this.context.Emails
+                            .FirstOrDefaultAsync(e => e.Id == id)
+                            .Unseal();
         }
 
         public async Task UpdateAsync(Email newEmail)
         {
+            newEmail.Seal();
             this.context.Attach(newEmail).State = EntityState.Modified;
             await this.context.SaveChangesAsync();
+            newEmail.Unseal();
         }
 
         public async Task<string> GetEmailBodyAsync(string mailId)
         {
-            var mail = await this.context.Emails.FirstOrDefaultAsync(e => e.GmailIdNumber == mailId);
+            var mail = await this.context.Emails
+                                .FirstOrDefaultAsync(e => e.GmailIdNumber == mailId)
+                                .Unseal();
 
             return mail.Body;
         }
@@ -120,8 +190,10 @@ namespace eMAM.Service.DbServices
             var mail = await this.GetEmailByGmailIdAsync(messageId);
             mail.WorkInProcess = true;
             mail.WorkingBy = user;
+            mail.Seal();
             await this.context.SaveChangesAsync();
 
+            mail.Unseal();
             return mail;
         }
 
@@ -130,11 +202,25 @@ namespace eMAM.Service.DbServices
             var mail = await this.GetEmailByGmailIdAsync(messageId);
             mail.WorkInProcess = false;
             mail.WorkingBy = null;
+            mail.Seal();
             await this.context.SaveChangesAsync();
 
+            mail.Unseal();
             return mail;
         }
 
+        public IQueryable<Email> ReadClosedByUserEmailsDb(User user)
+        {
+            IQueryable<Email> allMails;
 
+                allMails = this.context.Emails
+                                           .Where(e => e.ClosedBy == user || e.WorkInProcess == false)
+                                           .Where(s=>s.Status.Text == "Aproved" || s.Status.Text == "Rejected")
+                                           .Include(e => e.Attachments)
+                                           .Include(e => e.Sender)
+                                           .Include(e => e.Status);
+            allMails.Unseal();
+            return allMails;
+        }
     }
 }

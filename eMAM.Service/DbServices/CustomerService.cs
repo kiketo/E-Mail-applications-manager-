@@ -1,4 +1,5 @@
-﻿using eMAM.Data;
+﻿using Crypteron.CipherObject;
+using eMAM.Data;
 using eMAM.Data.Models;
 using eMAM.Service.DbServices.Contracts;
 using Microsoft.EntityFrameworkCore;
@@ -27,19 +28,28 @@ namespace eMAM.Service.DbServices
                 CustomerPhoneNumber = phoneNumber,
                 Emails = new List<Email>()
             };
+            customer.Seal();
             await this.context.Customers.AddAsync(customer);
             await this.context.SaveChangesAsync();
 
             return customer;
         }
+
         public async Task<Customer> GetCustomerByEGNAsync(string egn)
         {
-            var customer = await this.context.Customers.FirstOrDefaultAsync(c => c.CustomerEGN == egn);
+            var customer = await this.context.Customers
+                                            .Include(c=>c.Emails)
+                                            .FirstOrDefaultAsync(c => c.CustomerEGN == egn)
+                                            .Unseal();
 
             return customer;
         }
 
-        
-
+        public async Task UpdateAsync(Customer customer)
+        {
+            customer.Seal();
+            this.context.Attach(customer).State = EntityState.Modified;
+            await this.context.SaveChangesAsync();
+        }
     }
 }

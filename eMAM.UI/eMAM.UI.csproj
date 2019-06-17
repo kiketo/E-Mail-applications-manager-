@@ -23,7 +23,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Google.Apis.Gmail.v1" Version="1.40.1.1613" />
+    <Content Remove="Views\Home\ListClosedEmails.cshtml" />
+    <Content Remove="Views\Shared\_OpenedApplicationsPartial.cshtml" />
+    <Content Remove="Views\Shared\_OpenedApplicationsPartial_.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CipherObject" Version="2019.6.0" />
+    <PackageReference Include="Google.Apis.Gmail.v1" Version="1.40.2.1613" />
     <PackageReference Include="Microsoft.ApplicationInsights.SnapshotCollector" Version="1.3.4" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.2.4" PrivateAssets="All" />

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Crypteron.CipherObject;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,20 +38,13 @@ namespace eMAM.UI.Utills
 
         public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> source, int pageIndex, int pageSize)
         {
-            List<T> items;
             var count = await source.CountAsync();
-            if (count > pageSize)
+            var items = await source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+            foreach (var item in items)
             {
-                if (count - pageIndex * pageSize < pageSize)
-                {
-                    pageSize = count - pageIndex * pageSize;
-                }
-                items = await source.Skip(count - pageIndex * pageSize).Take(pageSize).ToListAsync();
+                item.Unseal();
             }
-            else
-            {
-                items = await source.ToListAsync();
-            }
+
             return new PaginatedList<T>(items, count, pageIndex, pageSize);
         }
     }

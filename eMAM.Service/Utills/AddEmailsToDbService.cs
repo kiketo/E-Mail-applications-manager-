@@ -5,7 +5,6 @@ using eMAM.Service.GmailServices.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace eMAM.Service.Utills
@@ -38,7 +37,7 @@ namespace eMAM.Service.Utills
                 var newAccessDTO = await gmailApiService.RenewAccessTokenAsync(userData.RefreshToken);
 
                 await gmailUserDataService.UpdateAsync(newAccessDTO);
-               // userData = await gmailUserDataService.GetAsync();
+                // userData = await gmailUserDataService.GetAsync();
             }
 
             var gmailMessagesList = await gmailApiService.DownloadMailsListAsync(userData.AccessToken);
@@ -78,10 +77,19 @@ namespace eMAM.Service.Utills
                 var date = to_date - new TimeSpan(offset * -1, 0, 0);
 
                 var subject = headers.FirstOrDefault(s => s.Name == "Subject").Value;
+
                 var senderFull = headers.FirstOrDefault(s => s.Name == "From").Value;
                 var senderMail = senderFull.Substring(senderFull.IndexOf('<') + 1).Replace('>', ' ').TrimEnd();
-                var index = senderFull.IndexOf('<');
-                var senderName = senderFull.Substring(0, index - 1);
+                string senderName;
+                if (senderFull.Length > senderMail.Length)
+                {
+                    var index = senderFull.IndexOf('<');
+                    senderName = senderFull.Substring(0, index - 1);
+                }
+                else
+                {
+                    senderName = senderMail;
+                }
 
                 var sender = await senderService.GetSenderAsync(senderMail, senderName);
                 if (sender == null)

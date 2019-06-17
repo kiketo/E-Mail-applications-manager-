@@ -24,13 +24,15 @@ namespace eMAM.UI.Areas.SuperAdmin.Controllers
         private readonly IUserService userService;
         private readonly UserManager<User> userManager;
         private readonly IUserViewModelMapper<User, UserViewModel> userMapper;
+        private readonly IAuditLogService auditLogService;
 
-        public DashboardController(IGmailUserDataService gmailUserDataService, IUserService userService, UserManager<User> userManager, IUserViewModelMapper<User, UserViewModel> userMapper)
+        public DashboardController(IGmailUserDataService gmailUserDataService, IUserService userService, UserManager<User> userManager, IUserViewModelMapper<User, UserViewModel> userMapper, IAuditLogService auditLogService)
         {
             this.gmailUserDataService = gmailUserDataService ?? throw new ArgumentNullException(nameof(gmailUserDataService));
             this.userService = userService ?? throw new ArgumentNullException(nameof(userService));
             this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             this.userMapper = userMapper ?? throw new ArgumentNullException(nameof(userMapper));
+            this.auditLogService = auditLogService ?? throw new ArgumentNullException(nameof(auditLogService));
         }
 
         public IActionResult Index()
@@ -156,5 +158,19 @@ namespace eMAM.UI.Areas.SuperAdmin.Controllers
 
         //    return res.IsSuccessStatusCode;
         //}
+        [Area("SuperAdmin")]
+        [Route("superadmin/Logging")]
+        [Authorize(Roles = "SuperAdmin")]
+        public IActionResult Logging()
+        {
+            var model = new List<string>();
+            var logs = this.auditLogService.AllLogs();
+           
+            foreach (var log in logs)
+            {
+                model.Add($"{log.TimeStamp}: {log.UserName} made {log.ActionType} from {log.OldStatus} to {log.NewStatus} on item #{log.GmailId}");
+            }
+             return View(model);
+        }
     }
 }

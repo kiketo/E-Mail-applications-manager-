@@ -75,5 +75,18 @@ namespace eMAM.UI.Models
         [Required]
         public string CustomerPhoneNumber { get; set; }
 
+        public TimeSpan InCurrentStatusSince { get; set; }
+
+        public bool FilterOnlyNotValid { get; set; }
+
+        public string FilterByUser { get; set; }
+
+        public ICollection<string> UserNames { get; set; } = new List<string>();
+
+        public string FilterClosedStatus { get; set; }
+
+        public List<string> FilterClosedStatusList { get; set; }
+
+        public bool RowShouldBeEdited { get; set; }
     }
 }

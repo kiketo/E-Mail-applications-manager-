@@ -1,19 +1,21 @@
-﻿//show body of email in preview
-$('.email-button').click(function (ev) {
-    var $this = $(this);
+﻿//-----------------------------------------------------
+//-----------------------------------------------------
+//--PREVIEW MODAL--------------------------------------
+//-----------------------------------------------------
+//-----------------------------------------------------
+//-----------------------------------------------------
+//-----------------------------------------------------
+//-----------------------------------------------------
+
+//show body of email in preview
+function previewMailButton(button) {
+    var $this = $(button);
     var messageId = $this.attr('data-target');
     var messageRequestData = messageId.replace("#mails-", "");
     var url = $this.attr('data-url');
-
-    //disable modal from closing when clicked outside the modal window
-    //$(messageId).modal({
-    //    backdrop: 'static',
-    //    keyboard: false
-    //})
-
+    debugger;
     var form = $('#__AjaxAntiForgeryForm');
     var token = $('input[name="__RequestVerificationToken"]', form).val();
-
     $.ajax({
         url: url,
         type: 'POST',
@@ -22,13 +24,15 @@ $('.email-button').click(function (ev) {
             messageId: messageRequestData
         },
         success: function (response) {
-            $(messageId).find('.mail-body').html(response);
+            $('.mail-body-' + messageRequestData).html(response);
+            debugger;
         },
         error: function () {
             toastr.error("Ups, something went wrong");
+            debugger;
         }
     });
-});
+};
 
 //loading indicator while requesting body mail for preview
 $('.emailButton')
@@ -37,10 +41,16 @@ $('.emailButton')
     });
 
 //validate e-mail & close
-$('.validation-button').click(function (ev) {
-    var $this = $(this);
+function validateEmail(button) {
+    var $this = $(button);
+
+    debugger;
+    console.log(parent);
     var messageId = $this.attr('data-messageId');
     var url = $this.attr('data-url');
+
+    var row = $('.row-' + messageId)
+    var rowShouldBeEdited = row.attr('data-rowShouldEdit');
 
     var form = $('#__AjaxAntiForgeryForm');
     var token = $('input[name="__RequestVerificationToken"]', form).val();
@@ -48,34 +58,37 @@ $('.validation-button').click(function (ev) {
     $.ajax({
         type: "POST",
         url: url,
+        dataType: "html",
+        cache: true,
         data: {
             __RequestVerificationToken: token,
             messageId: messageId
         },
-        success: function () {
+        success: function (data) {
             toastr.success("Mail Validated");
-            var status = $.find(".status-" + messageId);
-            status[0].innerHTML = "New";
-            //remove the preview button if not a Manager
-            var previewButton = $('.email-button[data-target="#mails-' + messageId + '"]');
-            var isManager = previewButton.data('isManager');
-            if (!isManager) {
-                previewButton.remove();
+            //edit or delete the row in the DOM
+            if (rowShouldBeEdited == "True") {
+                $('.row-' + messageId).html(data);
+                debugger;
+            } else {
+                $('.row-' + messageId).remove();
+                debugger;
             }
-            //refresh data properly
-            location.reload();
         },
         error: function (err) {
             toastr.error(err.responseText);
         }
     });
-});
+};
 
 //not valid e-mail
-$('.notValid-button').click(function (ev) {
-    var $this = $(this);
+function invalidateEmail(button) {
+    var $this = $(button);
     var messageId = $this.attr('data-messageId');
     var url = $this.attr('data-url');
+
+    var row = $('.row-' + messageId)
+    var rowShouldBeEdited = row.attr('data-rowShouldEdit');
 
     var form = $('#__AjaxAntiForgeryForm');
     var token = $('input[name="__RequestVerificationToken"]', form).val();
@@ -83,58 +96,68 @@ $('.notValid-button').click(function (ev) {
     $.ajax({
         type: "POST",
         url: url,
+        dataType: "html",
         data: {
             __RequestVerificationToken: token,
             messageId: messageId
         },
-        success: function (res, as, okijjg) {
+        success: function (data) {
             toastr.warning("Mail Not Valid");
-            //change the status in the DOM
-            var status = $.find(".status-" + messageId);
-            status[0].innerHTML = "Invalid Application";
-            //remove the preview button if not a Manager
-
-            var previewButton = $('.email-button[data-target="#mails-' + messageId + '"]');
-            var row = previewButton.parent();
-            row.addClass('text-muted');
-            var isManager = previewButton.data('isManager');
-            if (!isManager) {
-                previewButton.remove();
+            //edit or delete the row in the DOM
+            if (rowShouldBeEdited == "True") {
+                $('.row-' + messageId).html(data);
+                debugger;
+            } else {
+                $('.row-' + messageId).remove();
+                debugger;
             }
-            location.reload();
         },
         error: function (res, as, okijjg) {
             toastr.error(res.responseText);
         }
     });
-});
+};
 
-//back to not previewed e-mail
-$('.close-button').click(function (ev) {
-    var $this = $(this);
+//back to not reviewed e-mail status
+function backToNotPreviewed(button) {
+    debugger;
+    var $this = $(button);
     var messageId = $this.attr('data-target');
-
+    var status = $this.attr('data-status');
     var form = $('#__AjaxAntiForgeryForm');
     var token = $('input[name="__RequestVerificationToken"]', form).val();
 
-    $.ajax({
-        type: "POST",
-        url: "/home/notpreviewed",
-        data: {
-            __RequestVerificationToken: token,
-            id: messageId
-        },
-        success: function (res, as, okijjg) {
-            toastr.warning("Mail Not Previewed");
-            var row = $this.parent();
-            row.removeClass('text-muted');
-            location.reload();
-        },
-        error: function (res, as, okijjg) {
-            toastr.error(res.responseText);
-        }
-    });
-});
+    var row = $('.row-' + messageId)
+    var rowShouldBeEdited = row.attr('data-rowShouldEdit');
+
+    if (status == 'Invalid Application') {
+        $.ajax({
+            type: "POST",
+            dataType: "html",
+            url: "/home/notpreviewed",
+            data: {
+                __RequestVerificationToken: token,
+                id: messageId
+            },
+            success: function (data) {
+                toastr.warning("Mail back to Not Reviewed status");
+                //edit or delete the row in the DOM
+                if (rowShouldBeEdited == "True") {
+                    $('.row-' + messageId).html(data);
+                    debugger;
+                } else {
+                    $('.row-' + messageId).remove();
+                    debugger;
+                }
+            },
+            error: function (res) {
+                toastr.error(res.responseText);
+            }
+        });
+    } else {
+        toastr.warning("Mail Not Reviewed");
+    }
+};
 
 //toggle roles User<->Manager
 function userManagerToggle(button) {
@@ -207,7 +230,9 @@ function userOperatorToggle(button) {
 }
 
 
-
+//-----------------------------------------------------
+//-----------------------------------------------------
+//--PROCESS MODAL--------------------------------------
 //-----------------------------------------------------
 //-----------------------------------------------------
 //-----------------------------------------------------
@@ -216,127 +241,249 @@ function userOperatorToggle(button) {
 
 
 //open email new->open
-$('.applicationEmail').click(function (ev) {
-    var $this = $(this);
+function processMailButton(button) {
+    debugger;
+    var $this = $(button);
+    console.log($this);
     var messageId = $this.attr('data-target');
     var messageRequestData = messageId.replace("#mails-", "");
     var url = '/home/getbodydb';
-    //disable modal from closing when clicked outside the modal window?does not work?
-    $(messageId).modal({
-        backdrop: 'static',
-        keyboard: false
-    })
-    debugger;
     var form = $('#__AjaxAntiForgeryForm');
     var token = $('input[name="__RequestVerificationToken"]', form).val();
+    var status = $this.attr('data-status');
+
+    if (status == "New") {
+        var url1 = '/home/changestatustoopen';
+
+        //read the body from DB
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: {
+                __RequestVerificationToken: token,
+                messageId: messageRequestData
+            },
+            success: function (response) {
+                debugger;
+                //render the body
+                $(messageId).find('.mail-bodyDB').html(response);
+                //change status to open
+                $.ajax({
+                    type: "POST",
+                    url: url1,
+                    dataType: "html",
+                    data: {
+                        __RequestVerificationToken: token,
+                        messageId: messageRequestData
+                    },
+                    success: function (data) {
+                        data1 = data;
+                        debugger;
+                        //change the status in the DOM
+                        var status = $.find('.status-' + messageRequestData);
+                        status[0].innerHTML = "Open";
+                    },
+                    error: function (res) {
+                        toastr.error(res.responseText);
+                    }
+                });
+                toastr.success("Mail Opened");
+                debugger;
+            },
+            error: function () {
+                toastr.error("Ups, e-mail didn't load");
+            }
+        });
+    } else {
+        if (status == "Approved") {
+            //read the body from DB
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: {
+                    __RequestVerificationToken: token,
+                    messageId: messageRequestData
+                },
+                success: function (response) {
+                    debugger;
+                    //render the body
+                    $(messageId).find('.mail-bodyDB').html(response);
+                },
+                error: function () {
+                    toastr.error("Ups, e-mail didn't load");
+                    debugger;
+                }
+            });
+        } else {
+            //read the body from gmail
+            $.ajax({
+                url: "/home/previewmail",
+                type: 'POST',
+                data: {
+                    __RequestVerificationToken: token,
+                    messageId: messageRequestData
+                },
+                success: function (response) {
+                    $(messageId).find('.mail-bodyDB').html(response);
+                    debugger;
+                },
+                error: function () {
+                    toastr.error("Ups, something went wrong");
+                    debugger;
+                }
+            });
+        }
+    }
+};
+
+//submit and approve form
+function approveApplicationButton(button) {
+    var form = $('#__AjaxAntiForgeryForm');
+    var token = $('input[name="__RequestVerificationToken"]', form).val();
+
+    var gmail = $(button).attr('data-gmailIdNumber');
+    var egn = $(button).parent().find('#egnid-' + gmail)[0].value;
+    var number = $(button).parent().find('#phoneid-' + gmail)[0].value;
+
+    var row = $('.row-' + gmail)
+    var rowShouldBeEdited = row.attr('data-rowShouldEdit');
+
+    debugger;
+    $.ajax({
+        type: "POST",
+        url: "/home/submitncloseapplicationaproved",
+        data: {
+            __RequestVerificationToken: token,
+            GmailIdNumber: gmail,
+            CustomerEGN: egn,
+            CustomerPhoneNumber: number
+        },
+        dataType: "html",
+        success: function (response) {
+            toastr.success("Application was Aproved");
+            //edit or delete the row in the DOM
+            if (rowShouldBeEdited == "True") {
+                $('.row-' + gmail).html(response);
+                debugger;
+            } else {
+                $('.row-' + gmail).remove();
+                debugger;
+            }
+            debugger;
+        },
+        error: function (res) {
+            toastr.error("Please enter valid details");
+            debugger;
+        }
+    })
+};
+
+//reject application
+function rejectApplicationButton(button) {
+    var $this = $(button);
+    var messageId = $this.attr('data-messageId');
+    var url = $this.attr('data-url');
+    //var gmail = $(button).attr('data-messageId');
+    var form = $('#__AjaxAntiForgeryForm');
+    var token = $('input[name="__RequestVerificationToken"]', form).val();
+
+    var row = $('.row-' + messageId)
+    var rowShouldBeEdited = row.attr('data-rowShouldEdit');
 
     $.ajax({
         type: "POST",
         url: url,
         data: {
             __RequestVerificationToken: token,
-            messageId: messageRequestData
+            GmailIdNumber: messageId
         },
+        dataType: "html",
         success: function (response) {
-            $(messageId).find('.mail-bodyDB').html(response)
+            toastr.warning("Application Rejected");
+            //edit or delete the row in the DOM
+            if (rowShouldBeEdited == "True") {
+                $('.row-' + messageId).html(response);
+                debugger;
+            } else {
+                $('.row-' + messageId).remove();
+                debugger;
+            }
         },
-        error: function (res) {
-            toastr.error("Ups, something went wrong");
+        error: function (res, as, okijjg) {
+            toastr.error(res.responseText);
+        }
+    });
+    debugger;
+};
+
+//back to new from closed status
+function backToNewApplicationButton(button) {
+    var $this = $(button);
+    debugger;
+    var messageId = $this.attr('data-messageId');
+    var url = "/home/backtonewstatus";
+
+    var row = $('.row-' + messageId)
+    var rowShouldBeEdited = row.attr('data-rowShouldEdit');
+
+    var form = $('#__AjaxAntiForgeryForm');
+    var token = $('input[name="__RequestVerificationToken"]', form).val();
+    /////////////////////
+
+    var url1 = "/home/validatemail";
+
+    //download e-mail body to DB
+    $.ajax({
+        type: "POST",
+        url: url1,
+        //dataType: "html",
+        //cache: true,
+        data: {
+            __RequestVerificationToken: token,
+            messageId: messageId
+        },
+        success: function (data) {
+            //toastr.success("Mail Body in DB");
+            //change the status in the DOM
+            // $('.row-' + messageId).html(data);
+        },
+        error: function (err) {
+            toastr.error(err.responseText);
         }
     });
 
-});
+    /////////////////
 
 
-$('.close-application').click(function (ev) {
     $.ajax({
         type: "POST",
-        url: "/home/submitncloseapplication",
+        url: url,
+        dataType: "html",
+        //cache: true,
         data: {
-            GmailIdNumber: $("#gmailid").val(),
-            CustomerEGN: $("#egn").val(),
-            CustomerPhoneNumber: $("#phone").val()
+            __RequestVerificationToken: token,
+            id: messageId
         },
-        dataType: "json"
+        success: function (data) {
+            toastr.success("Mail back to New");
+            //edit or delete the row in the DOM
+            if (rowShouldBeEdited == "True") {
+                $('.row-' + messageId).html(data);
+                debugger;
+            } else {
+                $('.row-' + messageId).remove();
+                debugger;
+            }
+        },
+        error: function (err) {
+            toastr.error(err.responseText);
+        }
+    });
+};
 
-    })
-        .done(function (res, as, okijjg) {
-            toastr.success("Application was successfully closed!");
-            location.pathname("/home/index");
-        })
-        .fail(function (jqxhr, status, error) {
-            console.log("Something went wrong")
-        })
-});
 
 
 
-//show body of email in open
-//$('.applicationEmail').click(function (ev) {
-//    var $this = $(this);
-//    var messageId = $this.attr('data-target').replace("#mails-", "");
-//    var url = $this.attr('data-url');
 
-//    $.post(url, { messageId: messageId }, function (response) {
-//        $(messageId).find('.mail-bodyDB').html(response);
-//    });
 
-//    $.ajax({
-//        type: "GET",
-//        url: url,
-//        data: { messageId: messageRequestData },
-//        success: $.post(url, { emailId: messageRequestData }, function (response) {
-//            $(emailId).find('.mail-bodyDB').html(response)
-//        })
-//    });
-//});
 
-//rq for form validation
-//$('.openApplicationForm').validate({
-//    debug: true,
-//    rules: {
-//        FirstName: {
-//            required: true,
-//            minlength: 2
-//        },
-//        LastName: {
-//            required: true,
-//            minlength: 2
-//        },
-//        CustomerEGN: {
-//            required: true
-//        },
-//        CustomerPhoneNumber: {
-//            required: false,
-//            minlength: 10,
-//            number: true
-//        },
-//        Emails: {
-//            required: true
-
-//        },
-//    },
-//    messages: {
-//        FirstName: {
-//            required: "First name is required",
-//        },
-//        LastName: {
-//            required: "Last name is required",
-//        },
-//        CustomerEGN: {
-//            required: "Identification number is required e.g EGN, Passport Number"
-//        },
-//        CustomerPhoneNumber: {
-//            required: false,
-//            number: "Only digits are allowed"
-//        },
-//        Emails: {
-//            required: true
-
-//        },
-//    },
-//    onkeyup: false,
-//    onblur: true,
-//    focusCleanup: true
-
-//});

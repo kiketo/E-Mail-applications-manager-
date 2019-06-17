@@ -12,5 +12,6 @@ namespace eMAM.Service.DbServices.Contracts
 
         Task<Customer> GetCustomerByEGNAsync(string egn);
 
+        Task UpdateAsync(Customer customer);
     }
 }

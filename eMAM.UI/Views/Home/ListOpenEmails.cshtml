@@ -4,21 +4,38 @@
 }
 @model EmailViewModel
 
-<h3 style="display:inline">New Applications</h3>
+<h3 style="display:inline">Opened Applications</h3>
+
+@if (Model.UserIsManager)
+{
+    <form asp-action="ListOpenEmails" method="post" style="display:inline; float:right">
+        <div class="form-actions no-color">
+            <input list="users" name="user" value="@Model.FilterByUser">
+            <datalist id="users">
+                @foreach (var user in Model.UserNames)
+                {
+                    <option value="@user"></option>
+                }
+            </datalist>
+            <input type="submit" value="Filter by user" class="btn btn-success">
+        </div>
+    </form>
+}
 
 <table class="table-hover" style="width:100%">
     <thead class="thead-light" style="background-color: cadetblue">
         <tr>
             <th>ID</th>
+            <th hidden>GmailID</th>
             <th>Date/Time</th>
             <th>Sender</th>
             <th>Subject</th>
-            <th style="text-align: center"> Since</th>
+            <th>Since</th>
             @if (Model.UserIsManager)
             {
                 <th style="text-align: center">Blame</th>
             }
-            <th></th>
+            <th> </th>
         </tr>
     </thead>
     <tbody>
@@ -27,12 +44,11 @@
         {
             mail.UserIsManager = Model.UserIsManager;
             <tr class="row-@mail.GmailIdNumber" data-rowShouldEdit="@mail.RowShouldBeEdited">
-                <partial name="_AllNewEmailsPartial" model="mail" />
+                <partial name="_OpenedApplicationsPartial.cshtml" model="mail" />
             </tr>
         }
     </tbody>
 </table>
-
 
 @{
     var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
@@ -40,18 +56,15 @@
 }
 <p></p>
 <hr />
-<a asp-action="ListStatusNew"
+<a asp-action="ListOpenEmails"
    asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@Model.FilterByUser"
    class="btn btn-success @prevDisabled">
     Previous
 </a>
-<a asp-action="ListStatusNew"
+<a asp-action="ListOpenEmails"
    asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@Model.FilterByUser"
    class="btn btn-success @nextDisabled">
     Next
 </a>
-
-
-
-
-

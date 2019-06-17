@@ -12,7 +12,7 @@
 <body>
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-2">
         <div class="container">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">eMAM</a>
+            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">TBI-eMAM</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -26,29 +26,34 @@
                     }
                     @if (User.IsInRole("Operator"))
                     {
-                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListAllMails">List All Mails</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListAllMails">All Mails</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListStatusNew">New Applications</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListOpenEmails">Opened Applications</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListClosedMails">Closed Applications</a></li>
                     }
                     @if (User.IsInRole("Manager"))
                     {
-                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListAllMails">List All Mails</a></li>
-                        <li><a class="nav-link text-danger" asp-area="Manager" asp-controller="Dashboard" asp-action="Users">Manager Area-Users</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListAllMails">All Mails</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListStatusNew">New Applications</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListOpenEmails">Opened Applications</a></li>
+                        <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ListClosedMails">Closed Applications</a></li>
+                        <li><a class="nav-link text-danger" asp-area="Manager" asp-controller="Dashboard" asp-action="Users">Users</a></li>
                     }
                     @if (User.Identity.IsAuthenticated)
                     {
                         <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="ContactManager">Contact Manager</a></li>
+
                     }
                     <li class="nav-item"><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="About">About</a></li>
                 </ul>
             </div>
         </div>
     </nav>
-    <div class="container body-content">
+    <div class="container body-content-custom">
         @RenderBody()
         <hr />
         <footer>
-            <p>@DateTime.Now.ToString("g") TeamX &copy;</p>
+            <p>@DateTime.Now.ToString() TeamX &copy;</p>
         </footer>
     </div>
 
