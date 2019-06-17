@@ -25,27 +25,23 @@
             <p>
                 @if (Model.FilterClosedStatus == "Rejected Only")
                 {
-                    <input type="checkbox" name="filterStatus" value="All Closed" checked hidden />
-                    <input type="submit" value="All Closed" class="btn btn-outline-success" />
-                    <a asp-action="" class="btn btn-success disabled">Rejected Only</a>
-                    <input type="checkbox" name="filterStatus" value="Aproved Only" checked hidden />
-                    <input type="submit" value="Aproved Only" class="btn btn-outline-success" />
+                    <input type="submit" name="filterStatus" value="All" class="btn btn-outline-success" />
+                    <input type="submit" name="filterStatus" value="Aproved Only" class="btn btn-outline-success" />
+                    <input type="button" name="filterStatus" value="Rejected Only" class="btn btn-success" checked disabled />
                 }
                 else if (Model.FilterClosedStatus == "Aproved Only")
                 {
-                    <a asp-action="" class="btn btn-success disabled">All Closed</a>
-                    <input type="checkbox" name="filterStatus" value="Rejected Only" checked hidden />
-                    <input type="submit" value="Rejected Only" class="btn btn-outline-success" />
-                    <input type="checkbox" name="filterStatus" value="Aproved Only" checked hidden />
-                    <input type="submit" value="Aproved Only" class="btn btn-outline-success" />
+                    <input type="submit" name="filterStatus" value="All" class="btn btn-outline-success" />
+                    <input type="button" name="filterStatus" value="Aproved Only" class="btn btn-success" checked disabled />
+                    <input type="submit" name="filterStatus" value="Rejected Only" class="btn btn-outline-success" />
                 }
-                else
+                else if (Model.FilterClosedStatus == "All")
                 {
-                    <input type="checkbox" name="filterStatus" value="All Closed" checked hidden />
-                    <input type="submit" value="All Closed" class="btn btn-outline-success" />
-                    <input type="checkbox" name="filterStatus" value="Rejected Only" checked hidden />
-                    <input type="submit" value="Rejected Only" class="btn btn-outline-success" />
-                    <a asp-action="" class="btn btn-success disabled">Aproved Only</a>
+
+                    <input type="button" name="filterStatus" value="All" class="btn btn-success" checked disabled />
+                    <input type="submit" name="filterStatus" value="Aproved Only" class="btn btn-outline-success" />
+                    <input type="submit" name="filterStatus" value="Rejected Only" class="btn btn-outline-success" />
+
 
                 }
             </p>
@@ -95,6 +91,7 @@
 <a asp-action="ListClosedMails"
    asp-route-pageNumber="@(Model.PageIndex + 1)"
    asp-route-currentFilter="@Model.FilterOnlyNotValid"
+   asp-route-currentFilter="@Model.FilterClosedStatus"
    class="btn btn-success @nextDisabled">
     Next
 </a>

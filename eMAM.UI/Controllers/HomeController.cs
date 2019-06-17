@@ -185,23 +185,31 @@ namespace eMAM.UI.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> ListClosedMails(int? pageNumber, string currentFilter, string selectedUser, string currentFilterStatus, string filterStatus)
-        {//filter - user who opened the mail, only for manafers
-            if (!string.IsNullOrEmpty(selectedUser) || !string.IsNullOrEmpty(filterStatus))
+        public async Task<IActionResult> ListClosedMails(int? pageNumber, string currentFilter, string selectedUser, string currentFilterStatus, string filterStatus = "All")
+        {
+            if (!string.IsNullOrEmpty(selectedUser))
             {
                 pageNumber = 1;
             }
             else
             {
                 selectedUser = currentFilter;
-                filterStatus = currentFilterStatus;
+                currentFilterStatus = filterStatus;
             }
+            if (filterStatus == "All")
+            {
 
+                pageNumber = 1;
+            }
+            else
+            {
+                currentFilterStatus = filterStatus;
+                selectedUser = currentFilter;
+            }
             var pageSize = 10;
             var userIs = await this.userManager.GetUserAsync(User);
             var isManager = User.IsInRole("Manager");
             var mails = this.emailService.ReadAllMailsFromDb(isManager, userIs).Where(c => c.Status.Text == "Aproved" || c.Status.Text == "Rejected");
-
             if (!string.IsNullOrEmpty(selectedUser))
             {
                 mails = mails.Where(e => e.ClosedBy.UserName == selectedUser).OrderByDescending(x => x.DateReceived);
@@ -211,14 +219,16 @@ namespace eMAM.UI.Controllers
                 if (filterStatus == "Rejected Only")
                 {
                     mails = mails.Where(x => x.Status.Text == "Rejected");
+
                 }
                 else if (filterStatus == "Aproved Only")
                 {
                     mails = mails.Where(x => x.Status.Text == "Aproved");
+
                 }
-                else if (filterStatus == "All Closed")
+                else if (filterStatus == "All")
                 {
-                    
+
                 }
             }
             var page = await PaginatedList<Email>.CreateAsync(mails, pageNumber ?? 1, pageSize);
@@ -233,6 +243,7 @@ namespace eMAM.UI.Controllers
                 UserIsManager = isManager,
                 FilterByUser = selectedUser,
                 FilterClosedStatus = currentFilterStatus
+                
             };
 
             foreach (var mail in page)
