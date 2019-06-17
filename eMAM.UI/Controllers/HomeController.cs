@@ -1,4 +1,5 @@
-﻿using eMAM.Data.Models;
+﻿using Crypteron.CipherObject;
+using eMAM.Data.Models;
 using eMAM.Service.DbServices.Contracts;
 using eMAM.Service.GmailServices.Contracts;
 using eMAM.Service.UserServices.Contracts;
@@ -62,6 +63,10 @@ namespace eMAM.UI.Controllers
             var mails = this.emailService.ReadAllMailsFromDb(isManager, user);
             var model = new HomeViewModel();
             List<Email> listEmails = await this.emailService.ReadAllMailsFromDb(true, user).ToListAsync();
+            foreach (var mail in listEmails)
+            {
+                mail.Unseal();
+            }
             var modelEmails = listEmails.Select(x => emailViewModelMapper.MapFrom(x));
 
             model.NotReviewed = modelEmails.Where(s => s.Status.Text == "Not Reviewed")

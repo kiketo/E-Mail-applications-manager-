@@ -4,7 +4,7 @@
 }
 @model EmailViewModel
 
-<h3 style="display:inline">Closed Mails</h3>
+<h3 style="display:inline">Closed Applications</h3>
 
 @if (Model.UserIsManager)
 {
@@ -71,7 +71,7 @@
         @foreach (var mail in Model.SearchResults)
         {
             mail.UserIsManager = Model.UserIsManager;
-            <tr class="row-@mail.GmailIdNumber"  data-rowShouldEdit="@mail.RowShouldBeEdited">
+            <tr class="row-@mail.GmailIdNumber" data-rowShouldEdit="@mail.RowShouldBeEdited">
                 <partial name="_AllClosedEmailsPartial" model="mail" />
             </tr>
         }
@@ -82,7 +82,8 @@
     var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
     var nextDisabled = !Model.HasNextPage ? "disabled" : "";
 }
-
+<p></p>
+<hr />
 <a asp-action="ListClosedMails"
    asp-route-pageNumber="@(Model.PageIndex - 1)"
    asp-route-currentFilter="@Model.FilterOnlyNotValid"
