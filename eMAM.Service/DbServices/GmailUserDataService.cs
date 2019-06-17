@@ -30,7 +30,7 @@ namespace eMAM.Service.DbServices
 
         public async Task<GmailUserData> GetAsync()
         {
-            return await this.context.GmailUserData.FirstOrDefaultAsync().Unseal();
+            return await this.context.GmailUserData.FirstOrDefaultAsync();//.Unseal();
         }
 
         public async Task CreateAsync(GmailUserDataDTO gmailUserData)
@@ -41,7 +41,7 @@ namespace eMAM.Service.DbServices
                 RefreshToken = gmailUserData.RefreshToken,
                 ExpiresAt = DateTime.Now.AddSeconds(gmailUserData.ExpiresInSec)
             };
-            userData.Seal();
+            //userData.Seal();
             await this.context.GmailUserData.AddAsync(userData);
             await this.context.SaveChangesAsync();
         }
@@ -51,7 +51,7 @@ namespace eMAM.Service.DbServices
             var userData = await this.context.GmailUserData.FirstOrDefaultAsync();
             userData.AccessToken = gmailUserData.AccessToken;
             userData.ExpiresAt = DateTime.Now.AddSeconds(gmailUserData.ExpiresInSec);
-            userData.Seal();
+            //userData.Seal();
             this.context.Attach(userData).State = EntityState.Modified;
             await this.context.SaveChangesAsync();
         }

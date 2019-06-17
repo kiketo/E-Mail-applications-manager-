@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Crypteron.CipherObject;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,6 +40,11 @@ namespace eMAM.UI.Utills
         {
             var count = await source.CountAsync();
             var items = await source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+            foreach (var item in items)
+            {
+                item.Unseal();
+            }
+
             return new PaginatedList<T>(items, count, pageIndex, pageSize);
         }
     }

@@ -8,10 +8,10 @@ namespace eMAM.Data.Models
     {
         public int Id { get; set; }
 
-        [Secure]
+        //[Secure]
         public string AccessToken { get; set; }
 
-        [Secure]
+        //[Secure]
         public string RefreshToken { get; set; }
 
         public DateTime ExpiresAt { get; set; }

@@ -27,13 +27,13 @@ namespace eMAM.Service.DbServices
                         .Include(x => x.OpenedBy)
                         .Include(x => x.Sender)
                         .Include(x => x.Status)
-                        .FirstOrDefaultAsync(x => x.GmailIdNumber == id)
-                        .Unseal();
+                        .FirstOrDefaultAsync(x => x.GmailIdNumber == id);
 
             if (mail == null)
             {
                 throw new ArgumentException($"There is no mail with Gmail ID:{id}");
             }
+            mail.Unseal();
             return mail;
         }
 

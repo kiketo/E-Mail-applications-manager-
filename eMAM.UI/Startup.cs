@@ -82,7 +82,12 @@ namespace eMAM.UI
 
 
             //Add encription service
-            Crypteron.CrypteronConfig.Config.MyCrypteronAccount.AppSecret = Configuration["CrypteronConfig:MyCrypteronAccount"];
+            Crypteron.CrypteronConfig.Config.MyCrypteronAccount.AppSecret = Configuration["CrypteronConfig:MyCrypteronAccount:AppSecret"];
+            var readVal = Configuration["CrypteronConfig:CommonConfig:AllowNullsInSecureFields"];
+            Crypteron.CrypteronConfig.Config.CommonConfig.AllowNullsInSecureFields = bool.Parse(readVal);
+
+
+            //Crypteron.CrypteronConfig.Config.MyCrypteronAccount.CurrentConfiguration.AppSettings...AppSecret = Configuration["CrypteronConfig:MyCrypteronAccount"];
 
             services.AddHostedService<MailSyncer>();
         }
