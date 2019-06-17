@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Crypteron;
+using Newtonsoft.Json;
 using System;
 
 namespace eMAM.Data.Models
@@ -7,8 +8,10 @@ namespace eMAM.Data.Models
     {
         public int Id { get; set; }
 
+        [Secure]
         public string AccessToken { get; set; }
 
+        [Secure]
         public string RefreshToken { get; set; }
 
         public DateTime ExpiresAt { get; set; }

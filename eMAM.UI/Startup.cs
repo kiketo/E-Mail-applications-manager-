@@ -80,7 +80,9 @@ namespace eMAM.UI
 
             services.AddRouting(options => options.LowercaseUrls = true);
 
-            //Crypteron.CrypteronConfig.Config.MyCrypteronAccount.AppSecret = Configuration["CrypteronConfig:MyCrypteronAccount:AppSecret"];
+
+            //Add encription service
+            Crypteron.CrypteronConfig.Config.MyCrypteronAccount.AppSecret = Configuration["CrypteronConfig:MyCrypteronAccount"];
 
             services.AddHostedService<MailSyncer>();
         }
