@@ -5,7 +5,7 @@
 <td>@Model.Sender.SenderName &lt@(Model.Sender.SenderEmail)&gt</td>
 <td>@Model.Subject</td>
 <td data-label="status">@Model.Status.Text</td>
-@if (true)
+@if (Model.UserIsManager)
 {
     <th>@Model.ClosedBy.UserName</th>
 }

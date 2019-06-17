@@ -4,6 +4,7 @@ using eMAM.Service.DbServices.Contracts;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -33,6 +34,13 @@ namespace eMAM.Service.DbServices
             await this.context.AuditLogs.AddAsync(auditLog);
             await this.context.SaveChangesAsync();
             return;
+        }
+
+        public IQueryable<AuditLog> AllLogs()
+        {
+            var logs = this.context.AuditLogs;
+
+            return logs;
         }
 
 
