@@ -344,6 +344,7 @@ function approveApplicationButton(button) {
     var gmail = $(button).attr('data-gmailIdNumber');
     var egn = $(button).parent().find('#egnid-' + gmail)[0].value;
     var number = $(button).parent().find('#phoneid-' + gmail)[0].value;
+    var checkboxEGN = $(button).parent().find('#isnotegnid' + gmail)[0].value;
 
     var row = $('.row-' + gmail)
     var rowShouldBeEdited = row.attr('data-rowShouldEdit');

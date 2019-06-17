@@ -70,9 +70,12 @@ namespace eMAM.UI.Models
         public string Muted { get; set; }
 
         [Required]
+        [MinLength(10)]
         public string CustomerEGN { get; set; }
 
+        
         [Required]
+        [MinLength(6)]
         public string CustomerPhoneNumber { get; set; }
 
         public TimeSpan InCurrentStatusSince { get; set; }
@@ -88,5 +91,7 @@ namespace eMAM.UI.Models
         public List<string> FilterClosedStatusList { get; set; }
 
         public bool RowShouldBeEdited { get; set; }
+
+        public bool IsNotEgn { get; set; }
     }
 }
