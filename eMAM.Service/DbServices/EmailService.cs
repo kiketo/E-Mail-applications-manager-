@@ -63,7 +63,7 @@ namespace eMAM.Service.DbServices
             newEmail.Seal();
             await this.context.Emails.AddAsync(newEmail);
             await this.context.SaveChangesAsync();
-
+            //newEmail.Unseal();
             return newEmail;
         }
 
@@ -89,9 +89,9 @@ namespace eMAM.Service.DbServices
                                        .Include(e => e.Attachments)
                                        .Include(e => e.Sender)
                                        .Include(e => e.Status)
-                                       .Include(e=>e.ClosedBy)
-                                       .Include(e=>e.PreviewedBy)
-                                       .Include(e=>e.OpenedBy);
+                                       .Include(e => e.ClosedBy)
+                                       .Include(e => e.PreviewedBy)
+                                       .Include(e => e.OpenedBy);
             }
             else
             {
@@ -102,7 +102,7 @@ namespace eMAM.Service.DbServices
                                            .Include(e => e.Status)
                                            .Include(e => e.ClosedBy)
                                             .Include(e => e.PreviewedBy)
-                                           .Include(e => e.OpenedBy); 
+                                           .Include(e => e.OpenedBy);
             }
             allMails.Unseal();
             return allMails;
@@ -118,8 +118,8 @@ namespace eMAM.Service.DbServices
                                        .Include(e => e.OpenedBy)
                                        .Include(e => e.Attachments)
                                        .Include(e => e.Sender)
-                                       .Include(e => e.Status).OrderBy(e=>e.SetInCurrentStatusOn);
-                                       
+                                       .Include(e => e.Status).OrderBy(e => e.SetInCurrentStatusOn);
+
             }
             else
             {
@@ -163,9 +163,10 @@ namespace eMAM.Service.DbServices
 
         public async Task<Email> GetEmailByIdAsync(int id)
         {
-            return await this.context.Emails
-                            .FirstOrDefaultAsync(e => e.Id == id)
-                            .Unseal();
+            var mail = await this.context.Emails
+                            .FirstOrDefaultAsync(e => e.Id == id);
+            mail.Unseal();
+            return mail;
         }
 
         public async Task UpdateAsync(Email newEmail)
@@ -179,8 +180,8 @@ namespace eMAM.Service.DbServices
         public async Task<string> GetEmailBodyAsync(string mailId)
         {
             var mail = await this.context.Emails
-                                .FirstOrDefaultAsync(e => e.GmailIdNumber == mailId)
-                                .Unseal();
+                                .FirstOrDefaultAsync(e => e.GmailIdNumber == mailId);
+            mail.Unseal();
 
             return mail.Body;
         }
@@ -213,12 +214,12 @@ namespace eMAM.Service.DbServices
         {
             IQueryable<Email> allMails;
 
-                allMails = this.context.Emails
-                                           .Where(e => e.ClosedBy == user || e.WorkInProcess == false)
-                                           .Where(s=>s.Status.Text == "Aproved" || s.Status.Text == "Rejected")
-                                           .Include(e => e.Attachments)
-                                           .Include(e => e.Sender)
-                                           .Include(e => e.Status);
+            allMails = this.context.Emails
+                                       .Where(e => e.ClosedBy == user || e.WorkInProcess == false)
+                                       .Where(s => s.Status.Text == "Aproved" || s.Status.Text == "Rejected")
+                                       .Include(e => e.Attachments)
+                                       .Include(e => e.Sender)
+                                       .Include(e => e.Status);
             allMails.Unseal();
             return allMails;
         }

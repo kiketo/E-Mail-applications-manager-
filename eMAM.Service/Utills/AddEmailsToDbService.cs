@@ -48,7 +48,7 @@ namespace eMAM.Service.Utills
 
             while (true)
             {
-                if (countNewMails == 0)
+                if (countNewMails <1)
                 {
                     break;
                 }

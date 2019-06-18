@@ -334,8 +334,10 @@ namespace eMAM.UI.Controllers
             mail.PreviewedBy = user;
             await emailService.UpdateAsync(mail);
 
+            //mail.Unseal();
             var model = this.emailViewModelMapper.MapFrom(mail);
             model.UserIsManager = User.IsInRole("Manager");
+            model.Body = null;
 
             //await emailService.ValidateEmail(mail, mailDTO.BodyAsString, validStatus,user);
             //await emailService.WorkNotInProcessAsync(messageId);
@@ -358,10 +360,12 @@ namespace eMAM.UI.Controllers
             mail.WorkingBy = null;
             mail.SetInTerminalStatusOn = DateTime.Now;
             await emailService.UpdateAsync(mail);
+            //mail.Unseal();
             //await emailService.WorkNotInProcessAsync(messageId);
             var model = this.emailViewModelMapper.MapFrom(mail);
             model.UserIsManager = User.IsInRole("Manager");
 
+            model.Body = null;
             return PartialView("_AllEmailsPartial", model);
         }
 
@@ -380,10 +384,12 @@ namespace eMAM.UI.Controllers
             mail.WorkInProcess = false;
             mail.WorkingBy = null;
             await emailService.UpdateAsync(mail);
+            //mail.Unseal();
             //await emailService.WorkNotInProcessAsync(messageId);
             var model = this.emailViewModelMapper.MapFrom(mail);
             model.UserIsManager = User.IsInRole("Manager");
 
+            model.Body = null;
             return PartialView("_AllEmailsPartial", model);
         }
 
@@ -458,17 +464,18 @@ namespace eMAM.UI.Controllers
         [HttpPost]
         public async Task<IActionResult> GetBodyDB(string messageId) // changes status to Open and working TODO put auditlog
         {
-            var body = await this.emailService.GetEmailBodyAsync(messageId);
+            //var body = await this.emailService.GetEmailBodyAsync(messageId);
             var email = await this.emailService.GetEmailByGmailIdAsync(messageId);
             var user = await this.userManager.GetUserAsync(User);
             // await this.auditLogService.Log(user.UserName, "status change", email.GmailIdNumber, notPreviewedStatus.Text, email.Status.Text); // Log
             //email.Status = await this.statusService.GetStatusAsync("Open");
             //email.WorkInProcess = true;
             //email.WorkingBy = await userManager.GetUserAsync(User);
-            email.Body = body;
-            await this.emailService.UpdateAsync(email);
+            //email.Body = body;
+            //await this.emailService.UpdateAsync(email);
+            //email.Unseal();
 
-            return Json(body);
+            return Json(email.Body);
         }
 
         [ValidateAntiForgeryToken]
@@ -489,9 +496,11 @@ namespace eMAM.UI.Controllers
             mail.OpenedBy = user;
             mail.SetInCurrentStatusOn = DateTime.Now;
             await this.emailService.UpdateAsync(mail);
+            //mail.Unseal();
             var model = this.emailViewModelMapper.MapFrom(mail);
             model.UserIsManager = User.IsInRole("Manager");
 
+            model.Body = null;
             return PartialView("_AllEmailsPartial", model);
         }
 
@@ -524,9 +533,11 @@ namespace eMAM.UI.Controllers
                 email.WorkInProcess = false;
                 email.WorkingBy = null;
                 await this.emailService.UpdateAsync(email);
+                //email.Unseal();
                 var partModel = this.emailViewModelMapper.MapFrom(email);
                 partModel.UserIsManager = User.IsInRole("Manager");
 
+                partModel.Body = null;
                 return PartialView("_AllEmailsPartial", partModel);
             }
 
@@ -549,9 +560,11 @@ namespace eMAM.UI.Controllers
             email.WorkInProcess = false;
             email.WorkingBy = null;
             await this.emailService.UpdateAsync(email);
+            //email.Unseal();
             var partModel = this.emailViewModelMapper.MapFrom(email);
             partModel.UserIsManager = User.IsInRole("Manager");
 
+            partModel.Body = null;
             return PartialView("_AllEmailsPartial", partModel);
         }
 
@@ -576,12 +589,14 @@ namespace eMAM.UI.Controllers
             mail.ClosedBy = null;
             mail.OpenedBy = null;
             mail.Body = mailDTO.BodyAsString;
-
+            //mail.Seal();
             await emailService.UpdateAsync(mail);
 
+           // mail.Unseal();
             var model = this.emailViewModelMapper.MapFrom(mail);
             model.UserIsManager = User.IsInRole("Manager");
 
+            model.Body = null;
             return PartialView("_AllEmailsPartial", model);
         }
 

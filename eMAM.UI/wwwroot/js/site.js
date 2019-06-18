@@ -18,6 +18,7 @@ function previewMailButton(button) {
     var token = $('input[name="__RequestVerificationToken"]', form).val();
     $.ajax({
         url: url,
+        cache:false,
         type: 'POST',
         data: {
             __RequestVerificationToken: token,
@@ -259,6 +260,7 @@ function processMailButton(button) {
         $.ajax({
             type: "POST",
             url: url,
+            cache: false,
             data: {
                 __RequestVerificationToken: token,
                 messageId: messageRequestData
@@ -300,6 +302,7 @@ function processMailButton(button) {
             $.ajax({
                 type: "POST",
                 url: url,
+                cache: false,
                 data: {
                     __RequestVerificationToken: token,
                     messageId: messageRequestData
@@ -319,6 +322,7 @@ function processMailButton(button) {
             $.ajax({
                 url: "/home/previewmail",
                 type: 'POST',
+                cache: false,
                 data: {
                     __RequestVerificationToken: token,
                     messageId: messageRequestData
