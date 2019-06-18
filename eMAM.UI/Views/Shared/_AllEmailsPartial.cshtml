@@ -171,12 +171,6 @@ if (Model.Status.Text == "New" || (Model.Status.Text == "Open" && Model.OpenedBy
 
                                 <span asp-validation-for="@Model.CustomerPhoneNumber" class="text-danger"></span>
 
-                                @*<p><input type="checkbox" id="isEGNid-@Model.GmailIdNumber" onclick="myFunction(); VerifyEGN(button)"> Tick if PIN is not EGN
-
-                                <p id="text" style="display:none">PIN is not of EGN type!</p>
-                                </p>*@
-
-
                                 <button onclick="approveApplicationButton(this)" data-gmailIdNumber="@Model.GmailIdNumber" type="button" style="width:160px" class="btn btn-success" data-dismiss="modal">Submit&Close</button>
                             </div>
                             <br />
@@ -187,7 +181,10 @@ if (Model.Status.Text == "New" || (Model.Status.Text == "Open" && Model.OpenedBy
                                 <button type="button" data-dismiss="modal" style="width:160px" class="btn btn-default notValid-button">Cancel</button>
                                 <p></p>
                                 <p></p>
-                                <button onclick="backToNewApplicationButton(this)" type="button" data-dismiss="modal" style="width:160px" class="btn btn-info notValid-button" data-messageId="@Model.GmailIdNumber">Back to New</button>
+                                @if (Model.UserIsManager)
+                                {
+                                    <button onclick="backToNewApplicationButton(this)" type="button" data-dismiss="modal" style="width:160px" class="btn btn-info notValid-button" data-messageId="@Model.GmailIdNumber">Back to New</button>
+                                }
 
                             </div>
                         </div>
@@ -377,10 +374,6 @@ if (Model.Status.Text == "New" || Model.Status.Text == "Open" && Model.OpenedBy.
                                 <input asp-for="@Model.CustomerPhoneNumber" placeholder="Phone Number" id="phoneid-@Model.GmailIdNumber" name="CustomerPhoneNumber" />
 
                                 <span asp-validation-for="@Model.CustomerPhoneNumber" class="text-danger"></span>
-                                @*<p><input type="checkbox" id="isEGNid-@Model.GmailIdNumber" onclick="myFunction(); VerifyEGN(button)"> Tick if PIN is not EGN 
-
-                                <p id="text" style="display:none">PIN is not of EGN type!</p>
-                                </p>*@
 
                                 <button onclick="approveApplicationButton(this)" data-gmailIdNumber="@Model.GmailIdNumber" type="button" style="width:160px" class="btn btn-success" data-dismiss="modal">Submit&Close</button>
                             </div>
@@ -392,7 +385,10 @@ if (Model.Status.Text == "New" || Model.Status.Text == "Open" && Model.OpenedBy.
                                 <button type="button" data-dismiss="modal" style="width:160px" class="btn btn-default notValid-button">Cancel</button>
                                 <p></p>
                                 <p></p>
-                                <button onclick="backToNewApplicationButton(this)" type="button" data-dismiss="modal" style="width:160px" class="btn btn-info notValid-button" data-messageId="@Model.GmailIdNumber">Back to New</button>
+                                @if (Model.UserIsManager)
+                                {
+                                    <button onclick="backToNewApplicationButton(this)" type="button" data-dismiss="modal" style="width:160px" class="btn btn-info notValid-button" data-messageId="@Model.GmailIdNumber">Back to New</button>
+                                }
 
                             </div>
                         </div>

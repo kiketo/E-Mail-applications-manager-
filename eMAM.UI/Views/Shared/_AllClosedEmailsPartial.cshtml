@@ -151,7 +151,10 @@ if (Model.Status.Text == "New" || Model.UserIsManager)
                                     <button type="button" data-dismiss="modal" style="width:160px" class="btn btn-default notValid-button">Cancel</button>
                                     <p></p>
                                     <p></p>
-                                    <button onclick="backToNewApplicationButton(this)" type="button" data-dismiss="modal" style="width:160px" class="btn btn-info notValid-button" data-messageId="@Model.GmailIdNumber">Back to New</button>
+                                    @if (Model.UserIsManager)
+                                    {
+                                        <button onclick="backToNewApplicationButton(this)" type="button" data-dismiss="modal" style="width:160px" class="btn btn-info notValid-button" data-messageId="@Model.GmailIdNumber">Back to New</button>
+                                    }
 
                                 </div>
                             </div>

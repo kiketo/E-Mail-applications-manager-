@@ -170,6 +170,7 @@ namespace eMAM.UI.Areas.SuperAdmin.Controllers
             {
                 model.Add($"{log.TimeStamp}: {log.UserName} made {log.ActionType} from {log.OldStatus} to {log.NewStatus} on item #{log.GmailId}");
             }
+            model.Reverse();
              return View(model);
         }
     }
